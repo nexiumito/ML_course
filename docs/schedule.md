@@ -25,4 +25,5 @@ Status: ✅ done/attended & documented · 🔄 in progress · ⏳ upcoming. Upda
 Notes
 - Website lists labs on the Wednesday row, but sessions are Thursdays (lab 1 sheet is dated Sept 10). Dates above are Thursdays.
 - 2025 edition had the same structure (P1 10 % then; **P1 is not graded in 2026**). 2025 exam: Thu 2026-01-15, 15:15–18:15.
-- Lecture PDFs appear in `lectures/NN/` before each lecture; solutions to labs appear in upstream ~1 week after the session.
+- Lecture PDFs appear in `lectures/NN/` before each lecture (annotated version 1–2 days after); lab solutions ~1 week after, **except ex02–ex07 (released after the P1 deadline)**. 2025 P2 description came out 10-09, three weeks before the P1 deadline.
+- 2025 lab topics per week (likely identical): see `docs/history-2025.md`.

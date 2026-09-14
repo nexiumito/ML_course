@@ -12,6 +12,7 @@ Owner: Elie Bsd, M1 student. Agents help with labs, theory, revision, and projec
 - `docs/projects.md` — Project 1 / Project 2 info (mostly TODO until published).
 - `docs/exams.md` — exam inventory, format, recurring topics, revision advice.
 - `docs/glossary.md` — course notation (N, D, X, w, L(w), …) and acronyms.
+- `docs/history-2025.md` — **the whole 2025 edition is in git history** (`git show '48f3822^:<path>'`): look ahead at labs, lectures, solutions, project descriptions.
 
 ## Repository layout
 ```
@@ -36,6 +37,7 @@ docs/                               agent-facing documentation (this system)
 - Student work goes in `labs/exNN/template/` (edit the stubs in place). Never modify `solution/`.
 - Course language: English. Docs in English. User speaks French; reply in the user's language.
 - Do not modify official course files (PDFs, official notebooks, solutions). Sync with `git pull upstream main`.
+- Upstream is reset every September; previous editions stay in history (see `docs/history-2025.md`). Lab solutions for the labs that implement Project 1 functions (ex02–ex07) are withheld until after the P1 deadline.
 
 ## Documentation maintenance (mandatory for every agent)
 - Read the relevant `docs/` file **before** opening any PDF. Only open a PDF if no summary exists or it is insufficient; then update the summary so nobody has to open it again.

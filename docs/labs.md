@@ -28,8 +28,20 @@ labs/exNN/
 | Lab | Date | Topic | Status | Notes |
 |---|---|---|---|---|
 | ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ✅ solutions available (`labs/ex01/solution/`) | Student's own status: TODO — update when done |
-| ex02 | 2026-09-17 | Expected: linear MSE/MAE gradients, grid search, GD, SGD (per lecture 02a) | ⏳ not yet in repo | |
-| ex03–ex13 | see `docs/schedule.md` | | ⏳ | |
+| ex02 | 2026-09-17 | Linear regression & GD: cost (MSE/MAE), grid search, GD, SGD, subgradient (2025 files: `costs.py`, `grid_search.py`, `gradient_descent.py`, `stochastic_gradient_descent.py`, `subgradient_mae.py`) | ⏳ not yet in repo | 2025 version viewable via `git show '48f3822^:labs/ex02/exercise02.pdf'` |
+| ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ | **P1 function** `least_squares`, `ridge_regression` |
+| ex04 | 2026-10-01 | Cross-validation, bias–variance | ⏳ | |
+| ex05 | 2026-10-08 | Logistic regression (+ regularized, Newton) | ⏳ | **P1 functions** `logistic_regression`, `reg_logistic_regression` |
+| ex06 | 2026-10-15 | SVM via SGD and coordinate descent | ⏳ | |
+| ex07 | 2026-10-29 | Kernels & NN intro | ⏳ | |
+| ex08 | 2026-11-05 | NN training & CNNs (PyTorch) | ⏳ | |
+| ex09 | 2026-11-12 | Adversarial robustness | ⏳ | |
+| ex10 | 2026-11-19 | K-means (+ image compression) | ⏳ | |
+| ex11 | 2026-11-26 | Matrix factorization / recommenders + P2 Q&A | ⏳ | |
+| ex12 | 2026-12-03 | Matrix factorization notebook + P2 Q&A | ⏳ | |
+| ex13 | 2026-12-10 | GPT multiplication & GANs | ⏳ | |
+
+Topics for ex02–ex13 are the 2025 ones (see `docs/history-2025.md`); confirm when each 2026 sheet is published. **Solutions for ex02–ex07 are only released after the Project 1 deadline** (they are the P1 functions) — don't wait for them.
 
 ## ex01 — Efficient Python/NumPy programming (details)
 Sheet: `labs/ex01/exercise01.pdf`. Goal: vectorized NumPy instead of for-loops. Useful ops: `a*b` elementwise, `a.dot(b)`/`@`, `a.max(0)` per column, `np.sum(a, axis=k)`, `np.mean/np.std`, `a.shape`, `np.linalg.inv`.

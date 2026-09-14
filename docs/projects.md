@@ -7,28 +7,49 @@ Both projects: groups of **3** (2 only in exceptional cases, with approval), Pyt
 When a description is published: pull it into `projects/projectN/`, summarize it here (tasks, dataset, deliverables, grading rubric, submission platform), and create `projects/projectN/CLAUDE.md`.
 
 ## Project 1 — not formally graded ("prepares you for Project 2")
+2026 description not yet published. Everything below marked *(2025)* comes from the 2025 description recovered from git history (see `docs/history-2025.md`); the format has been stable 2023–2025, expect the same.
+
 | Item | Value |
 |---|---|
-| Start | 2026-09-16 (lab of week 2) |
-| Deadline | **2026-10-29** (website, lecture slides, info-sheet §Assessment). ⚠ Info-sheet §Project 1 says "Nov 1st" — inconsistency, confirm on Ed. |
-| Team | 3 students, own choice |
-| Content | Implement the most important methods from lectures/labs so far (past years: `least_squares_GD`, `least_squares_SGD`, `least_squares`, `ridge_regression`, `logistic_regression`, `reg_logistic_regression` in an `implementations.py`, NumPy only) — TODO confirm 2026 list when published |
-| Data / competition | Real-world dataset, AICrowd competition: https://www.aicrowd.com/challenges/epfl-machine-learning-project-1 |
-| Deliverables | Python code + **2-page PDF report** (LaTeX preferred) |
-| Grading | not graded in 2026 (was 10 % in 2025) |
-| Team / repo | TODO — not yet formed (as of 2026-09-14) |
+| Start | 2026-09-16 (lab of week 2; 2025: launched 09-18) |
+| Deadline | **2026-10-29** (website, slides, info-sheet §Assessment). ⚠ Info-sheet §Project 1 says "Nov 1st" — confirm on Ed. 2025 deadline was Fri 16:00 sharp. |
+| Team | 3 students, own choice (Ed forum to find teammates) |
+| Grading | not graded in 2026 (2025: 10 %, code 40 % / report 60 %). Still: it is the toolbox for P2 and the exam. |
+| Allowed libs *(2025)* | **Python stdlib + NumPy only**; matplotlib/seaborn for plots only. No pandas, sklearn, torch. No external data/code. |
+| Task *(2025)* | Binary classification: predict coronary heart disease (MICHD) from BRFSS 2015 lifestyle survey (>300k people). Data: `x_train.csv`, `y_train.csv` (labels −1/1), `x_test.csv`; load with `helpers.load_csv_data`, submit with `create_csv_submission`. |
+| Competition | AICrowd https://www.aicrowd.com/challenges/epfl-machine-learning-project-1 — max 5 submissions/day, rank not graded; always use local validation/CV. |
+| Deliverables *(2025)* | GitHub Classroom repo with `README.md`, `implementations.py`, `run.py` (or `run.ipynb`) reproducing the best submission exactly; **2-page LaTeX report** (refs on a 3rd page, no appendix). Submission via http://mlcourse.epfl.ch. Plagiarism check. |
+| Public tests *(2025)* | `projects/project1/grading_tests/`: `pytest --github_link <repo-url> .` (or a local path). Format code with `black`. |
 
-## Project 2 — 30 % of the grade (ML4Science)
+Required functions *(2025 Table 1; all in `implementations.py`, all return `(w, loss)` with `w` the **last** iterate; loss of regularized methods **excludes** the penalty; vectors are 1-D `(D,)`; MSE has the ½ factor; SGD uses batch size 1; `numpy.linalg` allowed except `lstsq`)*:
+| Function | Method |
+|---|---|
+| `mean_squared_error_gd(y, tx, initial_w, max_iters, gamma)` | linear regression, GD |
+| `mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma)` | linear regression, SGD (batch 1) |
+| `least_squares(y, tx)` | normal equations |
+| `ridge_regression(y, tx, lambda_)` | normal equations |
+| `logistic_regression(y, tx, initial_w, max_iters, gamma)` | y ∈ {0,1}, GD |
+| `reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma)` | y ∈ {0,1}, GD, penalty λ‖w‖² |
+
+Report grading criteria *(2025)*: correct implementation + explanation (half), then scientific contribution: novelty, creativity, reproducibility (all hyperparameters, folds, transformations), solid baselines + **ablation study**, write-up quality. Target reader: ML beginner. Advice in description: EDA, feature processing, over/underfitting diagnosis, error analysis, CV.
+
+| Team / repo | TODO — not yet formed (as of 2026-09-14) |
+|---|---|
+
+## Project 2 — 30 % of the grade
+2026 description not yet published; 2025 version (recovered from git, published 2025-10-09) is the reference below.
+
 | Item | Value |
 |---|---|
 | Start | 2026-11-03 (week 9) |
-| Deadline | **2026-12-17** (all cases) |
-| Team | 3 students |
-| Format | Pick a real-world challenge from any EPFL research group or Swiss academic institution: https://www.epfl.ch/labs/mlo/ml4science/. List of ideas published later (subject to availability); students may contact labs directly early in the semester. |
-| Approval | Idea must be approved by the host lab **and** the course team, **early November 2026** |
-| Deliverables | Python code + **4-page PDF report** |
-| Support | Project Q&A during labs 2026-11-26 and 2026-12-03; optional pitch session 2026-12-16 |
-| Past-year alternatives | Previous editions also offered default tasks (road segmentation from satellite images, tweet sentiment classification, reproducibility of a paper) — TODO check whether offered in 2026 |
+| Deadline | **2026-12-17** (2025: 16:00 sharp) |
+| Team | 3 students (may differ from P1). 2025: if no team by 11-18, contact staff. |
+| Two options *(2025)* | **A — ML4Science**: project with any lab of the (extended) EPFL campus or Swiss academic institution (EPFL, UniL, CERN, CHUV, Idiap…); the **lab's professor must confirm via the registration form by early Nov** (2025: 11-04); the lab co-grades domain merit. **B — predefined AICrowd challenge**: text classification (tweets) https://www.aicrowd.com/challenges/epfl-ml-text-classification or road segmentation (aerial images) https://www.aicrowd.com/challenges/epfl-ml-road-segmentation; leaderboard rank mapped linearly to 4–6 for the competitive part; 5 submissions/person/day. |
+| Allowed | External libraries, models, datasets **allowed if cited** (PyTorch etc.). LauzHack PyTorch project template recommended (Hydra, pre-commit). |
+| Deliverables | **4-page LaTeX report** (+ refs, acknowledgements, optional appendix) with a **meaningful title**; GitHub Classroom repo with README, reproducible code (`run.py` reproducing the AICrowd submission for option B; pretrained weights when possible). Submission via http://mlcourse.epfl.ch. |
+| **Ethical risks section** *(2025, mandatory, graded)* | 200–400 words, outside the 4-page limit, using the Digital Ethics Canvas. Either describe one identified risk (stakeholders, impact, severity/likelihood, how evaluated, how mitigated or why not) or justify ruling risks out (≥ 2 stakeholder categories incl. indirect/environment, evidence). |
+| Grading criteria | solid baselines (start from a trivial baseline, quantify each addition), reproducibility, scientific novelty/creativity (what specific problem, why, how, results before/after), ethics component, write-up quality (clear story, labeled plots, proofread). Task difficulty is accounted for. |
+| Support | Project Q&A during labs 2026-11-26 and 12-03; optional pitch session 2026-12-16 |
 | Topic / lab / team | TODO — not yet decided (as of 2026-09-14) |
 
 Lecture 01a slides list hundreds of past ML4Science project titles (2020–2024) — useful for inspiration; grep `lectures/01/lecture01a_intro.pdf` text if needed.
