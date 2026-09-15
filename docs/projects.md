@@ -33,7 +33,7 @@ Required functions *(2025 Table 1; all in `implementations.py`, all return `(w, 
 
 Report grading criteria *(2025)*: correct implementation + explanation (half), then scientific contribution: novelty, creativity, reproducibility (all hyperparameters, folds, transformations), solid baselines + **ablation study**, write-up quality. Target reader: ML beginner. Advice in description: EDA, feature processing, over/underfitting diagnosis, error analysis, CV.
 
-| Team / repo | TODO — not yet formed (as of 2026-09-14) |
+| Team | **Elie, Gabin, Antoine** (formed 2026-09-15). Repo: TODO (GitHub Classroom link comes with the description) |
 |---|---|
 
 ## Project 2 — 30 % of the grade
@@ -50,7 +50,8 @@ Report grading criteria *(2025)*: correct implementation + explanation (half), t
 | **Ethical risks section** *(2025, mandatory, graded)* | 200–400 words, outside the 4-page limit, using the Digital Ethics Canvas. Either describe one identified risk (stakeholders, impact, severity/likelihood, how evaluated, how mitigated or why not) or justify ruling risks out (≥ 2 stakeholder categories incl. indirect/environment, evidence). |
 | Grading criteria | solid baselines (start from a trivial baseline, quantify each addition), reproducibility, scientific novelty/creativity (what specific problem, why, how, results before/after), ethics component, write-up quality (clear story, labeled plots, proofread). Task difficulty is accounted for. |
 | Support | Project Q&A during labs 2026-11-26 and 12-03; optional pitch session 2026-12-16 |
-| Topic / lab / team | TODO — not yet decided (as of 2026-09-14) |
+| Team | Elie, Gabin, Antoine (same as P1, to confirm) |
+| Topic / lab | TODO — not yet decided (as of 2026-09-15) |
 
 Lecture 01a slides list hundreds of past ML4Science project titles (2020–2024) — useful for inspiration; grep `lectures/01/lecture01a_intro.pdf` text if needed.
 

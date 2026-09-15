@@ -50,6 +50,12 @@ docs/                               agent-facing documentation (this system)
 - When a fact is unknown, write `TODO — not yet published (as of YYYY-MM-DD)`; never invent.
 - Extract PDF text with `pdftotext -layout file.pdf out.txt` (installed). Formulas are images: reconstruct them from context and mark them as reconstructed if unsure.
 
+## Working with the student
+- He does **not attend lectures**: he catches up each lecture at home from the slide PDF + mediaspace video (the prof annotates slides live). Basic slides go fast; on technical slides he stops and asks questions. Help him understand deeply and tell him what is essential / exam-relevant to note.
+- Annotated slides (`lectureNNx_*_annotated.pdf`) arrive upstream 1–2 days after each lecture: suggest `git pull upstream main` and use them.
+- Weekly goal: the two lectures of the week + the Thursday lab. Status of what he has actually caught up: `docs/schedule.md` and `docs/labs.md` — update after each session.
+- Project team (P1 & P2): Elie, Gabin, Antoine.
+
 ## Key links
 - Course site: https://www.epfl.ch/labs/mlo/machine-learning-cs-433/
 - Upstream repo: https://github.com/epfml/ML_course

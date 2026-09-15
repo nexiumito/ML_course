@@ -1,12 +1,12 @@
 # CS-433 Fall 2026 — Week-by-week schedule
 
 Source: course website (verified 2026-09-14). "Approximate, subject to change." Lectures Tue 16:15 + Wed 10:15, labs Thu 14:15.
-Status: ✅ done/attended & documented · 🔄 in progress · ⏳ upcoming. Update the status column every week.
+Status column = **the student's personal progress** (not just what is published): ✅ caught up / done · 🔄 in progress · ⏳ upcoming. Update it every session. The student does not attend lectures; he catches up from slides + video (see `CLAUDE.md` § Working with the student).
 
 | Wk | Tue | Tue lecture | Wed lecture | Thu lab | Deadlines / events | Status |
 |---|---|---|---|---|---|---|
-| 1 | 09-08 | Introduction; Linear Regression (01a, 01b) | Loss functions (01c) | Lab 1 (09-10): NumPy, vectorization | — | ✅ lectures summarized; lab: see `docs/labs.md` |
-| 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17): GD/SGD/grid search/MAE | **Project 1 starts** (09-16) | 🔄 02a summarized; Lab 2 template in repo (09-15), documented; Wed slides not yet published |
+| 1 | 09-08 | Introduction; Linear Regression (01a, 01b) | Loss functions (01c) | Lab 1 (09-10): NumPy, vectorization | — | 🔄 01a, 01b caught up (09-15); 01c in progress; lab 1 not started |
+| 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17): GD/SGD/grid search/MAE | **Project 1 starts** (09-16) | ⏳ 02a to catch up from 09-16 (slides + video); Wed slides not yet published; lab 2 not started |
 | 3 | 09-22 | Least Squares; Overfitting | Max Likelihood; Ridge Regression; Lasso | Lab 3 (09-24) | — | ⏳ |
 | 4 | 09-29 | Generalization; Model Selection; Validation | Bias–Variance decomposition | Lab 4 (10-01) | — | ⏳ |
 | 5 | 10-06 | Classification | Logistic Regression | Lab 5 (10-08) | — | ⏳ |

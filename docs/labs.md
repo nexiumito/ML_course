@@ -27,8 +27,8 @@ labs/exNN/
 ## Lab status
 | Lab | Date | Topic | Status | Notes |
 |---|---|---|---|---|
-| ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ✅ solutions available (`labs/ex01/solution/`) | Student's own status: TODO — update when done |
-| ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ✅ template in repo (2026-09-15); no solution yet (expected after P1 deadline). Student status: TODO | Sheet identical to 2025. Details below. |
+| ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ⏳ student not started (solutions available in `labs/ex01/solution/`) | |
+| ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ⏳ student not started; template in repo (2026-09-15), no solution until after P1 deadline | Sheet identical to 2025. Details below. |
 | ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ | **P1 function** `least_squares`, `ridge_regression` |
 | ex04 | 2026-10-01 | Cross-validation, bias–variance | ⏳ | |
 | ex05 | 2026-10-08 | Logistic regression (+ regularized, Newton) | ⏳ | **P1 functions** `logistic_regression`, `reg_logistic_regression` |
