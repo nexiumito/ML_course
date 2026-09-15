@@ -6,7 +6,7 @@ Status: ✅ done/attended & documented · 🔄 in progress · ⏳ upcoming. Upda
 | Wk | Tue | Tue lecture | Wed lecture | Thu lab | Deadlines / events | Status |
 |---|---|---|---|---|---|---|
 | 1 | 09-08 | Introduction; Linear Regression (01a, 01b) | Loss functions (01c) | Lab 1 (09-10): NumPy, vectorization | — | ✅ lectures summarized; lab: see `docs/labs.md` |
-| 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17) | **Project 1 starts** (09-16) | 🔄 02a PDF summarized; Wed slides + Lab 2 not yet in repo |
+| 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17): GD/SGD/grid search/MAE | **Project 1 starts** (09-16) | 🔄 02a summarized; Lab 2 template in repo (09-15), documented; Wed slides not yet published |
 | 3 | 09-22 | Least Squares; Overfitting | Max Likelihood; Ridge Regression; Lasso | Lab 3 (09-24) | — | ⏳ |
 | 4 | 09-29 | Generalization; Model Selection; Validation | Bias–Variance decomposition | Lab 4 (10-01) | — | ⏳ |
 | 5 | 10-06 | Classification | Logistic Regression | Lab 5 (10-08) | — | ⏳ |

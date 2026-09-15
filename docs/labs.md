@@ -28,7 +28,7 @@ labs/exNN/
 | Lab | Date | Topic | Status | Notes |
 |---|---|---|---|---|
 | ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ✅ solutions available (`labs/ex01/solution/`) | Student's own status: TODO — update when done |
-| ex02 | 2026-09-17 | Linear regression & GD: cost (MSE/MAE), grid search, GD, SGD, subgradient (2025 files: `costs.py`, `grid_search.py`, `gradient_descent.py`, `stochastic_gradient_descent.py`, `subgradient_mae.py`) | ⏳ not yet in repo | 2025 version viewable via `git show '48f3822^:labs/ex02/exercise02.pdf'` |
+| ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ✅ template in repo (2026-09-15); no solution yet (expected after P1 deadline). Student status: TODO | Sheet identical to 2025. Details below. |
 | ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ | **P1 function** `least_squares`, `ridge_regression` |
 | ex04 | 2026-10-01 | Cross-validation, bias–variance | ⏳ | |
 | ex05 | 2026-10-08 | Logistic regression (+ regularized, Newton) | ⏳ | **P1 functions** `logistic_regression`, `reg_logistic_regression` |
@@ -50,6 +50,18 @@ Sheet: `labs/ex01/exercise01.pdf`. Goal: vectorized NumPy instead of for-loops. 
 - **Task C Gaussian likelihood** — assign each xₙ to the more likely of k = 2 multivariate Gaussians θₘ = (μₘ, Σₘ). Density `p(x|μ,Σ) = (2π)^{−d/2} |Σ|^{−1/2} exp(−½ (x−μ)ᵀΣ⁻¹(x−μ))`. `compute_p` is given (3 vectorized options for the quadratic form: `np.sum(dxm * (dxm @ inv), axis=1)`; `((dxm @ inv) @ dxm.T).diagonal()`; loop). Student implements **`compute_log_p`**: `−½ Σ_k [dxm ⊙ (dxm Σ⁻¹)]_k − (d/2) log(2π) − ½ log|Σ|`. Use logs to avoid underflow; assignment = `np.argmax(log_ps, axis=0)`. `taskC_detailed_solution.ipynb` shows the diagonal-Σ simplification and timing comparison (vectorized 10–100× faster).
 - **Theory part (week 1):** no exercises; refresh linear algebra (multiplication, transpose, inverse, rank, independence, eigen), gradients (Matrix Cookbook), probability (conditional/joint, Bayes, expectation/variance, Gaussian; Bishop ch. 2).
 - `npprimer.ipynb` covers: array creation, elementwise ops, indexing/slicing, reshape, reductions, linear algebra, boolean masks, `np.indices`, SciPy intro.
+
+## ex02 — Linear regression and gradient descent (details)
+Sheet: `labs/ex02/exercise02.pdf` (identical to 2025 except dates). Work in `labs/ex02/template/ex02.ipynb`, then copy code into `costs.py`, `grid_search.py`, `gradient_descent.py`, `stochastic_gradient_descent.py`, `subgradient_mae.py` for reuse (**Project 1 needs them**).
+- **Data:** `height_weight_genders.csv` (10 000 rows: Gender, Height, Weight). `helpers.load_data(sub_sample=True, add_outlier=False)` converts to metric (height×0.025, weight×0.454), sub-samples 1/50 (200 pts), and can append two outliers (heights 1.1/1.2 m, weights in pounds). `standardize(x)` → `(x, mean_x, std_x)` (scalar mean/std, 1-D input). `build_model_data(height, weight)` → `y = weight`, `tx = [1, height]` (N×2). `batch_iter(y, tx, batch_size, num_batches=1, shuffle=True)` yields mini-batches. `plots.py`: `grid_visualization`, `gradient_descent_visualization` (used with `ipywidgets.interact` sliders).
+- **Model:** `yₙ ≈ w₀ + w₁ xₙ₁`, w = [w₀, w₁]; X̃ = [1, x] so `tx @ w` gives predictions.
+- **Ex 1 `compute_loss(y, tx, w)`:** MSE `L(w) = 1/(2N) eᵀe` with `e = y − tx @ w`. Later modified for MAE `1/N Σ|eₙ|`.
+- **Ex 2 `grid_search(y, tx, grid_w0, grid_w1)`:** returns loss matrix over all (w₀, w₁) combos (`generate_w(num_intervals)` builds grids; `get_best_parameters(w0, w1, losses)` picks the min). Compare grid spacing 50 vs 10; cost is exponential in #parameters.
+- **Ex 3 `compute_gradient(y, tx, w)`:** `−(1/N) tx.T @ e`. `gradient_descent(y, tx, initial_w, max_iters, gamma)` returns `(losses, ws)` lists (**note: lab returns all iterates; Project 1 wants only the last `(w, loss)`**). Experiments: γ ∈ {0.001, 0.01, 0.5, 1, 2, 2.5} (diverges for γ ≥ 2 on standardized data — Hessian ≈ I so 0 < γ < 2), initializations (0,0), (100,10), (−1000,1000) with γ = 0.1.
+- **Ex 4 `compute_stoch_gradient(y, tx, w)`** (same formula on a batch) and `stochastic_gradient_descent(y, tx, initial_w, batch_size, max_iters, gamma)` using `batch_iter`. Project 1 requires batch size 1.
+- **Ex 5:** reload with `sub_sample=True` then `add_outlier=True`; MSE fit is dragged by the 2 outliers.
+- **Ex 6 `compute_subgradient_mae(y, tx, w)`:** `−(1/N) tx.T @ sign(e)` (any value in [−1,1] at eₙ = 0); `subgradient_descent` and `stochastic_subgradient_descent` mirror Ex 3/4. Questions: MAE fit better with outliers? did you hit a non-differentiable point? (practically never with float data).
+- Theory questions: rewrite MSE with e (Ex 1a); chain rule for subgradient (Ex 6a). 2025 theory solutions PDF: `git show '48f3822^:labs/ex02/solution/solutions-theory-questions.pdf'`.
 
 ## Gotchas / lessons learned (append as the semester goes)
 - `np.std` uses population std (ddof=0) — matches the doctest in Task A.
