@@ -40,7 +40,7 @@ docs/                               agent-facing documentation (this system)
 - Upstream is reset every September; previous editions stay in history (see `docs/history-2025.md`). Lab solutions for the labs that implement Project 1 functions (ex02–ex07) are withheld until after the P1 deadline.
 
 ## Documentation maintenance (mandatory for every agent)
-- Read the relevant `docs/` file **before** opening any PDF. Only open a PDF if no summary exists or it is insufficient; then update the summary so nobody has to open it again.
+- `docs/lectures/*.md` are an **index**, not a substitute: for any question on course content, locate the section with the sheet, then read those pages of the PDF itself (`pdftotext -f N -l M -layout`). Formulas in the sheets are reconstructed from image-based slides; the PDF is the source of truth. For other docs (`schedule`, `labs`, `projects`, `exams`), read the doc first and open the PDF only if it is insufficient — then update the doc.
 - New `lectures/NN/` folder → create `docs/lectures/NN-<topic>.md` (use the existing sheets as the format), add a row to `docs/lectures/README.md`, mark the week in `docs/schedule.md`, add new notation to `docs/glossary.md`.
 - New or completed `labs/exNN/` → update the lab's row/section in `docs/labs.md` (status, gotchas, what was hard) and `docs/schedule.md`.
 - Project starts → fill `docs/projects.md` from the official description PDF and create `projects/projectN/CLAUDE.md` (team, deadlines, structure, how to run).
