@@ -31,7 +31,7 @@ docs/                               agent-facing documentation (this system)
 ## Conventions
 - Python 3, NumPy-first. Labs forbid explicit for-loops where vectorization is possible.
 - Data matrix `X` is `(N, D)`: rows = samples, columns = features. Weights `w` are `(D,)`.
-- Course MSE uses the `1/(2N)` factor: `L(w) = 1/(2N) Σ (y_n − xₙᵀw)²`. Keep it in lab code.
+- Labs/Project 1 MSE uses the `1/(2N)` factor: `L(w) = 1/(2N) Σ (y_n − xₙᵀw)²`. Keep it in lab code. (Loss-functions lecture slides write 1/N; same minimizer.)
 - Notebook first cell: `%matplotlib inline`, `%load_ext autoreload`, `%autoreload 2`, `from test_utils import test`.
 - Lab functions carry doctests in their docstring; run `test(fn)` after implementing.
 - Student work goes in `labs/exNN/template/` (edit the stubs in place). Never modify `solution/`.
@@ -48,7 +48,7 @@ docs/                               agent-facing documentation (this system)
 - Keep this file under 80 lines. Details go in `docs/`, not here.
 - Write dates as absolute (e.g. `2026-10-29`), never "next week".
 - When a fact is unknown, write `TODO — not yet published (as of YYYY-MM-DD)`; never invent.
-- Extract PDF text with `pdftotext -layout file.pdf out.txt` (installed). Formulas are images: reconstruct them from context and mark them as reconstructed if unsure.
+- Extract PDF text with `pdftotext -layout file.pdf out.txt` (installed). Formulas are images: reconstruct them from context and mark them as reconstructed if unsure. Handwritten annotations (`*_annotated.pdf`): `pdftoppm -r 45 -png` + view PNGs (tile pages with PIL to save tokens).
 
 ## Working with the student
 - He does **not attend lectures**: he catches up each lecture at home from the slide PDF + mediaspace video (the prof annotates slides live). Basic slides go fast; on technical slides he stops and asks questions. Help him understand deeply and tell him what is essential / exam-relevant to note.

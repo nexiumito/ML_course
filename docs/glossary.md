@@ -26,7 +26,7 @@ Extend this file whenever a lecture introduces new notation. Conventions follow 
 |---|---|
 | L(w) | loss = cost = energy = training objective. ℒ also used. |
 | Lₙ(w) | loss contributed by example n; L = (1/N) Σ Lₙ. |
-| MSE | mean squared error, **L(w) = 1/(2N) Σₙ (yₙ − xₙᵀw)²** (note the ½). ∇L = −(1/N)Xᵀe. Hessian (1/N)XᵀX. |
+| MSE | mean squared error. **Labs / Project 1 / optimization lecture: L(w) = 1/(2N) Σₙ (yₙ − xₙᵀw)²** (½ so that ∇L = −(1/N)Xᵀe, Hessian (1/N)XᵀX). Loss-functions lecture slide 5 writes it **without the ½** (1/N). Same minimizer. |
 | MAE | mean absolute error, L(w) = (1/N) Σₙ |yₙ − xₙᵀw|. Subgradient −(1/N)Xᵀsign(e). |
 | Huber loss | quadratic for |e| ≤ δ, linear beyond; convex, differentiable, robust. |
 | Tukey's bisquare | non-convex robust loss. |

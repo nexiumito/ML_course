@@ -1,6 +1,7 @@
 # Lecture 01 — Introduction, Regression, Loss Functions
 
 Sources: `lectures/01/lecture01a_intro.pdf` (53 p.), `lectures/01/lecture01b_regression.pdf` (20 p.), `lectures/01/lecture01c_loss_functions.pdf` (16 p.). Dates 2026-09-08/09. Lecturer: Martin Jaggi (credits Emtiyaz Khan).
+Annotated versions (prof's handwriting, 2026-09-15): `lecture01b_regression_annotated.pdf`, `lecture01c_loss_functions_annotated.pdf`. Handwriting is not extractable with pdftotext — render pages with `pdftoppm -r 45 -png` and view the images.
 
 ## A. 01a — Introduction (mostly context, little exam material)
 - Logistics (see `docs/course-overview.md`). "What to expect": overview of ML, basic understanding of main methods, practical experience. "Not": becoming an expert.
@@ -28,17 +29,20 @@ Sources: `lectures/01/lecture01a_intro.pdf` (53 p.), `lectures/01/lecture01b_reg
 
 ## C. 01c — Loss functions
 - **Loss / cost / energy / training objective L(w):** quantifies how well the model explains the data ("how costly our mistakes are"); used to learn w.
-- Two desirable properties (real-valued y): symmetric around 0 (positive/negative errors penalized equally); "large" and "very large" mistakes penalized similarly (robustness).
+- Two desirable properties (real-valued y): symmetric around 0 (positive/negative errors penalized equally; annotation: "usually ≥ 0"); "large" and "very large" mistakes penalized similarly (robustness). Annotated sketches p.3: MSE = parabola, MAE = V shape; a robust loss flattens out for large |e| — which makes it **non-convex** (annotation p.4: statistical side ↔ non-convex). That is the trade-off.
 - **Statistical vs computational trade-off:** statistical = copes with outliers; computational = convex so we can find the minimum. Better statistical properties ⇒ worse computational ones.
-- **MSE** (course convention, with 1/2N):
-  `L(w) = MSE(w) = 1/(2N) Σₙ (yₙ − f(xₙ))² = 1/(2N) Σₙ eₙ²`, error `eₙ = yₙ − xₙᵀw`.
-  Symmetric; convex; **not robust to outliers** (quadratic growth). Exercise on slides: 1-param model, y = (1,2,3,4) then adding y₅ = 20 shifts the minimizer a lot.
-- **MAE:** `L(w) = 1/N Σₙ |yₙ − f(xₙ)|`. Robust to outliers (linear growth), convex, but non-differentiable at 0 (kink) → subgradients (lecture 02).
-- **Outliers:** examples far from the bulk; common in practice (Newcomb speed-of-light data). Handling them = statistical property.
+- General form (annotation p.2): error `eₙ = yₙ − f_w(xₙ)`, loss `L(w) = (1/N) Σₙ loss(eₙ)` — every loss in this lecture is a function of the residual.
+- **MSE** — ⚠ **this lecture defines `MSE(w) = (1/N) Σₙ (yₙ − f_w(xₙ))²` (slide 5, no ½)**. The labs, Project 1 and the optimization lecture use `1/(2N)` ("factor 0.5 to be consistent with the lecture notes", P1 description). Both have the same minimizer; the ½ only cancels the 2 in the gradient. Say which one you use.
+  Symmetric; convex; **not robust to outliers** (quadratic growth).
+  Exercise slide 6 (filled in during the lecture), 1-param model yₙ ≈ w₀, y = (1,2,3,4): `MSE·N` for w₀ = 1…6 → 14, 6, 6, 14, 30, 54 (min at w₀ ∈ {2,3}, i.e. 2.5 = mean). Adding **y₅ = 20**: for w₀ = 5, 6, 7 → 255, **250**, 255 → minimizer jumps from ≈2.5 (`w_old`) to 6 (`w_new`): one outlier drags the fit.
+- **MAE:** `L(w) = 1/N Σₙ |yₙ − f(xₙ)|`. Robust to outliers (linear growth), convex, but non-differentiable at 0 (kink) → subgradients (lecture 02). Same exercise (slide 9, filled in): `MAE·N` for w₀ = 1…6 → 6, 4, 4, 6, 10, 14 (min at w₀ ∈ {2,3}); with y₅ = 20: w₀ = 1…5 → 25, 22, **21**, 22, 25 → minimizer only moves to 3 (the median). **MSE → mean, MAE → median**; that is the whole robustness story.
+- **Outliers:** examples far from the bulk; common in practice (Newcomb speed-of-light data; annotation: the main histogram bump = "in-distribution", the −44 and −2 are outliers). Handling them = statistical property.
 - **Convexity:** h: ℝ^D → ℝ is convex iff ∀u, v, ∀λ ∈ [0,1]: `h(λu + (1−λ)v) ≤ λ h(u) + (1−λ) h(v)` (segment between two graph points lies above the graph). Strictly convex if strict inequality.
   - Strictly convex ⇒ unique global minimum w★. Convex ⇒ every local minimum is global.
   - Sums of convex functions are convex ⇒ **MSE + linear model is convex in w** (each (yₙ − xₙᵀw)² is convex in w). Same for MAE (|affine| is convex).
-- Additional reading: **Huber loss** (quadratic near 0, linear beyond δ: convex, differentiable, robust; δ hard to set); **Tukey's bisquare** (non-convex, robust; defined via gradient). Robust statistics (Wikipedia; Murphy §2.4). Karpathy's lossfunctions.tumblr.com.
+  - Exercise slide 13 (annotated): with `f_w(x) = xᵀw`, `L(w) = Σₙ loss(yₙ − xᵀw)`: a convex function of the residual composed with an affine function of w is convex in w; sum stays convex. Sketch p.11: chord between two points of the graph lies above the graph.
+- Slide 14 plot (Breheny), annotated: red = MSE (least squares), green = MAE, purple = Huber, blue = Tukey, x-axis = residual eₙ. Reading left→right on robustness: MSE < Huber ≈ MAE < Tukey; on convexity: Tukey is the only non-convex one.
+- Additional reading: **Huber loss** `½e² if |e| ≤ δ, δ|e| − ½δ² otherwise` (convex, differentiable, robust; δ hard to set); **Tukey's bisquare** (non-convex, robust; defined via gradient `e(1 − e²/δ²)²` for |e| ≤ δ, 0 beyond). Robust statistics (Wikipedia; Murphy §2.4). Karpathy's lossfunctions.tumblr.com.
 
 ## Exam-relevant points / pitfalls
 - Know MSE vs MAE: convex both; MSE differentiable, MAE robust. Which loss for a bounded real-valued target? (2025 Q4: MAE, not logistic/hinge/0-1.)
