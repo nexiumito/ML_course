@@ -53,6 +53,7 @@ docs/                               agent-facing documentation (this system)
 ## Working with the student
 - He does **not attend lectures**: he catches up each lecture at home from the slide PDF + mediaspace video (the prof annotates slides live). Basic slides go fast; on technical slides he stops and asks questions. Help him understand deeply and tell him what is essential / exam-relevant to note.
 - Annotated slides (`lectureNNx_*_annotated.pdf`) arrive upstream 1–2 days after each lecture: suggest `git pull upstream main` and use them.
+- **"Page N" = the slide number printed bottom-right** (= PDF page N+1 because of the title page). Use `pdftoppm -f N+1 -l N+1` to render slide N.
 - Weekly goal: the two lectures of the week + the Thursday lab. Status of what he has actually caught up: `docs/schedule.md` and `docs/labs.md` — update after each session.
 - Project team (P1 & P2): Elie, Gabin, Antoine.
 
