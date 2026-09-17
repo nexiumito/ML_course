@@ -5,8 +5,8 @@ Status column = **the student's personal progress** (not just what is published)
 
 | Wk | Tue | Tue lecture | Wed lecture | Thu lab | Deadlines / events | Status |
 |---|---|---|---|---|---|---|
-| 1 | 09-08 | Introduction; Linear Regression (01a, 01b) | Loss functions (01c) | Lab 1 (09-10): NumPy, vectorization | — | 🔄 01a, 01b caught up (09-15); 01c in progress with video (09-16); annotated 01b/01c in repo; lab 1 not started |
-| 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17): GD/SGD/grid search/MAE | **Project 1 starts** (09-16) | ⏳ 02a to catch up from 09-16 (slides + video); Wed slides not yet published; lab 2 not started |
+| 1 | 09-08 | Introduction; Linear Regression (01a, 01b) | Loss functions (01c) | Lab 1 (09-10): NumPy, vectorization | — | ✅ lectures 01a/b/c caught up (01c with video + annotations, 09-16); lab 1 not started |
+| 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17): GD/SGD/grid search/MAE | **Project 1 starts** (09-16) | 🔄 02a: single 56-p. deck covers Tue+Wed; annotated version in repo (09-17); student at p.11 on 09-16, continuing 09-17; lab 2 not started |
 | 3 | 09-22 | Least Squares; Overfitting | Max Likelihood; Ridge Regression; Lasso | Lab 3 (09-24) | — | ⏳ |
 | 4 | 09-29 | Generalization; Model Selection; Validation | Bias–Variance decomposition | Lab 4 (10-01) | — | ⏳ |
 | 5 | 10-06 | Classification | Logistic Regression | Lab 5 (10-08) | — | ⏳ |
