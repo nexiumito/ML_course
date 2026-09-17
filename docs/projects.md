@@ -7,19 +7,21 @@ Both projects: groups of **3** (2 only in exceptional cases, with approval), Pyt
 When a description is published: pull it into `projects/projectN/`, summarize it here (tasks, dataset, deliverables, grading rubric, submission platform), and create `projects/projectN/CLAUDE.md`.
 
 ## Project 1 — not formally graded ("prepares you for Project 2")
-2026 description not yet published. Everything below marked *(2025)* comes from the 2025 description recovered from git history (see `docs/history-2025.md`); the format has been stable 2023–2025, expect the same.
+**2026 description published 2026-09-17** (`projects/project1/project1_description.pdf`) — identical to 2025 except: deadline Thu 2026-10-29 16:00, not graded, code in a **public GitHub repo** of the team (no GitHub Classroom). Rows marked *(2025)* were verified identical in the 2026 text.
 
 | Item | Value |
 |---|---|
 | Start | 2026-09-16 (lab of week 2; 2025: launched 09-18) |
-| Deadline | **2026-10-29** (website, slides, info-sheet §Assessment). ⚠ Info-sheet §Project 1 says "Nov 1st" — confirm on Ed. 2025 deadline was Fri 16:00 sharp. |
+| Deadline | **Thursday 2026-10-29, 16:00** (official description; the info sheet's "Nov 1st" was a typo). |
 | Team | 3 students, own choice (Ed forum to find teammates) |
 | Grading | not graded in 2026 (2025: 10 %, code 40 % / report 60 %). Still: it is the toolbox for P2 and the exam. |
 | Allowed libs *(2025)* | **Python stdlib + NumPy only**; matplotlib/seaborn for plots only. No pandas, sklearn, torch. No external data/code. |
 | Task *(2025)* | Binary classification: predict coronary heart disease (MICHD) from BRFSS 2015 lifestyle survey (>300k people). Data: `x_train.csv`, `y_train.csv` (labels −1/1), `x_test.csv`; load with `helpers.load_csv_data`, submit with `create_csv_submission`. |
 | Competition | AICrowd https://www.aicrowd.com/challenges/epfl-machine-learning-project-1 — max 5 submissions/day, rank not graded; always use local validation/CV. |
-| Deliverables *(2025)* | GitHub Classroom repo with `README.md`, `implementations.py`, `run.py` (or `run.ipynb`) reproducing the best submission exactly; **2-page LaTeX report** (refs on a 3rd page, no appendix). Submission via http://mlcourse.epfl.ch. Plagiarism check. |
-| Public tests *(2025)* | `projects/project1/grading_tests/`: `pytest --github_link <repo-url> .` (or a local path). Format code with `black`. |
+| Deliverables | **Public GitHub repo** of the team with `README.md`, `implementations.py`, `run.py` (or `run.ipynb`) reproducing the best submission exactly; **2-page LaTeX report** (refs on a 3rd page, no appendix). Submission via http://mlcourse.epfl.ch. Plagiarism check (MOSS). |
+| Public tests | `projects/project1/grading_tests/`: `pytest --github_link <repo-url-or-local-path> .` — checks the 6 signatures/return types. Conda env in `environment.yml` (python 3.9, numpy 1.23). Format code with `black`. |
+| Not (yet) in the 2026 folder | `helpers.py` (`load_csv_data`, `create_csv_submission`), `data/`, `latex-example-paper/` — all available from the 2025 tree: `git show '48f3822^:projects/project1/helpers.py'` etc. Data is on AICrowd. |
+| ⚠ Leaked grading material (2026-09-17) | Upstream accidentally pushed internal files into `grading_tests/`: `solutions.py` (reference implementations), `test_project1_private.py`, `moss.pl`, internal `README.md`. **Do not use `solutions.py` in the student's code** — MOSS check, and the point is to learn the methods for the exam. Expect these files to be removed upstream; a merge conflict/deletion may follow. |
 
 Required functions *(2025 Table 1; all in `implementations.py`, all return `(w, loss)` with `w` the **last** iterate; loss of regularized methods **excludes** the penalty; vectors are 1-D `(D,)`; MSE has the ½ factor; SGD uses batch size 1; `numpy.linalg` allowed except `lstsq`)*:
 | Function | Method |
