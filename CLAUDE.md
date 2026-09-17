@@ -47,7 +47,7 @@ docs/                               agent-facing documentation (this system)
 - Always keep the ✅/⏳ status column in `docs/schedule.md` current.
 - Keep this file under 80 lines. Details go in `docs/`, not here.
 - Write dates as absolute (e.g. `2026-10-29`), never "next week".
-- Git commits: **no `Co-Authored-By` / attribution lines** — plain commit messages only (user's choice, 2026-09-17).
+- Git commits: **title line only** — no body/description, no `Co-Authored-By` or attribution lines (user's choice, 2026-09-17).
 - When a fact is unknown, write `TODO — not yet published (as of YYYY-MM-DD)`; never invent.
 - Extract PDF text with `pdftotext -layout file.pdf out.txt` (installed). Formulas are images: reconstruct them from context and mark them as reconstructed if unsure. Handwritten annotations (`*_annotated.pdf`): `pdftoppm -r 45 -png` + view PNGs (tile pages with PIL to save tokens).
 
