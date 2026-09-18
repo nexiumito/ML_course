@@ -48,6 +48,16 @@ Sections: learning as optimization → grid search → landscapes → smooth opt
 - **Projected GD:** `w^(t+1) = P_C(w^(t) − γ ∇L(w^(t)))` = "GD step, then project to C" [annot]; P_C(w') = argmin_{v∈C} ‖v − w'‖. Projected SGD: same, same convergence; **projection cost is crucial** — [annot] projecting onto a ball is cheap, onto a polytope (diamond) is costly.
 - Alternative: penalty functions — indicator ("brick wall", discontinuous), penalize constraint violation: e.g. C = {w : Aw = b} (a **linear constraint**) → `min_w L(w) + λ‖Aw − b‖²` ([annot] the penalty = distance from C; λ = trade-off; "multi-objective"), linearized penalties (Lagrange multipliers).
 
+## Exam questions mapped to slides (added 2026-09-18)
+- Slide 32 subgradients: 2022 Q24 (|x−2023| at 2023: exists but NOT unique → False); 2020 Q6 (−x² at 0: no subgradient although differentiable — non-convex); 2021 Q16 (PReLU at 0, depends on a; check official answer).
+- Slide 34 MAE subgradient: mock midterm 2018 Q1; lab 2 ex 6a.
+- Slide 35 cost table [annot]: GD O(N·D) vs SGD O(D), same for MSE and MAE; 2020 Q5 (P·D GD iterations vs N·P·D SGD).
+- Slide 36 step-size: 2022 Q4 (L = λ/2‖w‖²: γ = 1/λ one step, γ = 2/λ oscillates, converges iff γ ∈ (0, 2/λ)).
+- Slide 38: 2020 Q28 (convex over convex set ⇒ unique global min → False; strictly convex needed).
+- Slide 39 Hessian: 2025 Q37 (Hessian of MSE = (1/N)XᵀX constant in w → True); 2025 Q6 (cost O(N·D²)).
+- Slide 46 convex sets: 2019 Q17 (unions → False), Q18 (intersections → True), Q19 (f∘g of convex → False).
+- Slide 49 [annot]: projection onto ℓ₂ ball cheap, onto ℓ₁ ball (diamond) costly. Slide 50 [annot]: penalty λ‖Aw−b‖² = "distance from C", λ = trade-off, "multi-objective" → link to ridge (week 3).
+
 ## Not exam material (additional notes)
 - Big-O: f = O(g) iff ∃c, x₀: f(x) ≤ c·g(x) ∀x ≥ x₀. Matrix–matrix (N×D)(D×K): O(NDK); matrix–vector O(ND).
 - SGD theory: with large N, random-example steps are cheap; convergence needs γ^(t) → 0 "appropriately" — **Robbins–Monro:** Σₜ γ^(t) = ∞ and Σₜ (γ^(t))² < ∞, e.g. γ^(t) = 1/t^α with α ∈ (0.5, 1].
