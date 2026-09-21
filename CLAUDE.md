@@ -37,7 +37,7 @@ docs/                               agent-facing documentation (this system)
 - Student work goes in `labs/exNN/template/` (edit the stubs in place). Never modify `solution/`.
 - Course language: English. Docs in English. User speaks French; reply in the user's language.
 - Do not modify official course files (PDFs, official notebooks, solutions). Sync with `git pull upstream main`.
-- Upstream is reset every September; previous editions stay in history (see `docs/history-2025.md`). Lab solutions for the labs that implement Project 1 functions (ex02–ex07) are withheld until after the P1 deadline.
+- Upstream is reset every September; previous editions stay in history (see `docs/history-2025.md`). Lab solutions arrive a few days after each lab (ex02 solution came 2026-09-21; the 2025 rule of withholding ex02–ex07 until the P1 deadline does not seem to apply in 2026).
 
 ## Documentation maintenance (mandatory for every agent)
 - `docs/lectures/*.md` are an **index**, not a substitute: for any question on course content, locate the section with the sheet, then read those pages of the PDF itself (`pdftotext -f N -l M -layout`). Formulas in the sheets are reconstructed from image-based slides; the PDF is the source of truth. For other docs (`schedule`, `labs`, `projects`, `exams`), read the doc first and open the PDF only if it is insufficient — then update the doc.

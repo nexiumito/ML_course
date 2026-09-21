@@ -28,7 +28,7 @@ labs/exNN/
 | Lab | Date | Topic | Status | Notes |
 |---|---|---|---|---|
 | ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ⏳ student not started (solutions available in `labs/ex01/solution/`) | |
-| ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ⏳ student not started; template in repo (2026-09-15), no solution until after P1 deadline | Sheet identical to 2025. Details below. |
+| ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ⏳ student not started; template (2026-09-15) **and solution (2026-09-21)** in repo | Sheet identical to 2025. Details below. Solution includes `solutions-theory-questions.pdf`. |
 | ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ | **P1 function** `least_squares`, `ridge_regression` |
 | ex04 | 2026-10-01 | Cross-validation, bias–variance | ⏳ | |
 | ex05 | 2026-10-08 | Logistic regression (+ regularized, Newton) | ⏳ | **P1 functions** `logistic_regression`, `reg_logistic_regression` |
@@ -41,7 +41,7 @@ labs/exNN/
 | ex12 | 2026-12-03 | Matrix factorization notebook + P2 Q&A | ⏳ | |
 | ex13 | 2026-12-10 | GPT multiplication & GANs | ⏳ | |
 
-Topics for ex02–ex13 are the 2025 ones (see `docs/history-2025.md`); confirm when each 2026 sheet is published. **Solutions for ex02–ex07 are only released after the Project 1 deadline** (they are the P1 functions) — don't wait for them.
+Topics for ex02–ex13 are the 2025 ones (see `docs/history-2025.md`); confirm when each 2026 sheet is published. The 2025 policy of withholding ex02–ex07 solutions until the P1 deadline does **not** hold in 2026: the ex02 solution was pushed 2026-09-21 (4 days after the lab).
 
 ## ex01 — Efficient Python/NumPy programming (details)
 Sheet: `labs/ex01/exercise01.pdf`. Goal: vectorized NumPy instead of for-loops. Useful ops: `a*b` elementwise, `a.dot(b)`/`@`, `a.max(0)` per column, `np.sum(a, axis=k)`, `np.mean/np.std`, `a.shape`, `np.linalg.inv`.
@@ -61,7 +61,7 @@ Sheet: `labs/ex02/exercise02.pdf` (identical to 2025 except dates). Work in `lab
 - **Ex 4 `compute_stoch_gradient(y, tx, w)`** (same formula on a batch) and `stochastic_gradient_descent(y, tx, initial_w, batch_size, max_iters, gamma)` using `batch_iter`. Project 1 requires batch size 1.
 - **Ex 5:** reload with `sub_sample=True` then `add_outlier=True`; MSE fit is dragged by the 2 outliers.
 - **Ex 6 `compute_subgradient_mae(y, tx, w)`:** `−(1/N) tx.T @ sign(e)` (any value in [−1,1] at eₙ = 0); `subgradient_descent` and `stochastic_subgradient_descent` mirror Ex 3/4. Questions: MAE fit better with outliers? did you hit a non-differentiable point? (practically never with float data).
-- Theory questions: rewrite MSE with e (Ex 1a); chain rule for subgradient (Ex 6a). 2025 theory solutions PDF: `git show '48f3822^:labs/ex02/solution/solutions-theory-questions.pdf'`.
+- Theory questions: rewrite MSE with e (Ex 1a); chain rule for subgradient (Ex 6a). Theory solutions: `labs/ex02/solution/solutions-theory-questions.pdf`.
 
 ## Gotchas / lessons learned (append as the semester goes)
 - `np.std` uses population std (ddof=0) — matches the doctest in Task A.
