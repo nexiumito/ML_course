@@ -20,7 +20,7 @@ When a description is published: pull it into `projects/projectN/`, summarize it
 | Competition | AICrowd https://www.aicrowd.com/challenges/epfl-machine-learning-project-1 — max 5 submissions/day, rank not graded; always use local validation/CV. |
 | Deliverables | **Public GitHub repo** of the team with `README.md`, `implementations.py`, `run.py` (or `run.ipynb`) reproducing the best submission exactly; **2-page LaTeX report** (refs on a 3rd page, no appendix). Submission via http://mlcourse.epfl.ch. Plagiarism check (MOSS). |
 | Public tests | `projects/project1/grading_tests/`: `pytest --github_link <repo-url-or-local-path> .` — checks the 6 signatures/return types. Conda env in `environment.yml` (python 3.9, numpy 1.23). Format code with `black`. |
-| Not (yet) in the 2026 folder | `helpers.py` (`load_csv_data`, `create_csv_submission`), `data/`, `latex-example-paper/` — all available from the 2025 tree: `git show '48f3822^:projects/project1/helpers.py'` etc. Data is on AICrowd. |
+| Starter files | Pushed upstream 2026-09-21/22, in repo since 2026-09-24: `helpers.py` (`load_csv_data`, `create_csv_submission`), `data/dataset_to_release.zip`, `latex-example-paper/` (IEEE template for the report). |
 | Leaked grading material (2026-09-17, resolved 2026-09-18) | Upstream had accidentally pushed `solutions.py`, `test_project1_private.py`, `moss.pl`, an internal `README.md` and two scripts into `grading_tests/`. Elie reported it; the prof rewrote upstream history (force-push, commit `22f74fa` "project 1 released") and the files were removed from this repo on 2026-09-18 (they remain in this fork's history before that date — do not use them). |
 
 Required functions *(2025 Table 1; all in `implementations.py`, all return `(w, loss)` with `w` the **last** iterate; loss of regularized methods **excludes** the penalty; vectors are 1-D `(D,)`; MSE has the ½ factor; SGD uses batch size 1; `numpy.linalg` allowed except `lstsq`)*:
@@ -35,7 +35,7 @@ Required functions *(2025 Table 1; all in `implementations.py`, all return `(w, 
 
 Report grading criteria *(2025)*: correct implementation + explanation (half), then scientific contribution: novelty, creativity, reproducibility (all hyperparameters, folds, transformations), solid baselines + **ablation study**, write-up quality. Target reader: ML beginner. Advice in description: EDA, feature processing, over/underfitting diagnosis, error analysis, CV.
 
-| Team | **Elie, Gabin, Antoine** (formed 2026-09-15). Repo: TODO (GitHub Classroom link comes with the description) |
+| Team | **Elie, Gabin, Antoine** (formed 2026-09-15). Team registered on AICrowd (2026-09-24). Repo (public, owned by Antoine): https://github.com/antoinemdly/ML_2026_Project_1 |
 |---|---|
 
 ## Project 2 — 30 % of the grade
@@ -53,7 +53,8 @@ Report grading criteria *(2025)*: correct implementation + explanation (half), t
 | Grading criteria | solid baselines (start from a trivial baseline, quantify each addition), reproducibility, scientific novelty/creativity (what specific problem, why, how, results before/after), ethics component, write-up quality (clear story, labeled plots, proofread). Task difficulty is accounted for. |
 | Support | Project Q&A during labs 2026-11-26 and 12-03; optional pitch session 2026-12-16 |
 | Team | Elie, Gabin, Antoine (same as P1, to confirm) |
-| Topic / lab | TODO — not yet decided (as of 2026-09-15) |
+| Topic / lab | **In progress with SIP lab, UNIGE** (S. Voloshynovskiy + V. Kinakh). Contact email sent 2026-09-21; Slava replied the same day: "we will think — we might have a couple of ideas". No news as of 2026-09-24 (not chasing yet). Plan: gentle follow-up ~2026-10-06 if silent, firmer one ~2026-10-17; form (filled by the lab) due 2026-10-24; confirmation 2026-11-04. Backup if it falls through: another lab from the list below or option B (AICrowd). |
+| **2026 lab-hosting form** (Ed #78, M. Jaggi, 2026-09-20) | "Interest in hosting AI4Science projects, Fall 2026": https://docs.google.com/forms/d/e/1FAIpQLScSzxMRFDncTJ9CRgUmIh6aDCMyDpgSbM5KzH31Uq8iJUyKuQ/viewform — **filled by the lab**, not the students. Fields: organization, lab, website, head of lab, contact person + email, project title, description/objectives, data availability, data description + evaluation metrics, number of groups wanted. Deadlines: **2026-10-24** expression of interest; **2026-11-04** lab head confirms; 2026-12-17 submission; Jan 2027 lab suggests domain grade. Eligible: any academic lab in Switzerland or beyond; international institutions, NGOs, companies if in collaboration with academia (contact staff). Jaggi (Ed, 2026-09-23): P2 "not officially released yet", so no PDF; the form "has all the info that we give to the hosting labs". The form has no field naming a student team. Open question (asked on Ed 2026-09-24): is a lab project proposed on a team's initiative reserved for that team? Answer: TODO. |
 
 Lecture 01a slides list hundreds of past ML4Science project titles (2020–2024) — useful for inspiration; grep `lectures/01/lecture01a_intro.pdf` text if needed.
 
@@ -86,4 +87,5 @@ Official 2026 list not yet published. Labs below hosted ML4Science groups in 202
 | Engineering | Laboratory of Sensing and Networking (SENS) | Radar4K super-resolution on SLAM-RF |
 | Environment | ECOL, WSL, LCH, ML for lake/plume | traffic generation, Rhône plume shape, plankton detection, Greenland landscape classification |
 | Economics / transport | TRANSP-OR (M. Bierlaire), CDM labs | mode-choice prediction, discrete choice models, volatility forecasting |
+| Security / imaging (UNIGE) | **SIP — Stochastic Information Processing, Univ. de Genève (Prof. S. Voloshynovskiy, svolos@unige.ch)** — Elie's idea 2026-09-21. Topics: anti-counterfeiting with copy detection patterns (CDP) + diffusion models, adversarial robustness, privacy of DL, information-theoretic view of foundation models, generative models for radio astronomy (Sinergia "Astro Signals" with Obs. de Genève), high-energy physics (RODEM). ~13 PhD students, ~300 papers. No trace of a previous CS-433 hosting found (as of 2026-09-21). | — |
 | Fallback (no lab) | course-provided default tasks (if offered in 2026) | AIcrowd road segmentation, tweet text classification, recommender system; reproducibility challenge |

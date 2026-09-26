@@ -45,6 +45,12 @@ Extend this file whenever a lecture introduces new notation. Conventions follow 
 | Robbins–Monro | Σγ^(t) = ∞, Σ(γ^(t))² < ∞ ⇒ SGD converges (e.g. γ^(t) = 1/t^α, α ∈ (0.5,1]). |
 | Grid search | brute-force over a grid; 10^D evaluations for 10 values/dim ("curse of dimensionality"). |
 | Ill-conditioning / pre-conditioning | very different curvature across directions; fix by feature normalization / rescaling. |
+| Gram matrix | XᵀX ∈ ℝ^{D×D}; invertible ⇔ rank(X) = D (full column rank). |
+| Normal equations | Xᵀ(y − Xw) = 0 ⇒ w★ = (XᵀX)⁻¹Xᵀy (least squares). |
+| ϕ(x) | augmented feature vector, e.g. polynomial basis [1, x, …, x^M]; M = max degree. |
+| λ, λ' | regularization strength; ridge closed form uses λ' = 2Nλ: w = (XᵀX + λ'I)⁻¹Xᵀy. |
+| MLE / MAP | maximum likelihood (Gaussian noise ⇒ MSE, Laplace ⇒ MAE) / maximum a posteriori (Gaussian prior ⇒ ridge, Laplace prior ⇒ lasso). |
+| F(w) | Fisher information −E[∂²L/∂w∂wᵀ]. |
 | O(·) | big-O complexity. Matrix–vector O(ND); matrix–matrix (N×D)(D×K) O(NDK). |
 
 ## General ML terms (from the syllabus; details added as lectures happen)

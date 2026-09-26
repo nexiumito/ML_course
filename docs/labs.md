@@ -29,8 +29,8 @@ labs/exNN/
 |---|---|---|---|---|
 | ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ⏳ student not started (solutions available in `labs/ex01/solution/`) | |
 | ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ⏳ student not started; template (2026-09-15) **and solution (2026-09-21)** in repo | Sheet identical to 2025. Details below. Solution includes `solutions-theory-questions.pdf`. |
-| ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ | **P1 function** `least_squares`, `ridge_regression` |
-| ex04 | 2026-10-01 | Cross-validation, bias–variance | ⏳ | |
+| ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ template pulled 2026-09-24; deferred by the student (lectures + P1 first) | **P1 function** `least_squares`, `ridge_regression` |
+| ex04 | 2026-10-01 | Cross-validation, bias–variance | ⏳ template published early, 2026-09-25 | |
 | ex05 | 2026-10-08 | Logistic regression (+ regularized, Newton) | ⏳ | **P1 functions** `logistic_regression`, `reg_logistic_regression` |
 | ex06 | 2026-10-15 | SVM via SGD and coordinate descent | ⏳ | |
 | ex07 | 2026-10-29 | Kernels & NN intro | ⏳ | |
