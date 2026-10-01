@@ -62,6 +62,7 @@ Formulas below were checked against rendered slides (2026-10-01); most formulas 
 
 ## Exam-relevant points / pitfalls
 - Hoeffding applies to the **test** error of a model **independent** of S_test — **not** to the training error L_{S_train}(f_{S_train}), because the losses are no longer independent (f depends on all training points). 2023 Q30: the statement with S_train is **False**.
+- 2023 Q31: the slide-19 bound (selected vs best ≤ 2ε, ln(2K/δ)) stated with k̂ = argmin of the **training** error and |S_train| is **False** — it holds only with k̂ chosen on the test/validation error and |S_test|. Same trap as Q30.
 - Never tune / "train until low loss" on the test set — it stops being an estimate of unseen-data performance (2024 Q34 False).
 - CV cost: K-fold CV over L hyperparameter values ⇒ **K·L trainings** (2025 Q24: 5 λ × 5 folds = **25**). Complexity in K of K-fold CV on linear regression = **O(K)** (2021 Q3: each fold uses (K−1)/K = O(1) of the data, K folds).
 - CV helps **select** a model that overfits less; it does **not** lower the training MSE of a given model (2021, overfitting MCQ).
@@ -74,7 +75,7 @@ Formulas below were checked against rendered slides (2026-10-01); most formulas 
 - Be able to redo the bias–variance derivation (add/subtract 𝔼_{S'}[f_{S'}(x₀)], kill the cross terms). 2025 had a 2-pt bias–variance open question.
 
 ## Not exam material
-- Hoeffding proof (04a sl. 23–27) was presented as bonus ("Do we still have some time?"). Knowing the inequality and how it's used is essential; the proof is good to understand but low priority. TODO — check the annotated slides / video for whether it was actually covered.
+- Hoeffding proof (04a sl. 23–27) was presented as bonus ("Do we still have some time?"). No final exam 2016–2025 asks for it (checked 2026-10-01); exams only use the inequality (2023 Q30–31). Knowing the statement and how it's applied is essential; the proof is low priority. TODO — check the annotated slides / video for whether it was actually covered in class.
 
 ## Exercises mentioned
 - Lab 4 (`labs/ex04/`, 2026-10-01): 4-fold cross-validation for ridge on polynomial degree 7 (train/test RMSE vs λ), best-degree selection over degrees 2–10, bias–variance visualization (degrees 1, 3, 6 over many random training sets; bonus: fixed degree, vary λ).
