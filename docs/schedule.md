@@ -7,8 +7,8 @@ Status column = **the student's personal progress** (not just what is published)
 |---|---|---|---|---|---|---|
 | 1 | 09-08 | Introduction; Linear Regression (01a, 01b) | Loss functions (01c) | Lab 1 (09-10): NumPy, vectorization | — | ✅ lectures 01a/b/c caught up (01c with video + annotations, 09-16); lab 1 not started |
 | 2 | 09-15 | Optimization (02a) | Optimization (cont.) | Lab 2 (09-17): GD/SGD/grid search/MAE | **Project 1 launched 09-17** (deadline Thu 10-29 16:00) | ✅ 02a fully caught up (slides 1–50 + annotations, finished 2026-09-18); lab 2 not started (next session) |
-| 3 | 09-22 | Least Squares; Overfitting | Max Likelihood; Ridge Regression; Lasso | Lab 3 (09-24) | Slides 03a–d + lab 3 + P1 data/helpers pulled 2026-09-24 | 🔄 03a + 03b caught up 2026-09-25; 03c slides 1–6 caught up 2026-09-26 (7–10 + 03d next); lab 3 deferred (priority: lectures + P1) |
-| 4 | 09-29 | Generalization; Model Selection; Validation | Bias–Variance decomposition | Lab 4 (10-01) | — | ⏳ |
+| 3 | 09-22 | Least Squares; Overfitting | Max Likelihood; Ridge Regression; Lasso | Lab 3 (09-24) | Slides 03a–d + lab 3 + P1 data/helpers pulled 2026-09-24 | 🔄 03a + 03b caught up 2026-09-25; 03c caught up 2026-09-28 (sl. 9 optional, sl. 10 skipped); 03d slides 1–8 caught up 2026-09-28 (no sl. 5; sl. 8 optional); **remaining: 03d sl. 10–12 (Lasso / L1)**, additional notes skipped; lab 3 deferred (priority: lectures + P1) |
+| 4 | 09-29 | Generalization; Model Selection; Validation (04a) | Bias–Variance decomposition (04b) | Lab 4 (10-01): 4-fold CV + bias–variance plots | Slides 04a/04b + ex03 solution pulled 2026-10-01 | 🔄 starting 2026-10-01 (after finishing 03d sl. 10–12); annotated 04 not yet out |
 | 5 | 10-06 | Classification | Logistic Regression | Lab 5 (10-08) | — | ⏳ |
 | 6 | 10-13 | Support Vector Machines | K-Nearest Neighbors | Lab 6 (10-15) | — | ⏳ |
 | 7 | 10-20 | *no lecture listed (break)* | *no lecture listed* | *none listed* | — | ⏳ |

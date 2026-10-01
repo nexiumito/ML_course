@@ -51,6 +51,15 @@ Extend this file whenever a lecture introduces new notation. Conventions follow 
 | λ, λ' | regularization strength; ridge closed form uses λ' = 2Nλ: w = (XᵀX + λ'I)⁻¹Xᵀy. |
 | MLE / MAP | maximum likelihood (Gaussian noise ⇒ MSE, Laplace ⇒ MAE) / maximum a posteriori (Gaussian prior ⇒ ridge, Laplace prior ⇒ lasso). |
 | F(w) | Fisher information −E[∂²L/∂w∂wᵀ]. |
+| 𝒟, 𝒟_x, 𝒟_ε | data distribution on 𝒳 × 𝒴 (S ~ 𝒟 i.i.d.); input marginal; noise distribution (lecture 04). |
+| 𝒜, f_S = 𝒜(S) | learning algorithm and the predictor it outputs on dataset S; f_{S,λ} shows the hyperparameter. |
+| L_𝒟(f) | true / expected / generalization risk 𝔼_{(x,y)~𝒟}[ℓ(y, f(x))]. Not computable. |
+| L_S(f) | empirical risk (1/\|S\|) Σ_{(x,y)∈S} ℓ(y, f(x)). L_S(f_S) = training error; L_{S_test}(f_{S_train}) = test error. |
+| Generalization gap | \|L_𝒟(f) − L_S(f)\|. |
+| Hoeffding | ℓ ∈ [a,b], f independent of S_test: \|L_𝒟 − L_{S_test}\| ≤ √((b−a)² ln(2/δ)/(2\|S_test\|)) w.p. ≥ 1−δ; K models: ln(2K/δ). |
+| M-fold CV | = K-fold cross-validation (lecture 04 uses M because K = # hyperparameter values). |
+| Bias² / variance / noise | (f(x₀) − 𝔼_S f_S(x₀))² / 𝔼_S(f_S(x₀) − 𝔼_S f_S(x₀))² / Var ε; sum = expected true error at x₀ (square loss, y = f(x) + ε). |
+| Double descent | test risk decreases again past the interpolation threshold (over-parameterized regime). |
 | O(·) | big-O complexity. Matrix–vector O(ND); matrix–matrix (N×D)(D×K) O(NDK). |
 
 ## General ML terms (from the syllabus; details added as lectures happen)
