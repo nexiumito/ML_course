@@ -1,0 +1,18 @@
+# Online SQLite backup of the revision app (SPEC §10.5): /var/lib/revision/backups/revision-YYYYMMDD-HHMM.db, keeps 30.
+# Triggered daily by revision-backup.timer. Manual run: sudo systemctl start revision-backup
+[Unit]
+Description=Backup of the CS-433 revision app database
+
+[Service]
+Type=oneshot
+User=elie
+Group=elie
+WorkingDirectory=/home/elie/ML_course/revision
+Environment=REVISION_DATA_DIR=/var/lib/revision
+ExecStart=/home/elie/ML_course/revision/.venv/bin/revision backup --keep 30
+StateDirectory=revision
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only

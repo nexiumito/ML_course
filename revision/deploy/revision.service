@@ -1,0 +1,28 @@
+# CS-433 revision app (SPEC §10.4). Install: sudo cp revision.service /etc/systemd/system/ && sudo systemctl daemon-reload
+# Listens on 127.0.0.1 only; exposed to the tailnet with `tailscale serve --bg 8433` (never `funnel`).
+# Runs the venv entry point directly (no `uv run` at runtime): update.sh keeps the venv in sync with uv.lock.
+[Unit]
+Description=CS-433 revision app
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=elie
+Group=elie
+WorkingDirectory=/home/elie/ML_course/revision
+Environment=REVISION_DATA_DIR=/var/lib/revision
+ExecStart=/home/elie/ML_course/revision/.venv/bin/revision serve --host 127.0.0.1 --port 8433
+Restart=always
+RestartSec=5
+# Data dir /var/lib/revision, owned by elie (created by systemd if missing).
+StateDirectory=revision
+StateDirectoryMode=0700
+# Hardening: the repo is read-only for the service, only the data dir is writable.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

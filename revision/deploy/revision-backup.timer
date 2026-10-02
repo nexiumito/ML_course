@@ -1,0 +1,10 @@
+# Daily backup at 03:30 (server time zone = Europe/Zurich); Persistent = catch up after downtime.
+[Unit]
+Description=Daily backup of the CS-433 revision app database
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
