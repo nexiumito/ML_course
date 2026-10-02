@@ -1,0 +1,256 @@
+# Official past-exam questions whose primary lecture is 03d (stems and choices verbatim). Added in S4 (2026-10-02).
+# Answers read from the solution text and, for MCQs, from the ticked boxes of the rendered solution pages.
+
+- id: exam-2025-q7
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  also_lectures: ["03a"]
+  themes: [ridge, least-squares]
+  priority: core
+  front: |
+    *(Ridge Regression and High Dimensionality)* Consider the linear regression model $y = Xw + \varepsilon$ with $X \in \mathbb{R}^{n\times d}$. As the ratio $d/n$ approaches 1,
+    and especially when $d > n$, which of the following statements are correct? (Select all that apply.)
+  choices:
+    - 'Ridge regression suffers from the same non-invertibility issue as OLS and provides no improvement.'
+    - 'Adding ridge regularization $\lambda\|w\|_2^2$ ensures that $X^\top X + \lambda I$ is invertible, even when $d > n$.'
+    - 'Ordinary least squares (OLS) can still compute a unique solution because $X^\top X$ remains invertible.'
+    - 'When $d > n$, the matrix $X^\top X$ becomes singular and the OLS admits no solutions'
+  answer: [1]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: for $d > n$, $X^\top X$ is singular and OLS has **many** solutions (not none, so the last option is wrong); ridge adds $\lambda I$, which lifts every
+    eigenvalue to $\ge \lambda > 0$ and makes the system invertible. Only the second option is correct (it is the ticked box; the solution text's "(d)" uses another ordering).
+  trap: "Singular XᵀX ⇒ infinitely many OLS solutions, not none."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 5, label: "Final 2025 Q7"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 7, label: "03d slide 7 (annotated)"}
+  added: 2026-10-02
+  notes: "Ticked box = option 2 only (rendered page 5, 2026-10-02)."
+
+- id: exam-2024-q18
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  themes: [lasso, ridge]
+  priority: core
+  front: |
+    Why would you use LASSO over Ridge regression?
+
+    A) It can help us identify which features are important.\
+    B) It is faster to learn the weights for LASSO than for Ridge.\
+    C) LASSO usually achieves a lower generalization error than Ridge.\
+    D) If there are many features, the model learned using LASSO can make predictions more efficient.
+  choices: ['C and D', 'A', 'C', 'A and B', 'D', 'B and C', 'A and D', 'B', 'A and C', 'B and D']
+  answer: [6]
+  explanation: |
+    Official solution: A and D. Lasso is sparse ⇒ it selects the important features, and predictions only need the non-zero weights.
+    B: ridge has a closed form while lasso (non-differentiable) needs an iterative solver. C: neither method is better in general.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 10, label: "Final 2024 Q18"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 12, label: "03d slide 12 (annotated)"}
+  added: 2026-10-02
+  notes: "The exam prints the correct choice as 'A and D.' (with a period); the period is dropped here so it does not give the answer away."
+
+- id: exam-2024-q19
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  themes: [lasso]
+  priority: core
+  front: |
+    Suppose we fit "LASSO Regression" to a data set, which has 100 features $(X_1, X_2, \dots, X_{100})$. Now, we rescale one of these features by multiplying with 10
+    (say that feature is $X_1$), and then refit LASSO regression with the same regularization parameter. Which of the following options will be **TRUE**?
+  choices:
+    - 'It is more likely for $X_1$ to be included in the model.'
+    - "Can't say."
+    - 'It is more likely for $X_1$ to be excluded from the model.'
+    - 'None of these.'
+  answer: [0]
+  shuffle: false
+  explanation: |
+    Official solution: the same contribution now needs a weight 10× smaller, hence a 10× smaller L1 penalty. If $X_1$ was selected it stays selected;
+    if not, it may now be selected ⇒ more likely to be included. Lasso is not scale-invariant: standardize features first.
+  trap: "Larger feature scale ⇒ cheaper weight ⇒ MORE likely kept."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 10, label: "Final 2024 Q19"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2023-q16
+  type: tf
+  origin: exam_official
+  lecture: "03d"
+  themes: [ridge, lasso]
+  priority: core
+  front: |
+    *(Ridge regression)* Ridge regression can help mitigate the impact of ill-conditioned data matrices during training, but it does not make the solution sparse.
+    It consists of minimizing the following loss function: $$\sum_{n=1}^N (y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \lambda\|\mathbf{w}\|_2^2$$
+  answer: true
+  explanation: |
+    Official solution: true; it is the **lasso** that makes the solution sparse. Ridge lifts the eigenvalues of $X^\top X$ by $\lambda'$ (fights ill-conditioning) but only
+    shrinks the weights. The missing $\frac{1}{2N}$ only rescales $\lambda$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 8, label: "Final 2023 Q16"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 7, label: "03d slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2022-q2
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  also_lectures: ["02a"]
+  themes: [ridge, optimization]
+  priority: detail
+  front: |
+    Assume we have $N$ training samples $(\mathbf{x}_1, y_1), \dots, (\mathbf{x}_N, y_N)$ where for each sample $i \in \{1, \dots, N\}$ we have that $\mathbf{x}_i \in \mathbb{R}^d$
+    and $y_i \in \mathbb{R}$. For $\lambda \ge 0$, we consider the following loss:
+    $$L_\lambda(\mathbf{w}) = \frac1N\sum_{i=1}^N (y_i - \mathbf{x}_i^\top\mathbf{w})^2 + \lambda\|\mathbf{w}\|_2,$$
+    and let $C_\lambda = \min_{\mathbf{w}\in\mathbb{R}^d} L_\lambda(\mathbf{w})$ denote the optimal loss value. Which of the following statements is **true**:
+  choices:
+    - '$C_\lambda$ is a non-increasing function of $\lambda$.'
+    - 'For $\lambda = 0$, the loss $L_0$ is convex and has a unique minimizer.'
+    - 'None of the statements are true.'
+    - '$C_\lambda$ is a non-decreasing function of $\lambda$.'
+  answer: [3]
+  shuffle: false
+  explanation: |
+    Official solution: for $\lambda_1 < \lambda_2$, $L_{\lambda_1}(\mathbf{w}) \le L_{\lambda_2}(\mathbf{w})$ for every $\mathbf{w}$, hence $C_{\lambda_1} \le C_{\lambda_2}$.
+    $L_0$ is convex but its minimizer is unique only if $X$ has full column rank (not guaranteed, e.g. $N < d$).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 2, label: "Final 2022 Q2"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+  notes: "The regularizer is printed as λ‖w‖₂ (not squared) on the rendered page; the argument does not depend on it."
+
+- id: exam-2022-q5
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  also_lectures: ["03c"]
+  themes: [lasso, mle]
+  priority: core
+  front: "*(LASSO/Ridge regression)* LASSO is a linear regression with L1 regularization, it is equivalent to imposing on the weights a:"
+  choices: ['Laplace prior.', 'Logistic prior.', 'Gaussian prior.', 'None of the other options.']
+  answer: [0]
+  shuffle: false
+  explanation: |
+    Official solution: Laplace prior. MAP view: the regularizer is $-\log p(\mathbf{w})$; for i.i.d. Laplace weights, $-\log p(\mathbf{w}) = \frac1b\|\mathbf{w}\|_1$ + cnst.
+    A Gaussian prior gives ridge ($\|\mathbf{w}\|_2^2$).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 4, label: "Final 2022 Q5"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 18, label: "03d slide 18"}
+  added: 2026-10-02
+
+- id: exam-2022-q25
+  type: tf
+  origin: exam_official
+  lecture: "03d"
+  themes: [ridge, overfitting]
+  priority: core
+  front: "*(Ridge Regression and overfitting)* In ridge regression, a large regularization parameter causes overfitting whereas a small regularization parameter causes underfitting."
+  answer: false
+  explanation: |
+    Official solution: it is the reverse. A large $\lambda$ pushes the model towards simple (small) weights ⇒ underfitting; a small $\lambda$ is close to least squares ⇒ overfitting.
+  trap: "λ large ⇒ underfit."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 12, label: "Final 2022 Q25"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2021-q8
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  themes: [lasso, regularization]
+  priority: core
+  front: |
+    *(Regularization)* Which of the following statements is **incorrect**?
+
+    Training a model with $L_1$-regularization ...
+  choices:
+    - 'can reduce the storage cost of the final model.'
+    - 'is used to help escaping local minima during training.'
+    - 'can reduce overfitting.'
+    - 'can be named Lasso regression when in combination with an MSE loss function and a linear model.'
+  answer: [1]
+  explanation: |
+    Official solution: L1 regularization has nothing to do with escaping local minima (an optimization issue). The others are true: sparse parameters (zeros need not be
+    stored), it is a regularizer (reduces overfitting), and L1 + MSE + linear model = Lasso.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 5, label: "Final 2021 Q8"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2021-q15
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  themes: [ridge, linear-regression]
+  priority: core
+  front: |
+    *(Linear Regression)* Assume we are doing linear regression with Mean-Squared Loss and L2-regularization on four one-dimensional data points. Our prediction model
+    can be written as $f(x) = ax + b$ and the optimization problem can be written as
+    $$a^\star, b^\star = \arg\min_{a,b}\sum_{n=1}^4 [y_n - f(x_n)]^2 + \lambda a^2.$$
+    Assume that our data points are $Y = [1, 3, 2, 4]$ and $X = [-2, -1, 0, 3]$. For example $y_1 = 1$ and $x_1 = -2$. What is the optimal value for the bias, $b^\star$?
+  choices: ['2', 'None of the above answers.', 'Depends on the value of $\lambda$', '3', '2.5']
+  answer: [4]
+  shuffle: false
+  explanation: |
+    Official solution: setting the derivative w.r.t. $b$ to zero gives $$\sum_{n=1}^4 [y_n - ax_n - b] = 0.$$
+    Since $\sum_n x_n = 0$: $b^\star = \bar y = 10/4 = 2.5$, whatever $\lambda$ (the bias is not regularized).
+  trap: "Only a is penalized: b* = ȳ − a*·x̄, and here x̄ = 0."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 8, label: "Final 2021 Q15"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 6, label: "03d slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2018-q14
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  themes: [regularization, overfitting]
+  priority: core
+  front: |
+    Consider a regression task. You are using your favorite learning algorithm with parameters $\mathbf{w}$ and add a regularization term of the form $\frac\lambda2\|\mathbf{w}\|^2$.
+    Which of the following statements are correct for a typical scenario?
+  choices:
+    - 'The training error as a function of $\lambda \ge 0$ decreases.'
+    - 'The training error as a function of $\lambda \ge 0$ increases.'
+    - 'The test error as a function of $\lambda \ge 0$ increases.'
+    - 'The test error as a function of $\lambda \ge 0$ decreases.'
+    - 'The training error as a function of $\lambda \ge 0$ first decreases and then increases.'
+    - 'The test error as a function of $\lambda \ge 0$ first decreases and then increases.'
+  answer: [1, 5]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: the training error increases with $\lambda$ (the fit is more and more constrained); the test error first decreases (less overfitting) and then
+    increases (underfitting) — the U-shape used to pick $\lambda$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2018-solutions.pdf, page: 15, label: "Final 2018 P14"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: mock-2018-q5d
+  type: mcq
+  origin: exam_official
+  lecture: "03d"
+  themes: [regularization, convexity]
+  priority: core
+  front: "We add a regularization term because *(More than one answer can be correct.)*"
+  choices:
+    - 'this sometimes renders the minimization problem of the cost function into a strictly convex/concave problem'
+    - 'this tends to avoid overfitting'
+    - 'this converts a regression problem into a classification problem'
+  answer: [0, 1]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: 1 and 2. E.g. least squares with singular $X^\top X$ is convex but not strictly; adding $\lambda\|\mathbf{w}\|^2$ makes it strictly convex
+    (unique solution). Regularization fights overfitting. It has nothing to do with turning regression into classification.
+  sources:
+    - {kind: exam, pdf: exam/mock-midterm-exam/mock-exam-2018-solutions.pdf, page: 5, label: "Mock midterm 2018, MC item 5d"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 7, label: "03d slide 7 (annotated)"}
+  added: 2026-10-02

@@ -1,0 +1,466 @@
+# Lecture 03d — Regularization: Ridge Regression and Lasso (Jaggi deck). Slides 1–4 = PDF pages 2–5; there is no slide 5, so from
+# slide 6 on, slide N = page N (6–19). The annotated PDF has the same pages. Slide 8 (Rayleigh proof) was marked "optional";
+# additional notes (slides 14–19) were not annotated. The student saw slides 10–12 (L1 sparsity) only in broad strokes → extra
+# lasso cards (SPEC §8.4): soft-thresholding vs ridge shrinkage, constant vs vanishing pull, geometry. Written in S4 (2026-10-02).
+
+# ---------------------------------------------------------------- regularization, ridge
+
+- id: 03d-regularization-objective
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [regularization]
+  priority: core
+  front: |
+    *(Regularization)* To mitigate overfitting we solve $\min_\mathbf{w}$ {{c1::$\mathcal{L}(\mathbf{w}) + \Omega(\mathbf{w})$}}, where the regularizer $\Omega$
+    {{c2::measures the complexity of the model}} — penalizing complex models favors simpler ones.
+  explanation: "$\\mathcal{L}$ = loss (fit to the data), $\\Omega$ = model complexity. Same principle for linear models and neural nets."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 2, label: "03d slide 1 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 3, label: "03d slide 2 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-ridge-objective
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [ridge, regularization]
+  priority: core
+  front: |
+    *(Ridge regression)* L2 regularizer: $\Omega(\mathbf{w}) =$ {{c1::$\lambda\|\mathbf{w}\|_2^2 = \lambda\sum_i w_i^2$}}. With the MSE this gives ridge regression:
+    $$\min_\mathbf{w}\ \frac{1}{2N}\sum_{n=1}^N (y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \lambda\|\mathbf{w}\|_2^2$$
+    Setting {{c2::$\lambda = 0$}} recovers least squares.
+  explanation: "Large weights are penalized (considered \"unlikely\"), small ones are fine."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-weight-decay
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [ridge, regularization, gradient-descent]
+  priority: core
+  front: |
+    *(Ridge)* For $\Omega(\mathbf{w}) = \lambda\|\mathbf{w}\|_2^2$, the gradient-step contribution is $-\nabla\Omega(\mathbf{w}) =$ {{c1::$-2\lambda\mathbf{w}$}}:
+    each step shrinks $\mathbf{w}$ towards 0, hence the name {{c2::weight decay}}.
+  explanation: "Weight decay is the name used for neural nets; for linear models + MSE it is ridge regression."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-ridge-closed-form
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [ridge]
+  priority: core
+  front: |
+    *(Ridge, $\frac{1}{2N}$ MSE + $\lambda\|\mathbf{w}\|^2$)* $\mathbf{w}^\star_\text{ridge} =$ {{c1::$(X^\top X + \lambda' I)^{-1}X^\top\mathbf{y}$}} with $\lambda' =$ {{c2::$2N\lambda$}}
+  explanation: |
+    Gradient: $-\frac1N X^\top(\mathbf{y} - X\mathbf{w}) + 2\lambda\mathbf{w} = 0$; multiply by $N$: $(X^\top X + 2N\lambda I)\mathbf{w} = X^\top\mathbf{y}$.
+    In code, solve this linear system (no inverse).
+  trap: "The factor: with the 1/(2N) MSE it is 2Nλ, not λ (Final 2020 Q37–38)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 6, label: "03d slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-ridge-derivation
+  type: basic
+  origin: concept
+  lecture: "03d"
+  themes: [ridge]
+  priority: core
+  front: "Derive the ridge solution of $\\min_\\mathbf{w} \\frac{1}{2N}\\|\\mathbf{y} - X\\mathbf{w}\\|^2 + \\lambda\\|\\mathbf{w}\\|^2$ (with the exact factor)."
+  back: |
+    1. Convex objective ⇒ set the gradient to 0: $-\frac1N X^\top(\mathbf{y} - X\mathbf{w}) + 2\lambda\mathbf{w} = 0$.
+    2. Multiply by $N$: $(X^\top X + 2N\lambda I)\mathbf{w} = X^\top\mathbf{y}$.
+    3. $X^\top X + 2N\lambda I$ is invertible for $\lambda > 0$ ⇒ $\mathbf{w}^\star = (X^\top X + 2N\lambda I)^{-1}X^\top\mathbf{y}$.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 6, label: "03d slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 7, label: "03d slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-lifting-eigenvalues
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [ridge]
+  priority: core
+  front: |
+    *(Ridge vs ill-conditioning)* With $X^\top X = USU^\top$: $X^\top X + \lambda' I =$ {{c1::$U[S + \lambda' I]U^\top$}}, so every eigenvalue is
+    {{c2::at least $\lambda' > 0$}} ("lifting the eigenvalues") ⇒ {{c3::$X^\top X + \lambda' I$ is always invertible, even if $D > N$}}.
+  explanation: "Before: eigenvalues $\\ge 0$ (possibly 0 ⇒ singular). After: $\\ge \\lambda'$. Uses $\\lambda' I = \\lambda' UU^\\top$, since $U$ is orthogonal."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 7, label: "03d slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-rayleigh-proof
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [ridge]
+  priority: detail
+  front: |
+    *(Ridge, optional proof)* The Rayleigh ratio $R(A, \mathbf{v}) = \mathbf{v}^\top A\mathbf{v} / \mathbf{v}^\top\mathbf{v}$ ranges between the smallest and largest eigenvalue of a symmetric $A$.
+    For $A = X^\top X + \lambda' I$ and every $\mathbf{v} \ne 0$: $R(A, \mathbf{v}) \ge$ {{c1::$\lambda'$}}, because {{c2::$\mathbf{v}^\top X^\top X\mathbf{v} = \|X\mathbf{v}\|^2 \ge 0$}}.
+  explanation: "$R(A, \\mathbf{v}) = \\frac{\\mathbf{v}^\\top X^\\top X\\mathbf{v} + \\lambda'\\mathbf{v}^\\top\\mathbf{v}}{\\mathbf{v}^\\top\\mathbf{v}} \\ge \\lambda'$, so the smallest eigenvalue is $\\ge \\lambda' > 0$. Slide marked optional."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 8, label: "03d slide 8 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-lambda-direction
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [regularization, overfitting]
+  priority: core
+  front: |
+    *(Regularization strength)* A **large** $\lambda$ makes the model prone to {{c1::underfitting}} (weights pushed to 0);
+    a **small** $\lambda$ (→ least squares as $\lambda \to 0$) makes it prone to {{c2::overfitting}}.
+  trap: "Final 2022 Q25 states the reverse (large λ ⇒ overfitting) — it is False."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 12, label: "Final 2022 Q25"}
+  added: 2026-10-02
+
+- id: 03d-lambda-vs-degree
+  type: basic
+  origin: concept
+  lecture: "03d"
+  also_lectures: ["03b"]
+  themes: [regularization, overfitting, polynomial-features]
+  priority: core
+  front: "*(Model complexity)* How do the polynomial degree $M$ and the ridge parameter $\\lambda$ affect over/underfitting? Do they act in the same direction?"
+  back: |
+    Opposite directions: increasing $M$ makes the model richer (→ overfitting); increasing $\lambda$ makes it simpler (→ underfitting).
+  explanation: "Small $M$ or large $\\lambda$ ⇒ underfit; large $M$ with small $\\lambda$ ⇒ overfit. Regularization lets us keep a rich feature set and tune complexity continuously with $\\lambda$."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 7, label: "03b slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 2, label: "03d slide 1 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- lasso
+
+- id: 03d-lasso-objective
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [lasso, regularization]
+  priority: core
+  front: |
+    *(Lasso)* L1 regularization with the MSE:
+    $$\min_\mathbf{w}\ \frac{1}{2N}\sum_{n=1}^N (y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \lambda\|\mathbf{w}\|_1$$
+    where $\|\mathbf{w}\|_1 :=$ {{c1::$\sum_i |w_i|$}}. The unit ball $\{\|\mathbf{w}\|_1 \le 1\}$ is a {{c2::diamond (2-D) / octahedron (3-D), with corners on the axes}}.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-sparse-definition
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [lasso]
+  priority: core
+  front: |
+    *(Lasso)* A weight vector is **sparse** when {{c1::most of its coordinates are exactly 0}}. Lasso solutions tend to be sparse, which performs
+    {{c2::feature selection}} (features with weight 0 are not used) and gives a {{c3::simpler, more interpretable model}}.
+  explanation: "Sparse models are also cheaper to store and to evaluate (only non-zero weights matter)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 11, label: "03d slide 11 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 16, label: "03d slide 16"}
+  added: 2026-10-02
+
+- id: 03d-constrained-form
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [regularization, ridge, lasso, constrained-optimization]
+  priority: core
+  front: |
+    *(Regularization as a constraint)* Ridge is similar to $\min_\mathbf{w} \frac{1}{2N}\sum_n (y_n - \mathbf{x}_n^\top\mathbf{w})^2$ s.t. {{c1::$\|\mathbf{w}\|_2^2 \le \tau$}},
+    and lasso to the same problem s.t. {{c2::$\|\mathbf{w}\|_1 \le \tau$}} for some $\tau > 0$ ("s.t." = subject to).
+  explanation: "Larger penalty $\\lambda$ ⇔ smaller budget $\\tau$. Picture: smallest MSE level set touching the constraint ball (disk for ridge, diamond for lasso)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 15, label: "03d slide 15"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 16, label: "03d slide 16"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+  notes: "λ ↔ τ monotone correspondence stated as intuition (standard Lagrangian duality); the slides only say 'similar to … for some τ > 0'."
+
+- id: 03d-level-sets-ellipsoids
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [lasso, least-squares]
+  priority: core
+  front: |
+    *(Why L1 is sparse)* If $X^\top X$ is invertible, the level sets $\{\mathbf{w} : \|\mathbf{y} - X\mathbf{w}\|^2 = \alpha\}$ are {{c1::ellipsoids}},
+    all centred at {{c2::the least-squares solution $\mathbf{w}_\text{LS}$}} with the same orientation, growing as $\alpha$ increases.
+  explanation: |
+    With $\boldsymbol\delta = \mathbf{w} - \mathbf{w}_\text{LS}$: $$\|\mathbf{y} - X\mathbf{w}\|^2 = \boldsymbol\delta^\top X^\top X\boldsymbol\delta + \text{cnst}$$
+    a positive definite quadratic form around $\mathbf{w}_\text{LS}$.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 11, label: "03d slide 11 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 12, label: "03d slide 12 (annotated)"}
+  added: 2026-10-02
+  notes: "Centre = w_LS from expanding the quadratic (standard; the slide says the ellipsoids have 'the same mean and rotation')."
+
+- id: 03d-sparsity-geometry
+  type: basic
+  origin: concept
+  lecture: "03d"
+  themes: [lasso]
+  priority: core
+  front: "*(Lasso)* Explain geometrically why L1 regularization gives sparse solutions."
+  back: |
+    The optimum lies on the L1 ball of the optimal norm, where the smallest MSE ellipsoid (centred at $\mathbf{w}_\text{LS}$) touches it.
+    That ball has corners on the axes, so the contact point is most likely a corner ⇒ some $w_i = 0$.
+  explanation: "\"Genie\" argument of slide 12: suppose you know $\\|\\mathbf{w}^\\star\\|_1$; then $\\mathbf{w}^\\star$ is on that ball's surface, and grow the ellipsoids until they touch it."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 12, label: "03d slide 12 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: 03d-ridge-not-sparse-geometry
+  type: basic
+  origin: concept
+  lecture: "03d"
+  themes: [ridge, lasso]
+  priority: core
+  front: "*(Ridge vs lasso)* Which one gives sparse solutions, and why not the other (geometric view)?"
+  back: |
+    Lasso is sparse; ridge is not. The L2 ball is round (no corners), so the ellipsoid touches it at a generic point:
+    weights are shrunk towards 0 but are (almost) never exactly 0.
+  trap: "\"L2 regularization gives sparse solutions\" is False (Final 2016 Q12, Final 2023 Q16)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 11, label: "03d slide 11 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 15, label: "03d slide 15"}
+  added: 2026-10-02
+
+- id: 03d-soft-thresholding
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [lasso, ridge, subgradients]
+  priority: core
+  front: |
+    *(1-D view of sparsity)* Lasso: $$\min_w\ \tfrac12(w - a)^2 + \lambda|w|$$ is solved by soft-thresholding, $w^\star =$ {{c1::$\operatorname{sign}(a)\max(|a| - \lambda, 0)$}},
+    which is {{c2::exactly 0 whenever $|a| \le \lambda$}}.
+
+    Ridge: $$\min_w\ \tfrac12(w - a)^2 + \lambda w^2$$ gives $w^\star =$ {{c3::$a/(1 + 2\lambda)$}}, which is {{c4::never 0 unless $a = 0$}}.
+  explanation: |
+    Lasso: for $w \ne 0$, $w - a + \lambda\operatorname{sign}(w) = 0$, so $w = a \mp \lambda$. At $w = 0$ the subgradient condition is $0 \in -a + \lambda[-1, 1]$, i.e. $|a| \le \lambda$.
+    Ridge: $w - a + 2\lambda w = 0$. Lasso **subtracts** a constant and clips at 0; ridge **divides** (proportional shrinkage).
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 34, label: "02a slide 34 (subgradients)"}
+  added: 2026-10-02
+  notes: "Not on the slides: 1-D derivation explained during the 03d catch-up (SPEC §8.4). Derived and checked by hand 2026-10-02 (subgradient of |w| at 0 = [-1,1])."
+
+- id: 03d-l1-constant-pull
+  type: basic
+  origin: concept
+  lecture: "03d"
+  themes: [lasso, ridge]
+  priority: core
+  front: "*(Ridge vs lasso, gradient view)* Why can the L1 penalty push a weight all the way to 0 while the L2 penalty cannot?"
+  back: |
+    L1: the (sub)gradient of $\lambda|w_i|$ is $\lambda\operatorname{sign}(w_i)$ — a **constant** pull however small $w_i$ is, so it reaches 0.
+    L2: the gradient $2\lambda w_i$ **vanishes** as $w_i \to 0$, so the weight only gets proportionally smaller.
+  explanation: "Near 0, the data term's slope must exceed $\\lambda$ to keep a weight non-zero under L1; under L2 any non-zero data slope keeps it non-zero."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+  notes: "Not on the slides: intuition from the 03d catch-up session (SPEC §8.4). Follows from ∇(λw²) = 2λw and ∂(λ|w|) = λ·sign(w)."
+
+- id: 03d-lasso-not-scale-invariant
+  type: basic
+  origin: concept
+  lecture: "03d"
+  themes: [lasso, regularization]
+  priority: core
+  front: "*(Lasso)* A feature is multiplied by 10 and lasso is refit with the same $\\lambda$. Is that feature more or less likely to be kept? Consequence in practice?"
+  back: |
+    **More** likely: the same fit needs a weight 10× smaller, so it pays a 10× smaller L1 penalty. Penalized fits are not scale-invariant ⇒ standardize features before regularizing.
+  explanation: "Same reasoning for ridge (penalty 100× smaller). Unregularized least squares is scale-invariant (Final 2023 Q13): the weight simply rescales."
+  trap: "Final 2024 Q19: rescaling by 10 makes the feature MORE likely to be included."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 10, label: "Final 2024 Q19"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- additional notes: other regularizers, MAP
+
+- id: 03d-other-regularizers
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [regularization]
+  priority: core
+  front: |
+    *(Regularization)* Besides L2/L1 penalties, popular forms of regularization include {{c1::shrinkage}}, {{c2::dropout and weight decay}} (neural nets),
+    and {{c3::early stopping of the optimization}}.
+  trap: "An optimizer such as Adam is NOT a regularization technique (Final 2025 Q12)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 14, label: "03d slide 14"}
+  added: 2026-10-02
+
+- id: 03d-ridge-map
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [ridge, mle, regularization]
+  priority: core
+  front: |
+    *(MAP view)* Ridge regression is the {{c1::maximum-a-posteriori (MAP)}} estimate $\arg\max_\mathbf{w} p(\mathbf{w} \mid X, \mathbf{y})$ under Gaussian noise and an i.i.d. prior
+    {{c2::$w_i \sim \mathcal{N}(0, 1/\lambda)$}}. In general the regularizer is {{c3::$-\log$ of the prior}}: a {{c4::Laplace}} prior gives the lasso.
+  trap: "Gaussian prior ⇔ ridge (L2); Laplace prior ⇔ lasso (L1) — Final 2022 Q5."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 18, label: "03d slide 18"}
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 4, label: "Final 2022 Q5"}
+  added: 2026-10-02
+  notes: "Laplace prior ⇔ lasso is not on the slides; it follows from −log(e^{−|w_i|/b}) = |w_i|/b + cnst and is the official answer of Final 2022 Q5."
+
+- id: 03d-ridge-map-derivation
+  type: basic
+  origin: concept
+  lecture: "03d"
+  themes: [ridge, mle]
+  priority: core
+  front: "Derive ridge regression as a MAP estimator (Gaussian noise $\\sigma^2$, prior $\\mathbf{w} \\sim \\mathcal{N}(0, \\frac1\\lambda I)$)."
+  back: |
+    1. Bayes: $-\log p(\mathbf{w} \mid X, \mathbf{y}) = -\log p(\mathbf{y}, X \mid \mathbf{w}) - \log p(\mathbf{w}) + \text{cnst}$.
+    2. Drop $p(X)$ (independent of $\mathbf{w}$): minimize $-\log p(\mathbf{y} \mid X, \mathbf{w}) - \log p(\mathbf{w})$.
+    3. Plug in the Gaussians: $\sum_n \frac{1}{2\sigma^2}(y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \frac\lambda2\|\mathbf{w}\|^2$.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 18, label: "03d slide 18"}
+  added: 2026-10-02
+
+- id: 03d-prior-information
+  type: cloze
+  origin: concept
+  lecture: "03d"
+  themes: [regularization]
+  priority: detail
+  front: |
+    *(Regularization as prior information)* Regularization encodes {{c1::prior information}} about the model; it can be seen as
+    {{c2::a compressed form of data}}, so regularizing is like {{c3::adding data}}, which helps reduce overfitting.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 19, label: "03d slide 19"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-03d-lambda-small-underfit
+  type: tf
+  origin: exam_style
+  lecture: "03d"
+  themes: [regularization, overfitting]
+  priority: core
+  front: "*(Ridge)* Decreasing $\\lambda$ towards 0 in ridge regression makes the model more prone to underfitting."
+  answer: false
+  explanation: |
+    Small $\lambda$ = weak penalty ⇒ close to least squares ⇒ **overfitting** risk (especially with many features). Large $\lambda$ shrinks the weights to 0 ⇒ underfitting.
+  trap: "λ ↑ ⇒ simpler model ⇒ underfit; λ ↓ ⇒ overfit."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03d-ridge-factor
+  type: mcq
+  origin: exam_style
+  lecture: "03d"
+  themes: [ridge]
+  priority: core
+  front: "*(Ridge)* What is the minimizer of $\\frac{1}{2N}\\|\\mathbf{y} - X\\mathbf{w}\\|^2 + \\lambda\\|\\mathbf{w}\\|^2$ (with $\\lambda > 0$)?"
+  choices:
+    - '$(X^\top X + 2N\lambda I)^{-1}X^\top\mathbf{y}$'
+    - '$(X^\top X + \lambda I)^{-1}X^\top\mathbf{y}$'
+    - '$(X^\top X + N\lambda I)^{-1}X^\top\mathbf{y}$'
+    - '$(X^\top X + \frac{\lambda}{2N} I)^{-1}X^\top\mathbf{y}$'
+  answer: [0]
+  explanation: |
+    Gradient $= -\frac1N X^\top(\mathbf{y} - X\mathbf{w}) + 2\lambda\mathbf{w}$; multiplying the optimality condition by $N$ gives $(X^\top X + 2N\lambda I)\mathbf{w} = X^\top\mathbf{y}$,
+    i.e. $\lambda' = 2N\lambda$. $(X^\top X + \lambda I)^{-1}X^\top\mathbf{y}$ is the minimizer of $\frac12\|\mathbf{y} - X\mathbf{w}\|^2 + \frac\lambda2\|\mathbf{w}\|^2$, not of this cost.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 6, label: "03d slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03d-ridge-unique-d-gt-n
+  type: tf
+  origin: exam_style
+  lecture: "03d"
+  themes: [ridge, least-squares]
+  priority: core
+  front: "*(Ridge)* For any $\\lambda > 0$, ridge regression has a unique solution, even when $D > N$."
+  answer: true
+  explanation: |
+    All eigenvalues of $X^\top X + \lambda' I$ are $\ge \lambda' > 0$ ⇒ invertible ⇒ unique solution (the objective is strictly convex). Without the penalty,
+    $D > N$ makes $X^\top X$ singular.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 7, label: "03d slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03d-soft-threshold-value
+  type: mcq
+  origin: exam_style
+  lecture: "03d"
+  themes: [lasso, subgradients]
+  priority: detail
+  front: "*(Lasso, 1-D)* What is the minimizer of $f(w) = \\frac12(w - 3)^2 + |w|$ over $w \\in \\mathbb{R}$?"
+  choices: ['$2$', '$0$', '$1$', '$3$']
+  answer: [0]
+  explanation: |
+    Soft-thresholding with $a = 3$, $\lambda = 1$: $w^\star = \operatorname{sign}(3)\max(3 - 1, 0) = 2$ (check: $w - 3 + 1 = 0$). The value would be $0$ only if $|a| \le \lambda$;
+    $1 = 3/(1 + 2)$ is the ridge answer (penalty $w^2$ instead of $|w|$); $3$ ignores the penalty.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 10, label: "03d slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03d-l2-pull-vanishes
+  type: tf
+  origin: exam_style
+  lecture: "03d"
+  themes: [ridge, lasso]
+  priority: core
+  front: "*(Ridge vs lasso)* The shrinking force that the L2 penalty $\\lambda\\|\\mathbf{w}\\|_2^2$ exerts on a weight $w_i$ becomes weaker as $w_i$ approaches 0."
+  answer: true
+  explanation: |
+    $\frac{\partial}{\partial w_i}\lambda w_i^2 = 2\lambda w_i \to 0$: the pull vanishes near 0, so weights are shrunk but not set to exactly 0. The L1 pull
+    $\lambda\operatorname{sign}(w_i)$ keeps a constant magnitude, which is why lasso produces exact zeros.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03d-map-laplace-ridge
+  type: tf
+  origin: exam_style
+  lecture: "03d"
+  also_lectures: ["03c"]
+  themes: [mle, lasso, ridge]
+  priority: core
+  front: "*(MAP)* With Gaussian noise and an i.i.d. Laplace prior on the weights, the MAP estimate is the ridge regression solution."
+  answer: false
+  explanation: |
+    $-\log$ of a Laplace prior is $\propto \sum_i|w_i| = \|\mathbf{w}\|_1$ ⇒ **lasso**. Ridge ($\|\mathbf{w}\|_2^2$) corresponds to a Gaussian prior $\mathcal{N}(0, \frac1\lambda I)$.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 18, label: "03d slide 18"}
+  added: 2026-10-02
+
+- id: style-03d-not-regularization
+  type: mcq
+  origin: exam_style
+  lecture: "03d"
+  themes: [regularization]
+  priority: detail
+  front: "*(Regularization)* Which of the following is **not** a form of regularization?"
+  choices: ['Using the Adam optimizer instead of SGD', 'Early stopping', 'Dropout', 'Weight decay']
+  answer: [0]
+  explanation: |
+    Early stopping, dropout and weight decay all limit the effective complexity of the model (03d additional notes). Adam is an optimization algorithm:
+    it changes how the cost is minimized, not which model is preferred.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 14, label: "03d slide 14"}
+  added: 2026-10-02

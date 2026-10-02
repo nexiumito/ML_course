@@ -1,0 +1,171 @@
+# Lecture 03b — Underfitting and Overfitting (Jaggi deck). Printed slide N = PDF page N+1 (slides 1–9 = pages 2–10);
+# the annotated PDF has the same pages. Written in S4 (2026-10-02).
+
+- id: 03b-underfit-overfit
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [overfitting]
+  priority: core
+  front: |
+    *(Under/overfitting)* We **underfit** when {{c1::the model family is too limited to contain a good fit of the data}};
+    we **overfit** when {{c2::the model family is so rich that it fits the noise in the data as well as the underlying function}}.
+  explanation: "Both are undesirable. The difficulty: we only have data, so we do not know a priori which part is the signal and which part is noise."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 2, label: "03b slide 1 (annotated)"}
+  added: 2026-10-02
+
+- id: 03b-data-model
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [overfitting]
+  priority: detail
+  front: |
+    *(Under/overfitting)* Data model: $y_n =$ {{c1::$g(x_n) + Z_n$}}, where $g$ is the unknown underlying function and $Z_n$ is {{c2::noise (e.g. measurement inaccuracies)}};
+    we never observe $g(x_n)$ directly.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 3, label: "03b slide 2 (annotated)"}
+  added: 2026-10-02
+
+- id: 03b-linear-cannot-catch-up
+  type: basic
+  origin: concept
+  lecture: "03b"
+  themes: [overfitting, linear-regression]
+  priority: detail
+  front: "*(Underfitting)* With $\\mathcal{H} = \\{f_w(x) = wx\\}$ and data from a sine-shaped $g$, does more data or less noise fix the fit?"
+  back: |
+    No. No line matches the curve, regardless of the number of samples or the noise level: the model family is too limited ⇒ underfitting.
+  explanation: "Underfitting is a property of the model class (here: missing non-linear features), so the fix is a richer model (e.g. feature augmentation), not more data."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 4, label: "03b slide 3 (annotated)"}
+  added: 2026-10-02
+
+- id: 03b-feature-augmentation
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [polynomial-features]
+  priority: core
+  front: |
+    *(Feature augmentation)* Polynomial basis of degree $M$ for a scalar input:
+
+    $\phi(x_n) :=$ {{c1::$[1, x_n, x_n^2, \dots, x_n^M]^\top$}}, a vector in {{c2::$\mathbb{R}^{M+1}$}}
+
+    Model: $y_n \approx$ {{c3::$w_0 + w_1x_n + \dots + w_Mx_n^M = \phi(x_n)^\top\mathbf{w}$}}
+  explanation: "The leading 1 gives the bias $w_0$. Degree $M$ ⇒ $M+1$ parameters."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 5, label: "03b slide 4 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 6, label: "03b slide 5 (annotated)"}
+  added: 2026-10-02
+
+- id: 03b-linear-in-weights
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [polynomial-features, least-squares]
+  priority: core
+  front: |
+    *(Feature augmentation)* The augmented model $\phi(x)^\top\mathbf{w}$ is still linear in {{c1::the weights $\mathbf{w}$}} — which is why
+    {{c2::least squares still applies}} — but no longer linear in {{c3::the input $x$}}.
+  explanation: "Just replace $X$ by the matrix whose rows are $\\phi(x_n)^\\top$. The augmentation is pre-processing, so we often still write $x$ for $\\phi(x)$."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 6, label: "03b slide 5 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 10, label: "03b slide 9"}
+  added: 2026-10-02
+
+- id: 03b-linear-prone-overfit
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [overfitting, polynomial-features]
+  priority: detail
+  front: |
+    *(Overfitting)* With feature augmentation, linear models are {{c1::highly prone to overfitting}} — according to the lecture, much more so than {{c2::neural nets}}.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 5, label: "03b slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: 03b-four-fits
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [overfitting, polynomial-features]
+  priority: core
+  front: |
+    *(Polynomial fits of a sine, 10 points)* $M = 0$ and $M = 1$: {{c1::underfit}}. $M = 3$ (4 parameters): {{c2::good fit}}.
+    $M = 9$ ({{c3::10 parameters for 10 points}}): {{c4::passes through every data point — severe overfitting}}.
+  explanation: "With as many parameters as points the polynomial interpolates the data (zero training error) and fits the noise \"wiggles\"."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 7, label: "03b slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 8, label: "03b slide 7"}
+  added: 2026-10-02
+
+- id: 03b-more-data
+  type: cloze
+  origin: concept
+  lecture: "03b"
+  themes: [overfitting]
+  priority: core
+  front: |
+    *(Overfitting)* Keeping the model complexity fixed ($M = 9$) and {{c1::increasing the number of data points $N$}} (15 → 100) {{c2::reduces overfitting}}.
+  explanation: "More data constrains a rich model; it does not help an underfitting model. The other remedy is regularization (03d)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 9, label: "03b slide 8 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-03b-poly-not-least-squares
+  type: tf
+  origin: exam_style
+  lecture: "03b"
+  themes: [polynomial-features, least-squares]
+  priority: core
+  front: "*(Feature augmentation)* After a polynomial feature expansion, the model is non-linear in its weights, so least squares can no longer be used."
+  answer: false
+  explanation: |
+    $\phi(x)^\top\mathbf{w}$ is non-linear in $x$ but still **linear in $\mathbf{w}$**: least squares applies with the augmented data matrix (rows $\phi(x_n)^\top$).
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 6, label: "03b slide 5 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03b-more-data-underfit
+  type: tf
+  origin: exam_style
+  lecture: "03b"
+  themes: [overfitting]
+  priority: core
+  front: "*(Underfitting)* A linear model $f_w(x) = wx$ that underfits a non-linear target will stop underfitting if we collect enough training data."
+  answer: false
+  explanation: |
+    Underfitting comes from a too limited model family: no line matches the target, regardless of $N$ and of the noise level. More data helps against
+    **over**fitting; against underfitting we need a richer model (e.g. feature augmentation).
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 4, label: "03b slide 3 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03b-interpolation
+  type: mcq
+  origin: exam_style
+  lecture: "03b"
+  themes: [overfitting, polynomial-features]
+  priority: core
+  front: |
+    *(Overfitting)* You fit a polynomial of degree $M = 9$ by least squares to $N = 10$ points with distinct inputs $x_n$ and noisy targets.
+    What happens on the training set?
+  choices:
+    - 'The fit passes through every training point (zero training error)'
+    - 'The fit is a constant equal to the mean of the $y_n$'
+    - 'The training error equals the noise variance'
+    - 'Least squares has no solution since the model has as many parameters as points'
+  answer: [0]
+  explanation: |
+    10 parameters for 10 distinct points: the polynomial interpolates them (the data matrix is square and invertible), so the training error is 0 —
+    the classic picture of severe overfitting. The constant fit is $M = 0$; a zero training error is far below the noise level.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 7, label: "03b slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 8, label: "03b slide 7"}
+  added: 2026-10-02
+  notes: "Vandermonde matrix with distinct nodes is invertible ⇒ exact interpolation (standard)."

@@ -1,0 +1,332 @@
+# Lecture 03a — Least Squares (Jaggi deck). Printed slide N = PDF page N+1 (slides 1–14 = pages 2–15); the annotated PDF
+# has the same pages. MSE with the 1/(2N) factor. Written in S4 (2026-10-02).
+
+# ---------------------------------------------------------------- normal equations
+
+- id: 03a-analytic-solution
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Least squares)* For linear regression with the MSE, the optimum can be computed {{c1::analytically}}: it is obtained by
+    solving {{c2::a linear system of equations}}, the so-called {{c3::normal equations}}.
+  explanation: "This is one of the rare cases where no iterative optimizer (GD/SGD) is needed. The method is called least squares."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 2, label: "03a slide 1 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-plan-convex-first
+  type: basic
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, convexity]
+  priority: core
+  front: "*(Least squares)* Why does the derivation of the normal equations first prove that $\\mathcal{L}(\\mathbf{w})$ is convex before setting $\\nabla\\mathcal{L}(\\mathbf{w}^\\star) = 0$?"
+  back: |
+    For a convex function, $\nabla\mathcal{L}(\mathbf{w}^\star) = 0$ is **sufficient** for a global minimum. Without convexity a zero gradient could be a
+    maximum, a saddle point or only a local minimum.
+  explanation: "Plan of the lecture: ① show $\\mathcal{L}$ convex, ② solve $\\nabla\\mathcal{L}(\\mathbf{w}) = 0$, a system of $D$ equations."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 3, label: "03a slide 2 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-cost-matrix-form
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, linear-regression]
+  priority: detail
+  front: |
+    *(Least squares)* In matrix form, the MSE $\frac{1}{2N}\sum_n (y_n - \mathbf{x}_n^\top\mathbf{w})^2$ is
+
+    $\mathcal{L}(\mathbf{w}) =$ {{c1::$\frac{1}{2N}(\mathbf{y} - X\mathbf{w})^\top(\mathbf{y} - X\mathbf{w})$}}
+
+    In $X \in \mathbb{R}^{N\times D}$, a row is {{c2::one data point $\mathbf{x}_n^\top \in \mathbb{R}^D$}}; a column is {{c3::one feature, a vector in $\mathbb{R}^N$}}
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 4, label: "03a slide 3 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- convexity
+
+- id: 03a-convexity-three-proofs
+  type: basic
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, convexity]
+  priority: core
+  front: "*(Least squares)* Give three ways to prove that the linear-regression MSE $\\mathcal{L}(\\mathbf{w})$ is convex."
+  back: |
+    1. Positive sum of terms $(y_n - \mathbf{x}_n^\top\mathbf{w})^2$ = convex square ∘ linear map.
+    2. Check the definition directly (the gap is $-\frac{1}{2N}\lambda(1-\lambda)\|X(\mathbf{w}-\mathbf{w}')\|^2 \le 0$).
+    3. Hessian $\frac1N X^\top X$ is positive semidefinite.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 5, label: "03a slide 4 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 6, label: "03a slide 5 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 7, label: "03a slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-convexity-definition-gap
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, convexity]
+  priority: detail
+  front: |
+    *(Least squares, convexity by definition)* For $\lambda \in [0,1]$ and $\bar{\mathbf{w}} = \lambda\mathbf{w} + (1-\lambda)\mathbf{w}'$:
+    $$\mathcal{L}(\bar{\mathbf{w}}) - \lambda\mathcal{L}(\mathbf{w}) - (1-\lambda)\mathcal{L}(\mathbf{w}')$$
+    $=$ {{c1::$-\frac{1}{2N}\lambda(1-\lambda)\|X(\mathbf{w} - \mathbf{w}')\|_2^2$}}, which is {{c2::$\le 0$}}
+  explanation: "Function value at the mixed point ≤ the chord (line segment) between the two values: exactly the convexity definition."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 6, label: "03a slide 5 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-hessian-psd-proof
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, convexity]
+  priority: core
+  front: |
+    *(Least squares)* The Hessian $\nabla^2\mathcal{L} = \frac1N X^\top X$ is positive semidefinite because for every $\mathbf{w}$:
+    $\mathbf{w}^\top X^\top X\mathbf{w} =$ {{c1::$\|X\mathbf{w}\|_2^2 \ge 0$}}.
+    Equivalently, its non-zero eigenvalues are {{c2::the squares of the non-zero singular values of $X$}}.
+  explanation: "This is the one-line proof to write at the exam. Hessian PSD for all $\\mathbf{w}$ ⇒ $\\mathcal{L}$ convex."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 7, label: "03a slide 6 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- normal equations, geometry, closed form
+
+- id: 03a-normal-equations
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Normal equations)* Setting $\nabla\mathcal{L}(\mathbf{w}) = -\frac1N X^\top(\mathbf{y} - X\mathbf{w})$ to zero gives {{c1::$X^\top(\mathbf{y} - X\mathbf{w}) = 0$}},
+    i.e. {{c2::$X^\top X\mathbf{w} = X^\top\mathbf{y}$}}: a linear system of {{c3::$D$ equations in $D$ unknowns}}.
+  explanation: "Read it as \"$X^\\top$ · error $= 0$\": the error vector $\\mathbf{e} = \\mathbf{y} - X\\mathbf{w} \\in \\mathbb{R}^N$ is orthogonal to every column of $X$. Form $A\\mathbf{w} = \\mathbf{b}$ with $A = X^\\top X$, $\\mathbf{b} = X^\\top\\mathbf{y}$."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 8, label: "03a slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-normal-equations-derivation
+  type: basic
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: "Derive the normal equations of least squares for $\\mathcal{L}(\\mathbf{w}) = \\frac{1}{2N}\\|\\mathbf{y} - X\\mathbf{w}\\|^2$."
+  back: |
+    1. $\mathcal{L}$ is convex (Hessian $\frac1N X^\top X \succeq 0$) ⇒ $\nabla\mathcal{L} = 0$ characterizes the minimum.
+    2. $\nabla\mathcal{L}(\mathbf{w}) = -\frac1N X^\top(\mathbf{y} - X\mathbf{w})$.
+    3. Set to 0: $X^\top X\mathbf{w} = X^\top\mathbf{y}$.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 7, label: "03a slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 8, label: "03a slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-geometric-interpretation
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Least squares, geometry)* At the optimum, the error $\mathbf{y} - X\mathbf{w}^\star$ is {{c1::orthogonal to every column of $X$}}, so
+    $\mathbf{u}^\star = X\mathbf{w}^\star$ is {{c2::the orthogonal projection of $\mathbf{y}$ onto $\operatorname{span}(X)$}},
+    where $\operatorname{span}(X) =$ {{c3::$\{X\mathbf{w} \mid \mathbf{w} \in \mathbb{R}^D\}$ (the column space)}}.
+  explanation: "Minimizing $\\|\\mathbf{y} - X\\mathbf{w}\\|^2$ = finding the point of the column space closest to $\\mathbf{y}$ (picture from Bishop's book)."
+  trap: "The error is orthogonal to the columns of X (and to the fit Xw★), not to y itself."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 9, label: "03a slide 8 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-closed-form
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Least squares)* $X^\top X \in \mathbb{R}^{D\times D}$ is called the {{c1::Gram matrix}}. If it is invertible:
+    $\mathbf{w}^\star =$ {{c2::$(X^\top X)^{-1}X^\top\mathbf{y}$}}, and the prediction for a test point $\mathbf{x}_m$ is
+    $\hat y_m = \mathbf{x}_m^\top\mathbf{w}^\star =$ {{c3::$\mathbf{x}_m^\top(X^\top X)^{-1}X^\top\mathbf{y}$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 10, label: "03a slide 9 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- invertibility, rank deficiency
+
+- id: 03a-invertibility-full-rank
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Least squares)* The Gram matrix $X^\top X$ is invertible if and only if {{c1::$X$ has full column rank, $\operatorname{rank}(X) = D$}}.
+  explanation: "Full column rank = the $D$ columns (features) are linearly independent. Then the least-squares solution is unique."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 11, label: "03a slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-invertibility-proof
+  type: basic
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: "*(Least squares)* Prove: if $X^\\top X$ is not invertible, then $\\operatorname{rank}(X) < D$."
+  back: |
+    Take $\mathbf{v} \ne 0$ with $X^\top X\mathbf{v} = 0$. Then $0 = \mathbf{v}^\top X^\top X\mathbf{v} = (X\mathbf{v})^\top(X\mathbf{v}) = \|X\mathbf{v}\|^2$,
+    so $X\mathbf{v} = 0$ with $\mathbf{v} \ne 0$ ⇒ $\operatorname{rank}(X) < D$.
+  explanation: "Converse: if $\\operatorname{rank}(X) < D$, some $\\mathbf{u} \\ne 0$ has $X\\mathbf{u} = 0$, hence $X^\\top X\\mathbf{u} = 0$ and $X^\\top X$ is singular."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 11, label: "03a slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-rank-deficiency
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, linear-regression]
+  priority: core
+  front: |
+    *(Least squares)* If $D > N$ ("over-parametrized"), {{c1::we always have $\operatorname{rank}(X) < D$}} (row rank = column rank $\le N$).
+    If $D \le N$ but some columns are (nearly) collinear, $X$ is {{c2::ill-conditioned}}, which causes numerical issues.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 12, label: "03a slide 11 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 11, label: "03a slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-rank-deficient-solve
+  type: basic
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: "*(Least squares)* $X$ is rank deficient. Can we still solve least squares? How, and is the solution unique?"
+  back: |
+    Yes: solve $X^\top X\mathbf{w} = X^\top\mathbf{y}$ with a linear-system solver (do not invert $X^\top X$).
+    The minimizer is not unique: infinitely many $\mathbf{w}$ reach the same minimal cost.
+  explanation: |
+    The normal equations always have a solution ($X^\top\mathbf{y}$ lies in the column space of $X^\top X$); with rank $< D$, adding any $\mathbf{v}$ with
+    $X\mathbf{v} = 0$ gives another minimizer. Ridge regression (03d) makes the solution unique.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 12, label: "03a slide 11 (annotated)"}
+  added: 2026-10-02
+  notes: "Existence of a solution for rank-deficient X is standard linear algebra (range(XᵀX) = range(Xᵀ)); the slide says 'Yes, using a linear system solver'."
+
+- id: 03a-dont-invert
+  type: cloze
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares]
+  priority: detail
+  front: |
+    *(Least squares, implementation)* Solve $A\mathbf{w} = \mathbf{b}$ with {{c1::`np.linalg.solve(A, b)`}} (QR / LU decomposition), never by inverting $A$:
+    inverting costs {{c2::at least three times}} as much as a linear solver.
+  explanation: "In the labs / Project 1: `least_squares` solves $X^\\top X\\mathbf{w} = X^\\top\\mathbf{y}$ with `np.linalg.solve`."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 14, label: "03a slide 13 (annotated)"}
+  added: 2026-10-02
+
+- id: 03a-three-methods
+  type: basic
+  origin: concept
+  lecture: "03a"
+  themes: [least-squares, optimization]
+  priority: detail
+  front: "*(Linear regression)* Name the three types of methods seen to fit linear regression, and the restriction of the third."
+  back: |
+    1. Grid search.
+    2. Iterative optimization: (stochastic) gradient descent.
+    3. Least squares: closed-form solution — only for the **linear MSE**.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 13, label: "03a slide 12 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-03a-error-orthogonal-y
+  type: tf
+  origin: exam_style
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: "*(Least squares)* At the least-squares solution $\\mathbf{w}^\\star$, the residual $\\mathbf{y} - X\\mathbf{w}^\\star$ is orthogonal to $\\mathbf{y}$."
+  answer: false
+  explanation: |
+    The normal equations $X^\top(\mathbf{y} - X\mathbf{w}^\star) = 0$ say the residual is orthogonal to every **column of $X$**, hence to the fit $X\mathbf{w}^\star$.
+    It is orthogonal to $\mathbf{y}$ only if $\mathbf{y} \in \operatorname{span}(X)$ (then the residual is $0$).
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 9, label: "03a slide 8 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03a-convex-unique
+  type: tf
+  origin: exam_style
+  lecture: "03a"
+  themes: [least-squares, convexity]
+  priority: core
+  front: "*(Least squares)* Since the least-squares cost is convex, it always has a unique minimizer."
+  answer: false
+  explanation: |
+    Convex ⇒ every local minimum is global, not unique. The minimizer is unique iff $X^\top X$ is invertible ($\operatorname{rank}(X) = D$);
+    otherwise (e.g. $D > N$ or duplicated features) there are infinitely many minimizers.
+  trap: "Convex ≠ strictly convex: uniqueness needs full column rank."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 11, label: "03a slide 10 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 12, label: "03a slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03a-duplicate-feature
+  type: tf
+  origin: exam_style
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: "*(Least squares)* If two columns of $X$ are identical (a duplicated feature), then $X^\\top X$ is singular, even when $N \\gg D$."
+  answer: true
+  explanation: |
+    Duplicated columns ⇒ $X\mathbf{v} = 0$ for $\mathbf{v} = \mathbf{e}_i - \mathbf{e}_j \ne 0$ ⇒ $\operatorname{rank}(X) < D$ ⇒ $X^\top X$ singular, whatever $N$.
+    (Nearly identical columns ⇒ ill-conditioned.)
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 12, label: "03a slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03a-gram-size
+  type: mcq
+  origin: exam_style
+  lecture: "03a"
+  themes: [least-squares]
+  priority: detail
+  front: "*(Least squares)* With $N$ samples and $D$ features ($X \\in \\mathbb{R}^{N\\times D}$), what is the size of the linear system solved by least squares?"
+  choices: ['$D \times D$', '$N \times N$', '$N \times D$', '$(N+D) \times (N+D)$']
+  answer: [0]
+  explanation: |
+    The normal equations $X^\top X\mathbf{w} = X^\top\mathbf{y}$ involve the $D\times D$ Gram matrix: one equation per weight. $XX^\top$ ($N\times N$) appears only in
+    the kernel/dual view (later in the course).
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 10, label: "03a slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03a-d-greater-n
+  type: tf
+  origin: exam_style
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: "*(Least squares)* If $D > N$, the normal equations $X^\\top X\\mathbf{w} = X^\\top\\mathbf{y}$ have no solution."
+  answer: false
+  explanation: |
+    With $D > N$, $X^\top X$ is singular, so there are **infinitely many** solutions (not none). A linear-system solver still returns one of them;
+    ridge regression picks a unique one.
+  trap: "Singular Gram matrix ⇒ non-unique, not unsolvable."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 12, label: "03a slide 11 (annotated)"}
+  added: 2026-10-02

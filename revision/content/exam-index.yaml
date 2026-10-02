@@ -92,7 +92,8 @@ questions:
   topic: ridge when d/n -> 1 (D > N)
   areas: [least-squares, regularization]
   lectures: [03a, 03d]
-  status: pending
+  status: added
+  multi: true
   page: 5
 - exam: final-2025
   q: '8'
@@ -100,7 +101,8 @@ questions:
   topic: least squares with orthogonal design matrix
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
+  multi: true
   page: 5
 - exam: final-2025
   q: '9'
@@ -272,7 +274,7 @@ questions:
   topic: projection (hat) matrix in OLS
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
   page: 15
 - exam: final-2025
   q: '33'
@@ -330,7 +332,7 @@ questions:
   topic: adding a feature cannot increase training MSE
   areas: [least-squares, linear-regression]
   lectures: [01b, 03a]
-  status: pending
+  status: added
   page: 17
 - exam: final-2025
   q: '41'
@@ -429,7 +431,7 @@ questions:
   topic: data matrix with d > n
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
   page: 3
 - exam: final-2024
   q: '4'
@@ -537,7 +539,7 @@ questions:
   topic: why lasso over ridge
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   page: 10
 - exam: final-2024
   q: '19'
@@ -545,7 +547,7 @@ questions:
   topic: 'lasso: rescaling one feature'
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   page: 10
 - exam: final-2024
   q: '20'
@@ -765,7 +767,7 @@ questions:
   topic: MLE with Laplace noise
   areas: [mle, loss-functions]
   lectures: [01c, 03c]
-  status: pending
+  status: added
   page: 3
 - exam: final-2023
   q: '4'
@@ -840,7 +842,7 @@ questions:
   topic: feature scaling and unregularized linear regression
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
   page: 8
 - exam: final-2023
   q: '14'
@@ -848,7 +850,7 @@ questions:
   topic: feature centering with a bias term
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
   page: 8
 - exam: final-2023
   q: '15'
@@ -856,7 +858,7 @@ questions:
   topic: unnecessary polynomial expansion causes underfitting?
   areas: [overfitting]
   lectures: [03b]
-  status: pending
+  status: added
   page: 8
 - exam: final-2023
   q: '16'
@@ -864,7 +866,7 @@ questions:
   topic: ridge and ill-conditioned data matrices
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   page: 8
 - exam: final-2023
   q: '17'
@@ -1064,7 +1066,7 @@ questions:
   topic: 'ridge-type loss: optimal value vs lambda'
   areas: [regularization, optimization]
   lectures: [02a, 03d]
-  status: pending
+  status: added
   page: 2
 - exam: final-2022
   q: '3'
@@ -1087,7 +1089,7 @@ questions:
   topic: lasso <-> Laplace prior
   areas: [regularization, mle]
   lectures: [03c, 03d]
-  status: pending
+  status: added
   page: 4
 - exam: final-2022
   q: '6'
@@ -1230,7 +1232,7 @@ questions:
   topic: 'ridge: lambda direction and overfitting'
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   page: 12
 - exam: final-2022
   q: '26'
@@ -1495,7 +1497,7 @@ questions:
   topic: 'large train/test MSE gap: remedies'
   areas: [overfitting, regularization]
   lectures: [03b, 03d]
-  status: pending
+  status: added
   page: 5
 - exam: final-2021
   q: '8'
@@ -1503,7 +1505,7 @@ questions:
   topic: L1 regularization statements
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   page: 5
 - exam: final-2021
   q: '9'
@@ -1553,7 +1555,7 @@ questions:
   topic: ridge with unregularized bias on four points
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   page: 8
 - exam: final-2021
   q: '16'
@@ -1647,7 +1649,7 @@ questions:
   topic: least squares solution always unique?
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
   page: 15
 - exam: final-2021
   q: '29'
@@ -1802,7 +1804,7 @@ questions:
   topic: MLE = MSE under Gaussian noise
   areas: [mle, linear-regression]
   lectures: [01b, 03c]
-  status: pending
+  status: added
   page: 2
 - exam: final-2020
   q: '2'
@@ -1984,7 +1986,7 @@ questions:
   topic: N <= D implies zero training error?
   areas: [least-squares]
   lectures: [03a]
-  status: pending
+  status: added
   page: 13
 - exam: final-2020
   q: '27'
@@ -2272,7 +2274,7 @@ questions:
   topic: MLE for Y = X + Z
   areas: [mle]
   lectures: [03c]
-  status: pending
+  status: added
   page: 9
 - exam: final-2019
   q: '21'
@@ -2430,9 +2432,8 @@ questions:
 - exam: final-2018
   q: '11'
   type: mcq
-  topic: ridge least-squares statements
-  areas: [regularization, least-squares]
-  lectures: [03a, 03d]
+  topic: ridge least-squares statements (one option is the dual / kernel form → waits for kernels, S4)
+  areas: [regularization, least-squares, kernels]
   status: pending
   multi: true
   page: 12
@@ -2457,7 +2458,7 @@ questions:
   topic: effect of an L2 regularization term
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   multi: true
   page: 15
 - exam: final-2018
@@ -3011,7 +3012,7 @@ questions:
   topic: why add a regularization term
   areas: [regularization]
   lectures: [03d]
-  status: pending
+  status: added
   multi: true
   page: 5
 - exam: mock-2018

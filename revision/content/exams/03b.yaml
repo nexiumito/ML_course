@@ -1,0 +1,42 @@
+# Official past-exam questions whose primary lecture is 03b (stems and choices verbatim). Added in S4 (2026-10-02).
+
+- id: exam-2023-q15
+  type: tf
+  origin: exam_official
+  lecture: "03b"
+  themes: [polynomial-features, overfitting]
+  priority: core
+  front: "*(Feature expansion)* Unnecessary polynomial expansion of input features can lead to underfitting."
+  answer: false
+  explanation: "Official solution: it can lead to **overfitting** — a richer feature set makes the model more complex, not less."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 8, label: "Final 2023 Q15"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 7, label: "03b slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2021-q7
+  type: mcq
+  origin: exam_official
+  lecture: "03b"
+  also_lectures: ["03d"]
+  themes: [overfitting, regularization]
+  priority: core
+  front: |
+    *(Linear Models)* Consider a linear regression model on a dataset which we split into a training set and a test set. After training, our model gives a mean-squared
+    error of 0.1 on the training set and a mean-squared error of 5.3 on the test set. Recall that the mean-squared error (MSE) is given by
+    $$\mathrm{MSE}_\mathbf{w}(\mathbf{y}, \mathbf{X}) = \frac{1}{2N}\sum_{n=1}^N (y_n - \mathbf{x}_n^\top\mathbf{w})^2$$
+    Which of the following statements is **correct**?
+  choices:
+    - 'Ridge regression can help reduce the gap between the training MSE and the test MSE.'
+    - 'Retraining the model with feature augmentation (e.g. adding polynomial features) will increase the training MSE.'
+    - 'Retraining while discarding some training samples will likely reduce the gap between the train MSE and the test MSE.'
+    - 'Using cross-validation can help decrease the training MSE of this very model.'
+  answer: [0]
+  explanation: |
+    Official solution: the large gap signals overfitting; ridge regularization reduces it. Feature augmentation increases overfitting (training MSE goes **down**);
+    fewer training samples make overfitting worse; cross-validation helps **select** a model, it does not improve a given model's training MSE.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 5, label: "Final 2021 Q7"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 9, label: "03b slide 8 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 2, label: "03d slide 1 (annotated)"}
+  added: 2026-10-02

@@ -1,0 +1,168 @@
+# Official past-exam questions whose primary lecture is 03a (stems and choices verbatim). Added in S4 (2026-10-02).
+# Answers read from the solution text and, for MCQs, from the ticked boxes of the rendered solution pages.
+
+- id: exam-2025-q8
+  type: mcq
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: detail
+  front: |
+    *(Least Squares Orthogonal Design Matrix)* Consider the least-squares estimator $w^\star = (X^\top X)^{-1}X^\top y$, where $X \in \mathbb{R}^{n\times d}$
+    and $y \in \mathbb{R}^n$. Assume that $n = d$ and that all feature vectors are orthogonal, i.e. $X^\top X = cI_d$ for some constant $c > 0$.
+    Let $x_m$ denote a test point. Which of the following statements are correct? (Select all that apply.)
+  choices:
+    - 'Each weight $w_j$ depends only on the corresponding training output along its coordinate direction.'
+    - 'The solution simplifies to $w^\star = \frac1c X^\top y$, which can be seen as an orthogonal decomposition.'
+    - 'For any test point $x_m$, the prediction is $\hat y_m = \frac1c x_m^\top X^\top y$.'
+    - 'The Gram matrix $X^\top X$ is invertible, and its inverse is $(1/c)I_d$.'
+    - 'Each weight $w_j$ depends on all training outputs $y_i$.'
+  answer: [0, 1, 2, 3]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: $(X^\top X)^{-1} = \frac1c I_d$, so $w^\star = \frac1c X^\top y$ and $\hat y_m = x_m^\top w^\star = \frac1c x_m^\top X^\top y$.
+    Each $w_j = \frac1c X_{:,j}^\top y$ only involves the component of $y$ along its own (orthogonal) feature column: no cross-coupling between features.
+    ⚠ The last option is marked false officially, but literally $w_j = \frac1c\sum_i X_{ij}y_i$ can involve every $y_i$; the intended reading is
+    "depends on $y$ only through its projection on feature $j$".
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 5, label: "Final 2025 Q8"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 10, label: "03a slide 9 (annotated)"}
+  added: 2026-10-02
+  notes: "Ticked boxes = options 1–4 (solution letters a, b, d, e refer to another ordering). Option 5 is debatable (see explanation) — flagged for the student 2026-10-02."
+
+- id: exam-2025-q32
+  type: tf
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Projection Matrix in Least Squares)* In ordinary least squares, the fitted values are given by $\hat y = X(X^\top X)^{-1}X^\top y = Py$,
+    where $P = X(X^\top X)^{-1}X^\top$ is the projection matrix onto the column space of $X$. The projection matrix $P$ satisfies $P^2 = P$ for any full-rank design matrix $X$.
+  answer: true
+  explanation: |
+    Official solution: $$P^2 = X(X^\top X)^{-1}X^\top X(X^\top X)^{-1}X^\top = X(X^\top X)^{-1}X^\top = P$$ since the middle $X^\top X(X^\top X)^{-1} = I$.
+    Projecting twice onto $\operatorname{span}(X)$ changes nothing. Holds for any full-column-rank $X$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 15, label: "Final 2025 Q32"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 9, label: "03a slide 8 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2025-q40
+  type: tf
+  origin: exam_official
+  lecture: "03a"
+  also_lectures: ["01b"]
+  themes: [least-squares, linear-regression]
+  priority: core
+  front: "*(Linear Regression)* Adding a new feature to a linear regression model can never increase the training mean squared error."
+  answer: true
+  explanation: |
+    Official solution: OLS minimizes the training error. The old model is the new one with the new weight set to 0, so the minimum over the larger model
+    family can only be lower or equal. (The **test** error can of course increase — overfitting.)
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 17, label: "Final 2025 Q40"}
+    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 7, label: "03b slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2024-q3
+  type: mcq
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    Which of the following statements is always true for a real-valued data matrix $\mathbf{X} \in \mathbb{R}^{n\times d}$ and $\mathbf{y} \in \mathbb{R}^n$ with $d > n$
+    where $n$ is the number of data points and $d$ represent the feature dimension?
+  choices:
+    - 'The sample points are linearly separable.'
+    - 'The data points lie in an at most $n$-dimensional subspace of $\mathbb{R}^d$, so there is at least one non-zero direction in $\mathbb{R}^d$ that is orthogonal to all these points.'
+    - 'The weights $\mathbf{w}$ can be computed with least-squares linear regression as follows: $\mathbf{w} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$.'
+    - '$\mathbf{X}^\top\mathbf{X}$ has exactly $d - n$ eigenvectors with eigenvalue zero.'
+  answer: [1]
+  explanation: |
+    Official solution: $n$ points span at most $n < d$ dimensions, so some $\mathbf{v} \ne 0$ is orthogonal to all of them ($\mathbf{X}\mathbf{v} = 0$).
+    $\operatorname{rank}(\mathbf{X}^\top\mathbf{X}) \le n < d$ ⇒ not invertible, so the closed form does not exist; it has **at least** $d - n$ zero eigenvalues
+    (more if the rows are dependent), not exactly. Linear separability depends on the data.
+  trap: "d > n ⇒ XᵀX singular: 'at least d − n' zero eigenvalues, not 'exactly'."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 3, label: "Final 2024 Q3"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 12, label: "03a slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2023-q13
+  type: tf
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Linear regression)* For linear regression with no regularization, scaling the features (e.g. as in data normalization) does not change the model's performance,
+    assuming that we can efficiently compute the optimum model in both cases, i.e. numerical stability/efficiency of finding the optimum model is not a concern.
+  answer: true
+  explanation: |
+    Official solution: unregularized linear regression is scale-invariant: if feature $d$ is multiplied by $s \ne 0$, the optimal weight is divided by $s$ and the
+    predictions are identical. With regularization this is no longer true (the penalty depends on the weights' scale).
+  trap: "Without a penalty: scale-invariant. With ridge/lasso: not (standardize first)."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 8, label: "Final 2023 Q13"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 9, label: "03a slide 8 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2023-q14
+  type: tf
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Linear regression)* For linear regression with a bias and no regularization, centering the features (as in data normalization) does not change the model's
+    performance, assuming that we can efficiently compute the optimum model in both cases, i.e. numerical stability/efficiency of finding the optimum model is not a concern.
+  answer: true
+  explanation: |
+    $w_0 + \mathbf{w}^\top\mathbf{x} = (w_0 + \mathbf{w}^\top\boldsymbol\mu) + \mathbf{w}^\top(\mathbf{x} - \boldsymbol\mu)$: centering is absorbed by the bias, so both models
+    represent the same functions and reach the same optimum. (The official solution text repeats the one of Q13.) Without a bias term, centering would matter.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 8, label: "Final 2023 Q14"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 9, label: "03a slide 8 (annotated)"}
+  added: 2026-10-02
+  notes: "Official answer True; the solution text is a copy of Q13's — explanation written from the bias-absorption argument (checked 2026-10-02)."
+
+- id: exam-2021-q28
+  type: tf
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Linear Models)* For any vector $v \in \mathbb{R}^D$ let $\|v\|_2 := \sqrt{v_1^2 + \dots + v_D^2}$ denote the Euclidean norm. For $y \in \mathbb{R}^D$, $X \in \mathbb{R}^{D\times D}$,
+    the solution of the least squares problem $$w^\star = \arg\min_{w\in\mathbb{R}^D}\|y - Xw\|_2^2$$ is always unique.
+  answer: false
+  explanation: |
+    Official solution: unique only if $X$ is full rank. Counter-example: $$X = \begin{bmatrix}0&1&0\\0&1&0\\1&0&1\end{bmatrix},\quad y = (0, 0, 1)^\top$$
+    Both $w = (1, 0, 0)^\top$ and $w = (0, 0, 1)^\top$ give $Xw = y$ (columns 1 and 3 are equal).
+  trap: "Unique ⇔ full column rank, even for a square X."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 15, label: "Final 2021 Q28"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 11, label: "03a slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2020-q26
+  type: tf
+  origin: exam_official
+  lecture: "03a"
+  themes: [least-squares]
+  priority: core
+  front: |
+    *(Linear Regression)* You are given samples $S = \{(\mathbf{x}_n, y_n)\}_{n=1}^N$ where $\mathbf{x}_n \in \mathbb{R}^D$ and $y_n$ are scalar values. You are solving linear
+    regression using normal equations. You will always find the optimal weights with 0 training error in case of $N \le D$.
+  answer: false
+  explanation: |
+    Official solution: think of the samples $\{((0,0), 0), ((0,0), 1)\}$: $N = D = 2$, but the same input has two different outputs, so no $\mathbf{w}$ fits both.
+    Zero training error needs $\mathbf{y} \in \operatorname{span}(X)$, which $N \le D$ alone does not guarantee (rows may be dependent).
+  trap: "N ≤ D does not imply zero training error."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 13, label: "Final 2020 Q26"}
+    - {kind: lecture, pdf: lectures/03/lecture03a_least_squares_annotated.pdf, page: 9, label: "03a slide 8 (annotated)"}
+  added: 2026-10-02

@@ -1,0 +1,239 @@
+# Lecture 03c — Maximum Likelihood (Jaggi deck). Printed slide N = PDF page N+1 (slides 1–10 = pages 2–11). The annotated
+# PDF has the same pages plus a clean copy of slide 10 as page 12. Slide 9 (asymptotic normality, Fisher, Cramér–Rao) was marked
+# "optional" by the professor → detail only. Written in S4 (2026-10-02).
+
+- id: 03c-gaussian-density
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [probability, mle]
+  priority: core
+  front: |
+    *(Gaussian)* Density of $y \in \mathbb{R}$ with mean $\mu$ and variance $\sigma^2$:
+
+    $\mathcal{N}(y \mid \mu, \sigma^2) = c\,\exp(-q)$ with
+
+    $c =$ {{c1::$\frac{1}{\sqrt{2\pi\sigma^2}}$}}
+
+    $q =$ {{c2::$\frac{(y-\mu)^2}{2\sigma^2}$}}
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 3, label: "03c slide 2 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-multivariate-gaussian
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [probability]
+  priority: detail
+  front: |
+    *(Gaussian vector in $\mathbb{R}^D$, mean $\boldsymbol\mu$, covariance $\Sigma$)* $\mathcal{N}(\mathbf{y} \mid \boldsymbol\mu, \Sigma) = c\,\exp\big(-\tfrac12 q\big)$ with
+
+    $q =$ {{c1::$(\mathbf{y}-\boldsymbol\mu)^\top\Sigma^{-1}(\mathbf{y}-\boldsymbol\mu)$}}
+
+    $c =$ {{c2::$\frac{1}{\sqrt{(2\pi)^D\det(\Sigma)}}$}}
+
+    and $\Sigma$ must be {{c3::positive semidefinite}}.
+  explanation: "Level sets are ellipses (tilted for a general $\\Sigma$), circles for $\\Sigma = I$."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 3, label: "03c slide 2 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-probabilistic-model
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle, linear-regression]
+  priority: core
+  front: |
+    *(MLE for regression)* Model assumption: $y_n = \mathbf{x}_n^\top\mathbf{w} + \varepsilon_n$, where the $\varepsilon_n$ are {{c1::zero-mean Gaussian with variance $\sigma^2$}},
+    {{c2::independent of each other and of the input}}. Equivalently $p(y_n \mid \mathbf{x}_n, \mathbf{w}) =$ {{c3::$\mathcal{N}(y_n \mid \mathbf{x}_n^\top\mathbf{w}, \sigma^2)$}}.
+  explanation: "Adding the fixed number $\\mathbf{x}_n^\\top\\mathbf{w}$ to $\\mathcal{N}(0, \\sigma^2)$ noise shifts the mean. Motivation: the histogram of the residuals $e_n = y_n - \\mathbf{x}_n^\\top\\mathbf{w}$ often looks Gaussian (slide 1)."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 4, label: "03c slide 3 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 2, label: "03c slide 1 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-likelihood
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle]
+  priority: core
+  front: |
+    *(MLE)* Likelihood of the data:
+
+    $p(\mathbf{y} \mid X, \mathbf{w}) =$ {{c1::$\prod_{n=1}^N p(y_n \mid \mathbf{x}_n, \mathbf{w})$}} $=$ {{c2::$\prod_{n=1}^N \mathcal{N}(y_n \mid \mathbf{x}_n^\top\mathbf{w}, \sigma^2)$}}
+
+    The product uses {{c3::the independence of the samples (noise)}}.
+  explanation: "Each Gaussian factor is the assumption on the noise. Probabilistic view: the best model is the $\\mathbf{w}$ that maximizes this likelihood."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 5, label: "03c slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-log-likelihood
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle]
+  priority: core
+  front: |
+    *(MLE, Gaussian noise)* Log-likelihood: $\mathcal{L}_\text{LL}(\mathbf{w}) := \log p(\mathbf{y} \mid X, \mathbf{w}) =$ {{c1::$-\frac{1}{2\sigma^2}\sum_{n=1}^N (y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \text{cnst}$}}.
+  explanation: |
+    $$\log\prod_n c\,\exp\Big(-\frac{(y_n - \mathbf{x}_n^\top\mathbf{w})^2}{2\sigma^2}\Big) = \sum_n \Big[\log c - \frac{(y_n - \mathbf{x}_n^\top\mathbf{w})^2}{2\sigma^2}\Big]$$
+    The constant $N\log c$ does not depend on $\mathbf{w}$.
+  trap: "Don't drop the minus sign: the annotated slide's last line forgets it; the printed formula is correct."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 6, label: "03c slide 5 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-mle-equals-mse
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle, least-squares]
+  priority: core
+  front: |
+    *(MLE)* Under Gaussian noise, $\arg\min_\mathbf{w} \mathcal{L}_\text{MSE}(\mathbf{w}) =$ {{c1::$\arg\max_\mathbf{w} \mathcal{L}_\text{LL}(\mathbf{w})$}},
+    because the two objectives differ only by {{c2::a positive factor ($\frac{1}{2\sigma^2}$ vs $\frac{1}{2N}$) and a constant independent of $\mathbf{w}$}}.
+  explanation: "So least squares = maximum likelihood under i.i.d. Gaussian noise. This gives a second (probabilistic) route to the same solution."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 7, label: "03c slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 8, label: "03c slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-mle-derivation
+  type: basic
+  origin: concept
+  lecture: "03c"
+  themes: [mle, least-squares]
+  priority: core
+  front: "Derive why, for $y_n = \\mathbf{x}_n^\\top\\mathbf{w} + \\varepsilon_n$ with i.i.d. $\\varepsilon_n \\sim \\mathcal{N}(0, \\sigma^2)$, the MLE is the least-squares solution."
+  back: |
+    1. Independence: $p(\mathbf{y} \mid X, \mathbf{w}) = \prod_n \mathcal{N}(y_n \mid \mathbf{x}_n^\top\mathbf{w}, \sigma^2)$.
+    2. Take the log: $\mathcal{L}_\text{LL} = -\frac{1}{2\sigma^2}\sum_n (y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \text{cnst}$.
+    3. Maximizing it = minimizing $\sum_n (y_n - \mathbf{x}_n^\top\mathbf{w})^2$, i.e. the MSE.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 5, label: "03c slide 4 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 6, label: "03c slide 5 (annotated)"}
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 7, label: "03c slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-mle-design-costs
+  type: basic
+  origin: concept
+  lecture: "03c"
+  themes: [mle, loss-functions]
+  priority: detail
+  front: "*(MLE)* What does the equivalence \"MLE = minimizing a cost\" give us, and how can the MLE be interpreted?"
+  back: |
+    A way to **design cost functions** from a noise model. The MLE is the model under which the observed data is the most likely to have been generated.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 8, label: "03c slide 7 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-mle-consistent
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle]
+  priority: detail
+  front: |
+    *(Properties of MLE)* $\mathcal{L}_\text{LL}(\mathbf{w}) = \frac1N\sum_n \log p(y_n \mid \mathbf{x}_n, \mathbf{w})$ is a sample approximation of {{c1::the expected log-likelihood $\mathbb{E}_{p(y,\mathbf{x})}[\log p(y \mid \mathbf{x}, \mathbf{w})]$}}.
+    The MLE is {{c2::consistent}}: {{c3::$\mathbf{w}_\text{MLE} \to \mathbf{w}_\text{true}$ in probability}} given enough data.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 9, label: "03c slide 8 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-mle-asymptotic
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle]
+  priority: detail
+  front: |
+    *(Properties of MLE — optional slide)* The MLE is {{c1::asymptotically normal}}, with covariance given by the inverse of the {{c2::Fisher information}} $\mathbf{F}(\mathbf{w})$,
+    and {{c3::efficient}}: it achieves the {{c4::Cramér–Rao lower bound}}, $\operatorname{Cov}(\mathbf{w}_\text{MLE}) = \mathbf{F}^{-1}(\mathbf{w}_\text{true})$.
+  explanation: "$\\mathbf{F}(\\mathbf{w}) = -\\mathbb{E}_{p(\\mathbf{y})}\\big[\\frac{\\partial^2\\mathcal{L}}{\\partial\\mathbf{w}\\,\\partial\\mathbf{w}^\\top}\\big]$. Marked optional by the professor: know the names only."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 10, label: "03c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: 03c-laplace-mae
+  type: cloze
+  origin: concept
+  lecture: "03c"
+  themes: [mle, loss-functions]
+  priority: core
+  front: |
+    *(MLE, noise ↔ cost)* With Laplace noise,
+
+    $p(y_n \mid \mathbf{x}_n, \mathbf{w}) =$ {{c1::$\frac{1}{2b}e^{-\tfrac1b|y_n - \mathbf{x}_n^\top\mathbf{w}|}$}},
+    maximizing the log-likelihood is minimizing {{c2::$\sum_n |y_n - \mathbf{x}_n^\top\mathbf{w}|$, the MAE}}. Gaussian noise gives {{c3::the MSE}}.
+  explanation: "$\\log$ of the Laplace density $= -\\log(2b) - \\frac1b|y_n - \\mathbf{x}_n^\\top\\mathbf{w}|$: the constant and the positive factor $\\frac1b$ do not change the argmax."
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 11, label: "03c slide 10 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-03c-sigma-irrelevant
+  type: tf
+  origin: exam_style
+  lecture: "03c"
+  themes: [mle]
+  priority: core
+  front: "*(MLE)* In the model $y_n = \\mathbf{x}_n^\\top\\mathbf{w} + \\varepsilon_n$ with i.i.d. $\\varepsilon_n \\sim \\mathcal{N}(0, \\sigma^2)$, the maximum-likelihood estimate $\\mathbf{w}_\\text{MLE}$ depends on $\\sigma^2$."
+  answer: false
+  explanation: |
+    $\mathcal{L}_\text{LL}(\mathbf{w}) = -\frac{1}{2\sigma^2}\sum_n (y_n - \mathbf{x}_n^\top\mathbf{w})^2 + \text{cnst}$: $\sigma^2$ only scales the objective (and enters the constant),
+    so the maximizer is the least-squares solution whatever $\sigma^2$.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 7, label: "03c slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03c-noise-for-mae
+  type: mcq
+  origin: exam_style
+  lecture: "03c"
+  themes: [mle, loss-functions]
+  priority: core
+  front: "*(MLE)* For $y_n = \\mathbf{x}_n^\\top\\mathbf{w} + \\varepsilon_n$ with i.i.d. noise, which noise distribution makes maximum likelihood equivalent to minimizing the MAE?"
+  choices: ['Laplace', 'Gaussian', 'Uniform on $[-b, b]$', 'Any zero-mean distribution']
+  answer: [0]
+  explanation: |
+    Laplace density $\propto e^{-|\varepsilon|/b}$ ⇒ the negative log-likelihood is $\frac1b\sum_n|y_n - \mathbf{x}_n^\top\mathbf{w}|$ + cnst (MAE). Gaussian noise gives the MSE.
+    The cost depends on the noise model, so "any distribution" is wrong.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 11, label: "03c slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03c-log-same-argmax
+  type: tf
+  origin: exam_style
+  lecture: "03c"
+  themes: [mle]
+  priority: detail
+  front: "*(MLE)* Maximizing the likelihood $p(\\mathbf{y} \\mid X, \\mathbf{w})$ and maximizing the log-likelihood $\\log p(\\mathbf{y} \\mid X, \\mathbf{w})$ can give different $\\mathbf{w}$."
+  answer: false
+  explanation: |
+    $\log$ is strictly increasing, so both have the same maximizers. The log is used because it turns the product over samples into a sum
+    (easier to differentiate, numerically stable).
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 6, label: "03c slide 5 (annotated)"}
+  added: 2026-10-02
+
+- id: style-03c-independence-product
+  type: tf
+  origin: exam_style
+  lecture: "03c"
+  themes: [mle, probability]
+  priority: core
+  front: "*(MLE)* Writing the likelihood of the data as a product $\\prod_n p(y_n \\mid \\mathbf{x}_n, \\mathbf{w})$ relies on the noise terms being independent across samples."
+  answer: true
+  explanation: |
+    Independent samples ⇒ the joint density factorizes into a product (slide 4: "independence"). The Gaussian form of each factor is the separate
+    assumption on the noise distribution.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf, page: 5, label: "03c slide 4 (annotated)"}
+  added: 2026-10-02
