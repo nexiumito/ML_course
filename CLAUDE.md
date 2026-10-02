@@ -13,6 +13,7 @@ Owner: Elie Bsd, M1 student. Agents help with labs, theory, revision, and projec
 - `docs/exams.md` — exam inventory, format, recurring topics, revision advice.
 - `docs/glossary.md` — course notation (N, D, X, w, L(w), …) and acronyms.
 - `docs/history-2025.md` — **the whole 2025 edition is in git history** (`git show '48f3822^:<path>'`): look ahead at labs, lectures, solutions, project descriptions.
+- `revision/SPEC.md` — **revision app** (spaced-repetition cards for this course): spec, milestones checklist, card-writing rules. In development since 2026-10-02.
 
 ## Repository layout
 ```
