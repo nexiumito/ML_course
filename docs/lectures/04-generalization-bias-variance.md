@@ -72,6 +72,7 @@ Formulas below were checked against rendered slides (2026-10-01); most formulas 
 - σ² lower-bounds the **true** error, not the training error (2021 Q26 False — overfitting can push training error below σ²).
 - Ridge vs least squares: ridge has **larger bias, smaller variance** (2022 Q6). λ ↑ ⇒ noise unchanged, bias ↑, variance ↓ (λ = ∞: zero variance) (2020 Q39, 3 pts open question). Same logic for k in k-NN (2025 Q33, week 6).
 - Know the bound's shape: O(1/√|S_test|), δ only in ln, K models cost ln K; the factor 2 in the "selected vs best" bound.
+- Double descent: no question in finals 2016–2025 (checked 2026-10-02) — culture only.
 - Be able to redo the bias–variance derivation (add/subtract 𝔼_{S'}[f_{S'}(x₀)], kill the cross terms). 2025 had a 2-pt bias–variance open question.
 
 ## Not exam material
