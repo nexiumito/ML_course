@@ -13,7 +13,7 @@ Owner: Elie Bsd, M1 student. Agents help with labs, theory, revision, and projec
 - `docs/exams.md` — exam inventory, format, recurring topics, revision advice.
 - `docs/glossary.md` — course notation (N, D, X, w, L(w), …) and acronyms.
 - `docs/history-2025.md` — **the whole 2025 edition is in git history** (`git show '48f3822^:<path>'`): look ahead at labs, lectures, solutions, project descriptions.
-- `revision/SPEC.md` — **revision app** (spaced-repetition cards for this course): spec, milestones checklist, card-writing rules. In development since 2026-10-02.
+- `revision/` — **revision app** (spaced-repetition cards for this course): spec + milestones + card rules `revision/SPEC.md`, run + VPS operations `revision/README.md` (full VPS runbook: local-only `revision/deploy/VPS.md`, gitignored). Live on the VPS `ml-vps` (tailnet only) since 2026-10-02.
 
 ## Repository layout
 ```
@@ -45,6 +45,7 @@ docs/                               agent-facing documentation (this system)
 - New `lectures/NN/` folder → create `docs/lectures/NN-<topic>.md` (use the existing sheets as the format), add a row to `docs/lectures/README.md`, mark the week in `docs/schedule.md`, add new notation to `docs/glossary.md`.
 - New or completed `labs/exNN/` → update the lab's row/section in `docs/labs.md` (status, gotchas, what was hard) and `docs/schedule.md`.
 - Project starts → fill `docs/projects.md` from the official description PDF and create `projects/projectN/CLAUDE.md` (team, deadlines, structure, how to run).
+- Lecture caught up by the student → write its cards (`revision/SPEC.md` §8), run `uv run revision content check`, commit, push, deploy (`ssh elie@ml-vps '~/ML_course/revision/deploy/update.sh'`, ask first). Start every content session by processing open card reports (`revision/README.md` § Production).
 - Always keep the ✅/⏳ status column in `docs/schedule.md` current.
 - Keep this file under 80 lines. Details go in `docs/`, not here.
 - Write dates as absolute (e.g. `2026-10-29`), never "next week".

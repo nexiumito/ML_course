@@ -27,3 +27,4 @@ Notes
 - 2025 edition had the same structure (P1 10 % then; **P1 is not graded in 2026**). 2025 exam: Thu 2026-01-15, 15:15–18:15.
 - Lecture PDFs appear in `lectures/NN/` before each lecture (annotated version 1–2 days after); lab solutions a few days after (ex02 solution came 2026-09-21; the 2025 rule of withholding ex02–ex07 until the P1 deadline does not seem to apply in 2026). 2025 P2 description came out 10-09, three weeks before the P1 deadline.
 - 2025 lab topics per week (likely identical): see `docs/history-2025.md`.
+- Revision-app cards per lecture: the lectures listed in `revision/content/course.yaml` have their cards (01a–04b as of 2026-10-02).

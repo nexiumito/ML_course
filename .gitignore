@@ -115,3 +115,6 @@ revision/frontend/dev-dist/
 revision/.venv/
 revision/.ruff_cache/
 revision/.pytest_cache/
+
+# Private VPS runbook (IP, tailnet, accounts) — local only, never committed
+revision/deploy/VPS.md

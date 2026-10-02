@@ -5,7 +5,7 @@
 # then restarts the service. If any step or the content check fails, the previous commit is restored and the service is not
 # restarted (the running process keeps the content it loaded at startup).
 # Options (env): BRANCH (default main), FORCE=1 (redeploy even if already up to date).
-# Needs: sudoers rule `elie ALL=(root) NOPASSWD: /usr/bin/systemctl restart revision` (see VPS.md).
+# Needs: sudoers rule `elie ALL=(root) NOPASSWD: /usr/bin/systemctl restart revision` (see README.md § Production).
 set -euo pipefail
 
 REPO="${REPO:-$HOME/ML_course}"
