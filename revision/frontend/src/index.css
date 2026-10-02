@@ -67,8 +67,6 @@ body {
 .md .katex-display > .katex { font-size: 1.2em; }
 /* too wide even at the minimum scale (see Markdown.tsx): wrap at KaTeX break points, else fade + scroll */
 .md .katex-display.katex-wrap > .katex { white-space: normal; }
-/* …but never inside one of KaTeX's breakable chunks */
-.md .katex-display.katex-wrap .base { white-space: nowrap; }
 .md .katex-display.katex-wrap > .katex > .katex-html { line-height: 2.2; }
 .md .katex-display.katex-overflow {
   mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent);
@@ -76,8 +74,7 @@ body {
 /* inline math with fractions / sub-superscripts must not collide with the neighbouring lines */
 .md .katex .mfrac, .md .katex .msupsub { line-height: normal; }
 .md p .katex { padding: 0 0.05em; }
-/* never break an inline formula across lines (e.g. "[a," / "b]"); long formulas belong in $$ blocks */
-.md :not(.katex-display) > .katex { white-space: nowrap; }
+/* KaTeX splits a formula into unbreakable .base chunks; lines may only break between them (after =, ≤, +, …) */
 
 /* active cloze (blank or revealed answer): <mark class="cloze-mark"> from lib/rehypeCloze.ts */
 .md mark.cloze-mark {

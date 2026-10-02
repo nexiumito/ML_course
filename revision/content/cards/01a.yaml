@@ -1,0 +1,113 @@
+# Lecture 01a — Introduction (no printed slide numbers: labels use the PDF page). Mostly context: only a few cards.
+# Also hosts the prerequisite-math cards (linear algebra / matrix calculus / probability) that past exams test.
+# Written in S3 (2026-10-02).
+
+- id: 01a-ml-definition
+  type: cloze
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: |
+    *(Intro)* Machine learning = {{c1::algorithms that can learn from data}}.
+    Traditional programming: data + rules → output. Machine learning: data + {{c2::desired output}} → {{c3::rules (the model weights $\mathbf{w}$)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01a_intro.pdf, page: 12, label: "01a p. 12"}
+    - {kind: lecture, pdf: lectures/01/lecture01a_intro.pdf, page: 13, label: "01a p. 13"}
+  added: 2026-10-02
+
+- id: 01a-train-vs-test
+  type: basic
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: "*(Intro)* What goes in and out of ML **training** vs ML **testing**?"
+  back: |
+    Training: training data + desired outputs → rules = model weights $\mathbf{w}$.
+    Testing: test data + the trained model → outputs (predictions).
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01a_intro.pdf, page: 14, label: "01a p. 14"}
+  added: 2026-10-02
+
+- id: 01a-perceptron-sgd-cost
+  type: cloze
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics, sgd]
+  priority: detail
+  front: |
+    *(Intro: linear classifier, $\mathbf{x}_i\in\mathbb{R}^d$)* The perceptron / SVM learning rule is a stochastic gradient step
+    $\mathbf{w} := \mathbf{w} + \lambda\cdot\mathbf{x}$ on one example, with iteration cost {{c1::$O(d)$}}.
+  explanation: "Perceptron: Rosenblatt 1957; SVM: Cortes & Vapnik 1995. SGD and its $O(d)$ step cost come back in lecture 02a."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01a_intro.pdf, page: 19, label: "01a p. 19"}
+  added: 2026-10-02
+
+- id: 01a-llm-next-word
+  type: basic
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: "*(Intro)* What input/output task is a (large) language model trained on?"
+  back: "Input: all previous words; output: the next word (next-word / next-token prediction)."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01a_intro.pdf, page: 49, label: "01a p. 49"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- prerequisite math (tested in past exams)
+
+- id: 01a-math-grad-quadratic-form-x
+  type: cloze
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics, optimization]
+  priority: core
+  front: |
+    *(Matrix calculus)* $\nabla_\mathbf{x}\,(\mathbf{x}^\top W\mathbf{x}) =$ {{c1::$(W + W^\top)\mathbf{x}$}}; if $A$ is symmetric,
+    $\nabla_\mathbf{x}\,(\mathbf{x}^\top A\mathbf{x}) =$ {{c2::$2A\mathbf{x}$}}.
+  explanation: |
+    Write $\mathbf{x}^\top W\mathbf{x} = \sum_{i,j} W_{ij}x_ix_j$; $\partial/\partial x_k$ collects $\sum_j W_{kj}x_j + \sum_i W_{ik}x_i = (W\mathbf{x})_k + (W^\top\mathbf{x})_k$.
+    Example: $\nabla_\mathbf{x}(\mathbf{x}^\top W^\top W\mathbf{x}) = 2W^\top W\mathbf{x}$ (Final 2017 P7).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q6"}
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 5, label: "Final 2017 P7"}
+  added: 2026-10-02
+
+- id: 01a-math-grad-quadratic-form-w
+  type: cloze
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: "*(Matrix calculus)* The gradient of $\\mathbf{x}^\\top W\\mathbf{x}$ with respect to the matrix $W$ is {{c1::$\\mathbf{x}\\mathbf{x}^\\top$}}."
+  explanation: "$\\mathbf{x}^\\top W\\mathbf{x} = \\sum_{i,j} W_{ij}x_ix_j$, so $\\partial/\\partial W_{ij} = x_ix_j$."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q5"}
+  added: 2026-10-02
+
+- id: 01a-math-variance-affine
+  type: cloze
+  origin: concept
+  lecture: "01a"
+  themes: [probability]
+  priority: core
+  front: "*(Probability)* For a random variable $X$ and constants $a, b$: $\\operatorname{Var}(aX + b) =$ {{c1::$a^2\\operatorname{Var}(X)$}}."
+  explanation: "Scaling by $a$ multiplies the variance by $a^2$; adding a constant shifts the mean but not the spread."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 4, label: "Final 2024 Q4"}
+  added: 2026-10-02
+
+- id: 01a-math-trace-det-eigenvalues
+  type: cloze
+  origin: concept
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: core
+  front: |
+    *(Linear algebra)* For a square matrix with eigenvalues $\lambda_1, \dots, \lambda_d$ (with multiplicity):
+    $\operatorname{trace}(A) =$ {{c1::$\sum_i \lambda_i$}} and $\det(A) =$ {{c2::$\prod_i \lambda_i$}}.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 6, label: "Final 2023 Q10"}
+  added: 2026-10-02

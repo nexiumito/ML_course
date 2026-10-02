@@ -1,0 +1,301 @@
+# Lecture 01c — Loss Functions (Jaggi deck: printed slide N = PDF page N+1 up to slide 9; no slide 10, so slides 11–16 = pages 11–16).
+# Written in S3 (2026-10-02). Note: this lecture defines MSE with 1/N; labs / P1 / lecture 02a use 1/(2N) (same minimizer).
+
+- id: 01c-loss-function-role
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: detail
+  front: "*(Loss functions)* What does a loss function $\\mathcal{L}(\\mathbf{w})$ (cost, energy, training objective) do?"
+  back: |
+    It quantifies how well the model explains the data — how costly our mistakes are — and is what we minimize to learn $\mathbf{w}$.
+    Losses in this lecture are averages of a function of the residual $e_n = y_n - f_\mathbf{w}(\mathbf{x}_n)$.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 3, label: "01c slide 2"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 11, label: "01c slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-two-desirable-properties
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Loss functions)* Two desirable properties of a loss for a real-valued target $y$:
+
+    1. it is {{c1::symmetric around 0 (positive and negative errors penalized equally)}};
+    2. it penalizes "large" and "very large" mistakes {{c2::similarly (robustness to outliers)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 4, label: "01c slide 3 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-statistical-vs-computational
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions, convexity]
+  priority: core
+  front: "*(Loss functions)* What is the statistical vs computational trade-off when choosing a loss?"
+  back: |
+    **Statistical**: does the loss cope with outliers (robust fit)? **Computational**: is it convex, so we can find the minimum?
+    Better statistical properties cost computational ones: very robust losses (that flatten out for large residuals, e.g. Tukey) are non-convex.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 5, label: "01c slide 4"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 14, label: "01c slide 14 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-mse-definition
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(MSE, as defined in lecture 01c)* $\operatorname{MSE}(\mathbf{w}) :=$ {{c1::$\displaystyle \frac{1}{N}\sum_{n=1}^N \big(y_n - f_\mathbf{w}(\mathbf{x}_n)\big)^2$}}
+  explanation: |
+    The labs, Project 1 and lecture 02a use the factor $\frac{1}{2N}$ instead of $\frac{1}{N}$: same minimizer, the $\frac12$ just cancels
+    the 2 of the derivative. Always say which convention you use.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 6, label: "01c slide 5 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-mse-properties
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions, convexity]
+  priority: core
+  front: "*(MSE)* Does the MSE have the two desirable properties of a loss? Is it convex?"
+  back: |
+    Symmetric: **yes**. Robust to outliers: **no** — the penalty grows quadratically, so one outlier can drag the fit.
+    Convex: **yes** (and differentiable).
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 6, label: "01c slide 5 (annotated)"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 8, label: "01c slide 7"}
+  added: 2026-10-02
+
+- id: 01c-mae-definition
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(MAE)* $\operatorname{MAE}(\mathbf{w}) :=$ {{c1::$\displaystyle \frac{1}{N}\sum_{n=1}^N \big|y_n - f_\mathbf{w}(\mathbf{x}_n)\big|$}}
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-mae-properties
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions, convexity, subgradients]
+  priority: core
+  front: "*(MAE)* Is the MAE robust to outliers? Convex? Differentiable?"
+  back: |
+    Robust: **yes** (linear growth). Convex: **yes**. Differentiable: **no** — kink at residual 0, so we need subgradients (lecture 02a).
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-mean-vs-median
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Constant model $f(\mathbf{x}) = w_0$)* The MSE is minimized by the {{c1::mean}} of the $y_n$; the MAE is minimized by the {{c2::median}} of the $y_n$.
+  explanation: |
+    $$\frac{d}{dw_0}\frac{1}{N}\sum_n (y_n-w_0)^2 = 0 \;\Rightarrow\; w_0 = \bar y$$
+    For the MAE, the slope is (#points below $w_0$ − #points above)$/N$, which is zero at the median. This is the whole robustness story: one outlier moves the mean a lot, the median barely.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 7, label: "01c slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-outlier-exercise
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Lecture exercise, constant model $w_0$)* With $y = (1, 2, 3, 4)$ both MSE and MAE are minimized on $w_0 \in [2, 3]$.
+    After adding the outlier $y_5 = 20$: the MSE minimizer jumps to {{c1::$w_0 = 6$ (the mean)}}, the MAE minimizer only moves to {{c2::$w_0 = 3$ (the median)}}.
+  explanation: |
+    In the lecture table, $N\cdot\operatorname{MSE}$ at $w_0 = 5, 6, 7$ is $255, 250, 255$; $N\cdot\operatorname{MAE}$ at $w_0 = 2, 3, 4$ is $22, 21, 22$.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 7, label: "01c slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-outlier-definition
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: detail
+  front: "*(Loss functions)* What is an outlier, and why does it matter for the choice of loss?"
+  back: |
+    An example far away from most of the other examples. Outliers are common in practice; the MSE is a poor loss when they are present
+    (quadratic penalty), robust losses like the MAE handle them better.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 8, label: "01c slide 7"}
+  added: 2026-10-02
+
+- id: 01c-convexity-definition
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [convexity]
+  priority: core
+  front: |
+    *(Convexity)* $h:\mathbb{R}^D \to \mathbb{R}$ is convex if for all $\mathbf{u}, \mathbf{v} \in \mathbb{R}^D$ and all $0 \le \lambda \le 1$:
+
+    $h(\lambda\mathbf{u} + (1-\lambda)\mathbf{v}) \le$ {{c1::$\lambda h(\mathbf{u}) + (1-\lambda) h(\mathbf{v})$}}
+
+    It is **strictly** convex if {{c2::the inequality is strict}}.
+  explanation: "Geometrically: the segment between any two points of the graph lies above the graph."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 11, label: "01c slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-convexity-minima
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [convexity, optimization]
+  priority: core
+  front: |
+    *(Convexity)* A **strictly** convex function has {{c1::a unique global minimum $\mathbf{w}^\star$}}.
+    For a convex function, every local minimum is {{c2::a global minimum}}.
+  trap: "Convex alone does not give uniqueness (e.g. a flat valley); strict convexity does (Final 2020 Q28)."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 12, label: "01c slide 12"}
+  added: 2026-10-02
+
+- id: 01c-mse-linear-convex
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [convexity, linear-regression]
+  priority: core
+  front: "*(Convexity)* Why is the MSE of a linear model convex in $\\mathbf{w}$?"
+  back: |
+    Each term $(y_n - \mathbf{x}_n^\top\mathbf{w})^2$ is a convex function (square) of an affine function of $\mathbf{w}$, hence convex in $\mathbf{w}$;
+    and **sums of convex functions are convex**.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 12, label: "01c slide 12"}
+  added: 2026-10-02
+
+- id: 01c-mae-linear-convex-proof
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [convexity, linear-regression]
+  priority: core
+  front: "*(Exercise)* Prove that fitting a linear model $f_\\mathbf{w}(\\mathbf{x}) = \\mathbf{x}^\\top\\mathbf{w}$ with the MAE is convex in $\\mathbf{w}$."
+  back: |
+    1. $|\cdot|$ is convex on $\mathbb{R}$.
+    2. $\mathbf{w} \mapsto y_n - \mathbf{x}_n^\top\mathbf{w}$ is affine, and convex ∘ affine is convex (plug $\lambda\mathbf{u}+(1-\lambda)\mathbf{v}$ into the definition).
+    3. $\mathcal{L}(\mathbf{w}) = \frac1N\sum_n |y_n - \mathbf{x}_n^\top\mathbf{w}|$ is a non-negative sum of convex functions ⇒ convex.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 13, label: "01c slide 13 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-robust-loss-family
+  type: basic
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions, convexity]
+  priority: detail
+  front: "*(Breheny plot, slide 14)* Rank least squares, absolute value, Huber and Tukey by robustness; which one is non-convex?"
+  back: |
+    Robustness: least squares < Huber ≈ absolute value < Tukey. Tukey's loss flattens out for large residuals (very robust) and is the only **non-convex** one.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 14, label: "01c slide 14 (annotated)"}
+  added: 2026-10-02
+
+- id: 01c-huber-loss
+  type: cloze
+  origin: concept
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: detail
+  front: |
+    *(Additional reading)* Huber loss: $\frac12 e^2$ if $|e| \le \delta$, and {{c1::$\delta|e| - \frac12\delta^2$}} otherwise.
+    It is {{c2::convex, differentiable and robust to outliers}}; its drawback is {{c3::that $\delta$ is hard to set}}.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 15, label: "01c slide 15 (additional reading)"}
+  added: 2026-10-02
+  notes: "Huber formula: standard definition, matches the slide image (verified 2026-10-02)."
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-01c-mse-outlier-fit
+  type: mcq
+  origin: exam_style
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Loss functions)* We fit a constant model $f(x) = w_0$ to the targets $y = (1, 2, 3, 4, 20)$ by minimizing the MSE. Which $w_0$ do we obtain?
+  choices: ["$6$", "$3$", "$2.5$", "$20$"]
+  answer: [0]
+  explanation: |
+    The MSE of a constant model is minimized by the mean: $(1+2+3+4+20)/5 = 6$. $3$ is the median (the MAE solution), $2.5$ the mean
+    without the outlier, and $20$ the outlier itself.
+  trap: "MSE → mean (dragged by outliers); MAE → median."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 7, label: "01c slide 6 (annotated)"}
+  added: 2026-10-02
+
+- id: style-01c-mae-differentiable
+  type: tf
+  origin: exam_style
+  lecture: "01c"
+  themes: [loss-functions, subgradients]
+  priority: core
+  front: "*(Loss functions)* For a linear model, the MAE is a convex and everywhere differentiable function of $\\mathbf{w}$."
+  answer: false
+  explanation: |
+    Convex yes, but not differentiable: $|e|$ has a kink at $e = 0$, so wherever a residual $y_n - \mathbf{x}_n^\top\mathbf{w}$ vanishes the MAE has a kink.
+    Gradient methods are replaced by subgradient methods (lecture 02a).
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: style-01c-robust-convex
+  type: tf
+  origin: exam_style
+  lecture: "01c"
+  themes: [loss-functions, convexity]
+  priority: core
+  front: "*(Loss functions)* A loss that stays bounded for very large residuals, such as Tukey's bisquare loss, is convex."
+  answer: false
+  explanation: |
+    A bounded (flattening) loss cannot be convex unless it is constant: that is exactly the statistical vs computational trade-off.
+    Tukey's loss is very robust but non-convex; Huber and MAE grow linearly and stay convex.
+  trap: "More robust ⇒ often non-convex."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 14, label: "01c slide 14 (annotated)"}
+  added: 2026-10-02
+
+- id: style-01c-convex-unique-min
+  type: tf
+  origin: exam_style
+  lecture: "01c"
+  themes: [convexity]
+  priority: core
+  front: "*(Convexity)* Every strictly convex function $h:\\mathbb{R}^D\\to\\mathbb{R}$ that has a minimum has exactly one global minimizer."
+  answer: true
+  explanation: |
+    If $\mathbf{u} \ne \mathbf{v}$ were both global minimizers with value $m$, strict convexity would give $h(\frac{\mathbf{u}+\mathbf{v}}{2}) < m$, a contradiction.
+    (Without strictness, e.g. a flat-bottomed convex function, the minimizer need not be unique.)
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 12, label: "01c slide 12"}
+  added: 2026-10-02

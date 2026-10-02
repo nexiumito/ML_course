@@ -1,0 +1,670 @@
+# Lecture 02a — Optimization (Jaggi deck). Printed slide N = PDF page N+1 for slides 1–28 (Muon = page 29 = slide 28);
+# there is no slide 29, so from page 30 on, slide N = page N. Annotated PDF has the same pages.
+# Labs / this lecture use the MSE with 1/(2N). Written in S3 (2026-10-02).
+
+# ---------------------------------------------------------------- learning = optimization, grid search, minima
+
+- id: 02a-learning-as-optimization
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [optimization]
+  priority: detail
+  front: "*(Optimization)* Learning = finding {{c1::$\\mathbf{w}^\\star = \\arg\\min_\\mathbf{w} \\mathcal{L}(\\mathbf{w})$}}, which requires {{c2::an optimization algorithm}}."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 2, label: "02a slide 1"}
+  added: 2026-10-02
+
+- id: 02a-grid-search-cost
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [optimization]
+  priority: core
+  front: |
+    *(Grid search)* Evaluating the cost on a grid with 10 values per dimension of $\mathbf{w} \in \mathbb{R}^D$ needs {{c1::$10^D$}} cost
+    evaluations — exponential in $D$ ({{c2::the curse of dimensionality}}).
+  explanation: |
+    Grid search is brute force: works for any cost when there are very few parameters, but is hopeless for $D \approx 100$ (let alone millions).
+    Other issues: no guarantee to end up near an optimum (it can fall between grid points), and choosing the ranges is hard.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 3, label: "02a slide 2 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 4, label: "02a slide 3 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-local-minimum
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [optimization]
+  priority: core
+  front: |
+    *(Minima)* $\mathbf{w}^\star$ is a **local** minimum of $\mathcal{L}$ if there exists $\varepsilon > 0$ such that
+    {{c1::$\mathcal{L}(\mathbf{w}^\star) \le \mathcal{L}(\mathbf{w})$ for all $\mathbf{w}$ with $\|\mathbf{w} - \mathbf{w}^\star\| < \varepsilon$}}.
+    It is a **global** minimum if {{c2::$\mathcal{L}(\mathbf{w}^\star) \le \mathcal{L}(\mathbf{w})$ for all $\mathbf{w} \in \mathbb{R}^D$}}.
+  explanation: "A minimum is **strict** if the inequality is strict ($<$) for $\\mathbf{w} \\ne \\mathbf{w}^\\star$."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 7, label: "02a slide 6 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 8, label: "02a slide 7 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- gradient descent
+
+- id: 02a-gradient-definition
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: detail
+  front: "*(Gradient)* What is $\\nabla\\mathcal{L}(\\mathbf{w})$, and where does it point?"
+  back: |
+    The vector of partial derivatives $\big[\frac{\partial\mathcal{L}}{\partial w_1}, \dots, \frac{\partial\mathcal{L}}{\partial w_D}\big]^\top \in \mathbb{R}^D$;
+    it points in the direction of largest increase of $\mathcal{L}$ (so $-\nabla\mathcal{L}$ points downhill).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 10, label: "02a slide 9"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 12, label: "02a slide 11"}
+  added: 2026-10-02
+
+- id: 02a-gd-update
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: |
+    *(Gradient descent)* $\mathbf{w}^{(t+1)} :=$ {{c1::$\mathbf{w}^{(t)} - \gamma\,\nabla\mathcal{L}(\mathbf{w}^{(t)})$}}, where $\gamma > 0$ is the {{c2::step-size (learning rate)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 13, label: "02a slide 12 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-gd-1d-mean
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: |
+    *(GD, 1-parameter model $y_n \approx w_0$)* For $\mathcal{L}(w_0) = \frac{1}{2N}\sum_n (y_n - w_0)^2$: $\nabla\mathcal{L}(w_0) =$ {{c1::$w_0 - \bar y$}},
+    so the GD step is $w_0^{(t+1)} =$ {{c2::$(1-\gamma)\,w_0^{(t)} + \gamma\,\bar y$}}.
+  explanation: "$\\frac{\\partial}{\\partial w_0}\\frac{1}{2N}\\sum_n(y_n - w_0)^2 = \\frac{1}{2N}\\sum_n -2(y_n - w_0) = w_0 - \\bar y$; it vanishes at $w_0^\\star = \\bar y$."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 14, label: "02a slide 13 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-gd-1d-step-sizes
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: |
+    *(GD on the 1-parameter MSE: $w_0 \leftarrow (1-\gamma)w_0 + \gamma\bar y$)* With $\gamma = 1$ GD {{c1::reaches $\bar y$ in one step}};
+    it converges for {{c2::$\gamma \in (0, 2)$}}; for $\gamma > 2$ it {{c3::diverges}}.
+  explanation: |
+    The distance to $\bar y$ is multiplied by $|1 - \gamma|$ at every step: $<1$ ⇔ $\gamma \in (0,2)$; $\gamma < 1$ approaches from one side,
+    $1 < \gamma < 2$ overshoots but gets closer, $\gamma = 2$ oscillates, $\gamma > 2$ blows up.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 14, label: "02a slide 13 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-linear-mse-gradient
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent, linear-regression]
+  priority: core
+  front: |
+    *(Linear MSE)* With $\mathbf{e} = \mathbf{y} - X\mathbf{w}$ and $\mathcal{L}(\mathbf{w}) = \frac{1}{2N}\sum_n (y_n - \mathbf{x}_n^\top\mathbf{w})^2 = \frac{1}{2N}\mathbf{e}^\top\mathbf{e}$:
+
+    $\nabla\mathcal{L}(\mathbf{w}) =$ {{c1::$-\frac{1}{N} X^\top\mathbf{e} = -\frac{1}{N}X^\top(\mathbf{y} - X\mathbf{w})$}}
+  trap: "Mind the minus sign and the transpose: Final 2025 Q5 offers +1/N Xᵀ(y − Xw) and 1/N X(y − Xw) as distractors."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 16, label: "02a slide 15 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-linear-mse-gradient-derivation
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent, linear-regression]
+  priority: core
+  front: "Derive the gradient of $\\mathcal{L}(\\mathbf{w}) = \\frac{1}{2N}\\sum_{n=1}^N (y_n - \\mathbf{x}_n^\\top\\mathbf{w})^2$."
+  back: |
+    1. One coordinate: $\frac{\partial\mathcal{L}}{\partial w_d} = \frac{1}{2N}\sum_n 2(y_n - \mathbf{x}_n^\top\mathbf{w})(-x_{nd})$ (chain rule).
+    2. $= -\frac1N (X_{:,d})^\top\mathbf{e}$ with $e_n = y_n - \mathbf{x}_n^\top\mathbf{w}$.
+    3. Stack $d = 1..D$: $\nabla\mathcal{L} = -\frac1N X^\top\mathbf{e}$.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 16, label: "02a slide 15 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-gd-cost
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: |
+    *(Linear MSE, $X \in \mathbb{R}^{N\times D}$)* One GD step costs {{c1::$O(N\cdot D)$}}: computing $\mathbf{e} = \mathbf{y} - X\mathbf{w}$ is $O(ND)$ and
+    $-\frac1N X^\top\mathbf{e}$ is $O(ND)$.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 17, label: "02a slide 16 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-offset-trick
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [linear-regression]
+  priority: detail
+  front: "*(Linear MSE)* How do you handle the offset term $w_0$ with the same GD formulas?"
+  back: "Append a constant-1 column to $X$ ($\\tilde X \\in \\mathbb{R}^{N\\times(D+1)}$) and use $\\tilde{\\mathbf{w}} \\in \\mathbb{R}^{D+1}$; predictions are $\\tilde X\\tilde{\\mathbf{w}}$ and all formulas are unchanged."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 18, label: "02a slide 17"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- SGD
+
+- id: 02a-sgd-update
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: core
+  front: |
+    *(SGD)* For a sum objective $\mathcal{L}(\mathbf{w}) = \frac1N\sum_{n=1}^N \mathcal{L}_n(\mathbf{w})$, at step $t$: pick {{c1::$n$ uniformly at random in $\{1, \dots, N\}$}}
+    and update $\mathbf{w}^{(t+1)} :=$ {{c2::$\mathbf{w}^{(t)} - \gamma\,\nabla\mathcal{L}_n(\mathbf{w}^{(t)})$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 19, label: "02a slide 18 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 20, label: "02a slide 19 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-sgd-unbiased
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: core
+  front: "*(SGD)* Show that the stochastic gradient is an unbiased estimate of the full gradient."
+  back: |
+    With $n$ uniform on $\{1..N\}$: $\mathbb{E}_n[\nabla\mathcal{L}_n(\mathbf{w})] = \sum_{n=1}^N \frac1N\nabla\mathcal{L}_n(\mathbf{w}) = \nabla\big(\frac1N\sum_n\mathcal{L}_n(\mathbf{w})\big) = \nabla\mathcal{L}(\mathbf{w})$.
+    Cheap (one example) but noisy.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 21, label: "02a slide 20 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-sgd-linear-mse
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [sgd, linear-regression]
+  priority: core
+  front: |
+    *(SGD for linear MSE)* $\mathcal{L}_n(\mathbf{w}) = \frac12(y_n - \mathbf{x}_n^\top\mathbf{w})^2$, so $\nabla\mathcal{L}_n(\mathbf{w}) =$ {{c1::$-\mathbf{x}_n(y_n - \mathbf{x}_n^\top\mathbf{w}) = -\mathbf{x}_n e_n$}},
+    and one SGD step costs {{c2::$O(D)$}} (vs $O(ND)$ for GD).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 24, label: "02a slide 23 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-minibatch
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: core
+  front: |
+    *(Mini-batch SGD)* $\mathbf{g} :=$ {{c1::$\frac{1}{|B|}\sum_{n\in B}\nabla\mathcal{L}_n(\mathbf{w}^{(t)})$}} for a random subset $B \subseteq [N]$, then $\mathbf{w}^{(t+1)} := \mathbf{w}^{(t)} - \gamma\mathbf{g}$.
+    $|B| = 1$ gives {{c2::basic SGD}}; $|B| = N$ gives {{c3::(full) gradient descent}}.
+  explanation: "The per-example gradients in the batch are independent, so they are computed in parallel (GPUs)."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 22, label: "02a slide 21 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 23, label: "02a slide 22"}
+  added: 2026-10-02
+
+- id: 02a-sgd-vs-gd-tradeoff
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [sgd, gradient-descent]
+  priority: core
+  front: "*(SGD vs GD)* Compare GD and SGD on a sum objective: cost per step, and number of steps."
+  back: |
+    GD: exact gradient, $O(ND)$ per step (linear MSE), smooth decrease. SGD: noisy unbiased gradient, $O(D)$ per step, so many more
+    (cheap) updates are typically needed — but each one is $N$ times cheaper.
+  trap: "SGD does NOT need fewer parameter updates than GD (Final 2019 Q23: False)."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 24, label: "02a slide 23 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 20, label: "02a slide 19 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-momentum
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: detail
+  front: |
+    *(SGD with momentum, $\mathbf{g} = \nabla\mathcal{L}_n$)* $\mathbf{m}^{(t+1)} :=$ {{c1::$\beta_1\mathbf{m}^{(t)} + (1-\beta_1)\mathbf{g}$}}, then
+    $\mathbf{w}^{(t+1)} := \mathbf{w}^{(t)} - \gamma\,\mathbf{m}^{(t+1)}$. Idea: {{c2::accumulate past gradients (acceleration)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 26, label: "02a slide 25"}
+  added: 2026-10-02
+
+- id: 02a-adam
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: detail
+  front: "*(Adam)* Write the Adam update and give its key properties."
+  back: |
+    $\mathbf{m} := \beta_1\mathbf{m} + (1-\beta_1)\mathbf{g}$; $v_i := \beta_2 v_i + (1-\beta_2)g_i^2$; $w_i := w_i - \gamma\, m_i/\sqrt{v_i}$ for each $i$.
+    Momentum variant of Adagrad, coordinate-wise learning rate, fast forgetting, strong for neural nets. Needs 3 model-sized copies ($\mathbf{w}, \mathbf{m}, \mathbf{v}$).
+  explanation: "With no history, $m_i/\\sqrt{v_i} = g_i/|g_i| = \\operatorname{sign}(g_i)$: Adam's first step is a SignSGD step."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 27, label: "02a slide 26 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-signsgd
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: detail
+  front: "*(SGD variants)* What is SignSGD and why is it used?"
+  back: "Step along the **sign** of each stochastic-gradient entry only: 1 bit per coordinate ⇒ communication-efficient distributed training. Drawback: convergence issues."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 28, label: "02a slide 27"}
+  added: 2026-10-02
+
+- id: 02a-muon
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [sgd]
+  priority: detail
+  front: "*(SGD variants)* What is Muon?"
+  back: |
+    The matrix counterpart of SignSGD for one layer's weight matrix $W$: momentum $M$, then $W := W - \gamma\operatorname{msign}(M)$, where
+    $\operatorname{msign}(M) = UV^\top$ for $M = USV^\top$ (all singular values set to 1), computed by Newton–Schulz iterations (matmuls only).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 29, label: "02a slide 28 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- non-smooth optimization
+
+- id: 02a-convexity-first-order
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [convexity]
+  priority: core
+  front: |
+    *(Convexity, differentiable $\mathcal{L}$)* $\mathcal{L}$ is convex iff for all $\mathbf{u}, \mathbf{w}$: $\mathcal{L}(\mathbf{u}) \ge$ {{c1::$\mathcal{L}(\mathbf{w}) + \nabla\mathcal{L}(\mathbf{w})^\top(\mathbf{u} - \mathbf{w})$}}
+    — the function lies above its {{c2::linearization (1st-order Taylor expansion)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 31, label: "02a slide 31 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-subgradient-definition
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [subgradients]
+  priority: core
+  front: |
+    *(Subgradient)* $\mathbf{g} \in \mathbb{R}^D$ is a subgradient of $\mathcal{L}$ at $\mathbf{w}$ if {{c1::$\mathcal{L}(\mathbf{u}) \ge \mathcal{L}(\mathbf{w}) + \mathbf{g}^\top(\mathbf{u} - \mathbf{w})$ for all $\mathbf{u}$}}.
+    If $\mathcal{L}$ is convex and differentiable at $\mathbf{w}$, the only subgradient is {{c2::$\nabla\mathcal{L}(\mathbf{w})$}}.
+  explanation: |
+    The definition is a **global** lower bound: the line/plane through $(\mathbf{w}, \mathcal{L}(\mathbf{w}))$ with slope $\mathbf{g}$ must stay below the whole graph.
+    It makes sense for non-differentiable (even non-convex) $\mathcal{L}$, but may then fail to exist.
+  trap: "−x² is differentiable at 0 yet has NO subgradient there (non-convex) — Final 2020 Q6."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 32, label: "02a slide 32 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-subdifferential-abs
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [subgradients]
+  priority: core
+  front: |
+    *(Subgradients of $h(e) = |e|$)* $\partial h(e) =$ {{c1::$\{-1\}$}} if $e < 0$, {{c2::$[-1, 1]$}} if $e = 0$, {{c3::$\{+1\}$}} if $e > 0$.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 34, label: "02a slide 34 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-subgradient-chain-rule
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [subgradients]
+  priority: core
+  front: |
+    *(Subgradient chain rule)* If $\mathcal{L}(\mathbf{w}) = h(q(\mathbf{w}))$ with $h$ non-differentiable and $q$ differentiable, a subgradient of $\mathcal{L}$ is
+    {{c1::$\mathbf{g} \in \partial h(q(\mathbf{w}))\cdot\nabla q(\mathbf{w})$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 34, label: "02a slide 34 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-mae-subgradient
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [subgradients, linear-regression]
+  priority: core
+  front: |
+    *(Linear MAE)* For $\mathcal{L}(\mathbf{w}) = \frac1N\sum_n |y_n - \mathbf{x}_n^\top\mathbf{w}|$, a subgradient of the $n$-th term is {{c1::$-\operatorname{sign}(e_n)\,\mathbf{x}_n$}}
+    and a subgradient of $\mathcal{L}$ is {{c2::$-\frac1N X^\top\operatorname{sign}(\mathbf{e})$}} (with $e_n = y_n - \mathbf{x}_n^\top\mathbf{w}$; any value in $[-1,1]$ where $e_n = 0$).
+  explanation: "Chain rule with $h = |\\cdot|$, $q(\\mathbf{w}) = y_n - \\mathbf{x}_n^\\top\\mathbf{w}$, $\\nabla q = -\\mathbf{x}_n$. Cost: $O(ND)$ full, $O(D)$ stochastic — same as MSE."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 34, label: "02a slide 34 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 35, label: "02a slide 35"}
+  added: 2026-10-02
+
+- id: 02a-subgradient-descent
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [subgradients]
+  priority: detail
+  front: "*(Non-smooth optimization)* What is (stochastic) subgradient descent?"
+  back: |
+    GD with a subgradient $\mathbf{g}$ in place of the gradient: $\mathbf{w}^{(t+1)} := \mathbf{w}^{(t)} - \gamma\mathbf{g}$. Stochastic version: $\mathbf{g}$ is a
+    subgradient of a randomly chosen $\mathcal{L}_n$ (still called SGD).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 33, label: "02a slide 33 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 35, label: "02a slide 35"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- implementation issues
+
+- id: 02a-step-size-selection
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: "*(Implementation)* What happens if the step-size $\\gamma$ is too big or too small, and what guarantees convergence?"
+  back: |
+    Too big: the method may diverge. Too small: very slow convergence. Convergence (to a local minimum) is guaranteed only with a
+    schedule that becomes "small enough", where small enough depends on the problem (e.g. $\gamma_t \propto 1/\sqrt t$, linear decay, WSD).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 36, label: "02a slide 36 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-stopping-criterion
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: detail
+  front: "*(Implementation)* Stopping criterion: stop when {{c1::$\\|\\nabla\\mathcal{L}(\\mathbf{w})\\|$ is close to zero}} — then we are often close to the optimum."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 36, label: "02a slide 36 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-ill-conditioning
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: "*(Implementation)* Why is feature normalization (pre-conditioning) useful for gradient descent?"
+  back: |
+    GD is sensitive to **ill-conditioning**: directions with very different curvature give elongated elliptic level sets, so GD zig-zags
+    and one step-size cannot suit all directions. Normalizing features makes level sets closer to circles and GD goes almost straight to the minimum.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 37, label: "02a slide 37 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- optimality conditions
+
+- id: 02a-first-order-optimality
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [optimization, convexity]
+  priority: core
+  front: |
+    *(Optimality)* First-order **necessary** condition at an optimum of a smooth problem: {{c1::$\nabla\mathcal{L}(\mathbf{w}^\star) = 0$ (critical point)}}.
+    If $\mathcal{L}$ is convex, a critical point is {{c2::a global optimum}}.
+  trap: "Without convexity a critical point can be a maximum or a saddle point."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 38, label: "02a slide 38 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-second-order-hessian
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [optimization, convexity]
+  priority: core
+  front: |
+    *(Hessian $\nabla^2\mathcal{L}(\mathbf{w}) \in \mathbb{R}^{D\times D}$)* Second-order **sufficient** condition: if $\nabla\mathcal{L}(\mathbf{w}) = 0$ and
+    {{c1::$\nabla^2\mathcal{L}(\mathbf{w}) \succ 0$ (positive definite)}}, then $\mathbf{w}$ is {{c2::a local minimum}}.
+  explanation: "Positive definite: $\\mathbf{v}^\\top\\nabla^2\\mathcal{L}\\,\\mathbf{v} > 0$ for all $\\mathbf{v} \\ne 0$ (valley bottom); negative definite = hilltop."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 39, label: "02a slide 39 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-convex-hessian-psd
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [convexity]
+  priority: core
+  front: "*(Hessian)* A twice-differentiable $\\mathcal{L}$ is convex if and only if {{c1::its Hessian is positive semi-definite at all points}}."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 39, label: "02a slide 39 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-mse-hessian
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [optimization, linear-regression]
+  priority: core
+  front: |
+    *(Linear MSE $\frac{1}{2N}\|\mathbf{y} - X\mathbf{w}\|^2$)* Hessian: $\nabla^2\mathcal{L}(\mathbf{w}) =$ {{c1::$\frac1N X^\top X$}} — {{c2::constant in $\mathbf{w}$}};
+    computing it costs {{c3::$O(ND^2)$}}.
+  explanation: |
+    Differentiate $\nabla\mathcal{L} = -\frac1N X^\top(\mathbf{y} - X\mathbf{w})$ once more. $X^\top X$ is $D\times D$ and each entry is a sum over $N$ samples.
+    It is PSD ($\mathbf{v}^\top X^\top X\mathbf{v} = \|X\mathbf{v}\|^2 \ge 0$), confirming the MSE is convex.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 4, label: "Final 2025 Q6 (solution)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 39, label: "02a slide 39 (annotated)"}
+  added: 2026-10-02
+  notes: "Hessian of the linear MSE is not written on the slides; it comes from the 2025 Q6/Q37 official solutions and lab 2."
+
+# ---------------------------------------------------------------- non-convex, constrained
+
+- id: 02a-non-convex
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [optimization]
+  priority: detail
+  front: "*(Optimization)* Real ML problems are usually non-convex. Why study convex optimization then?"
+  back: "Everything learned on algorithm design and performance in the convex case still guides us (GD/SGD are used on non-convex losses, e.g. neural nets), but global guarantees are lost: we may end in local minima."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 41, label: "02a slide 41"}
+  added: 2026-10-02
+
+- id: 02a-convex-set
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [convexity, constrained-optimization]
+  priority: core
+  front: |
+    *(Convex set)* $\mathcal{C}$ is convex iff for any $\mathbf{u}, \mathbf{v} \in \mathcal{C}$ and any $0 \le \theta \le 1$: {{c1::$\theta\mathbf{u} + (1-\theta)\mathbf{v} \in \mathcal{C}$}}
+    (the segment between any two points stays in $\mathcal{C}$).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 46, label: "02a slide 46"}
+  added: 2026-10-02
+
+- id: 02a-convex-set-properties
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [convexity, constrained-optimization]
+  priority: core
+  front: |
+    *(Convex sets)* {{c1::Intersections}} of convex sets are convex (unions are not in general).
+    Projections onto convex sets are {{c2::unique}} (and often efficient to compute).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization.pdf, page: 47, label: "02a slide 47"}
+  added: 2026-10-02
+
+- id: 02a-projected-gd
+  type: cloze
+  origin: concept
+  lecture: "02a"
+  themes: [constrained-optimization]
+  priority: core
+  front: |
+    *(Projected GD for $\min_{\mathbf{w}\in\mathcal{C}}\mathcal{L}(\mathbf{w})$)* $\mathbf{w}^{(t+1)} :=$ {{c1::$P_\mathcal{C}\big[\mathbf{w}^{(t)} - \gamma\nabla\mathcal{L}(\mathbf{w}^{(t)})\big]$}},
+    with $P_\mathcal{C}(\mathbf{w}') :=$ {{c2::$\arg\min_{\mathbf{v}\in\mathcal{C}}\|\mathbf{v} - \mathbf{w}'\|$}}.
+  explanation: "GD step, then project back onto $\\mathcal{C}$. Projected SGD: same with an SGD step, same convergence properties."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 48, label: "02a slide 48 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-projection-cost
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [constrained-optimization]
+  priority: detail
+  front: "*(Projected SGD)* What decides whether projected (S)GD is practical?"
+  back: "The computational cost of the projection — crucial. Projecting onto a ball is cheap; onto a polytope (e.g. the $\\ell_1$ diamond) it is costly."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 49, label: "02a slide 49 (annotated)"}
+  added: 2026-10-02
+
+- id: 02a-penalty-functions
+  type: basic
+  origin: concept
+  lecture: "02a"
+  themes: [constrained-optimization, regularization]
+  priority: core
+  front: "*(Constrained → unconstrained)* Give two ways to replace $\\min_{\\mathbf{w}\\in\\mathcal{C}}\\mathcal{L}(\\mathbf{w})$ by an unconstrained problem."
+  back: |
+    1. "Brick wall": add the indicator $I_\mathcal{C}(\mathbf{w}) = 0$ if $\mathbf{w}\in\mathcal{C}$, $\infty$ otherwise (non-continuous objective).
+    2. Penalize the violation, e.g. for $\mathcal{C} = \{\mathbf{w} : A\mathbf{w} = \mathbf{b}\}$: $\min_\mathbf{w}\mathcal{L}(\mathbf{w}) + \lambda\|A\mathbf{w} - \mathbf{b}\|^2$ ($\lambda$ = trade-off).
+  explanation: "Linearized penalties lead to Lagrange multipliers. Penalizing is the same idea as regularization (ridge, week 3)."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 50, label: "02a slide 50 (annotated)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-02a-sgd-step-cost
+  type: mcq
+  origin: exam_style
+  lecture: "02a"
+  themes: [sgd]
+  priority: core
+  front: "*(SGD)* For linear regression with the MSE on $N$ samples in dimension $D$, what is the cost of one SGD step (one sample)?"
+  choices: ["$O(D)$", "$O(N)$", "$O(ND)$", "$O(ND^2)$"]
+  answer: [0]
+  explanation: |
+    $\nabla\mathcal{L}_n = -\mathbf{x}_n(y_n - \mathbf{x}_n^\top\mathbf{w})$: one inner product and one scaled vector, $O(D)$. $O(ND)$ is a full GD step;
+    $O(ND^2)$ is the cost of the Hessian $\frac1N X^\top X$.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 24, label: "02a slide 23 (annotated)"}
+  added: 2026-10-02
+
+- id: style-02a-minibatch-full
+  type: tf
+  origin: exam_style
+  lecture: "02a"
+  themes: [sgd]
+  priority: core
+  front: "*(SGD)* Mini-batch SGD with batch size $|B| = N$ (the whole training set, without replacement) is exactly gradient descent."
+  answer: true
+  explanation: "$\\mathbf{g} = \\frac1N\\sum_{n=1}^N\\nabla\\mathcal{L}_n(\\mathbf{w}) = \\nabla\\mathcal{L}(\\mathbf{w})$, the full gradient. $|B| = 1$ is basic SGD."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 22, label: "02a slide 21 (annotated)"}
+  added: 2026-10-02
+
+- id: style-02a-gd-overshoot
+  type: tf
+  origin: exam_style
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: |
+    *(GD)* For $\mathcal{L}(w_0) = \frac{1}{2N}\sum_n (y_n - w_0)^2$, gradient descent with step-size $\gamma = 1.5$ diverges.
+  answer: false
+  explanation: |
+    The update is $w_0 \leftarrow (1-\gamma)w_0 + \gamma\bar y$: the distance to $\bar y$ is multiplied by $|1-\gamma| = 0.5$ each step. It overshoots $\bar y$
+    (alternating sides) but converges. Divergence needs $\gamma > 2$.
+  trap: "Overshooting ≠ diverging: converges iff γ ∈ (0, 2) here."
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 14, label: "02a slide 13 (annotated)"}
+  added: 2026-10-02
+
+- id: style-02a-critical-point-min
+  type: tf
+  origin: exam_style
+  lecture: "02a"
+  themes: [optimization]
+  priority: core
+  front: "*(Optimality)* If $\\nabla\\mathcal{L}(\\mathbf{w}) = 0$, then $\\mathbf{w}$ is a local minimum of $\\mathcal{L}$."
+  answer: false
+  explanation: |
+    $\nabla\mathcal{L} = 0$ is only **necessary**: $\mathbf{w}$ could be a local maximum or a saddle point (e.g. $\mathcal{L}(w) = -w^2$ or $w^3$ at 0).
+    It becomes sufficient with convexity (then global) or with a positive definite Hessian (then local).
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 38, label: "02a slide 38 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 39, label: "02a slide 39 (annotated)"}
+  added: 2026-10-02
+
+- id: style-02a-subgradient-unique
+  type: tf
+  origin: exam_style
+  lecture: "02a"
+  themes: [subgradients]
+  priority: core
+  front: "*(Subgradients)* The MAE of a linear model has a unique subgradient at every $\\mathbf{w}$."
+  answer: false
+  explanation: |
+    Wherever a residual $e_n = y_n - \mathbf{x}_n^\top\mathbf{w}$ is exactly 0, $|e_n|$ has a kink and any slope in $[-1,1]$ can be used for that term:
+    the subdifferential is a set with many elements. Elsewhere the MAE is differentiable and the subgradient is the gradient.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 34, label: "02a slide 34 (annotated)"}
+  added: 2026-10-02
+
+- id: style-02a-normalization
+  type: tf
+  origin: exam_style
+  lecture: "02a"
+  themes: [gradient-descent]
+  priority: core
+  front: "*(GD)* Normalizing the input features can make gradient descent converge faster on an ill-conditioned least-squares problem."
+  answer: true
+  explanation: |
+    Features on very different scales give elongated level sets (ill-conditioning): GD zig-zags and the step-size is limited by the steepest
+    direction. Normalization (pre-conditioning) rounds the level sets so GD heads straight to the minimum.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 37, label: "02a slide 37 (annotated)"}
+  added: 2026-10-02
+
+- id: style-02a-projection-ball
+  type: mcq
+  origin: exam_style
+  lecture: "02a"
+  themes: [constrained-optimization]
+  priority: detail
+  front: "*(Projected GD)* For $\\mathcal{C} = \\{\\mathbf{w} : \\|\\mathbf{w}\\|_2 \\le 1\\}$, what is $P_\\mathcal{C}(\\mathbf{w}')$ for a point with $\\|\\mathbf{w}'\\|_2 > 1$?"
+  choices: ["$\\mathbf{w}'/\\|\\mathbf{w}'\\|_2$", "$\\mathbf{w}'$", "$\\mathbf{0}$", "$\\operatorname{sign}(\\mathbf{w}')$"]
+  answer: [0]
+  explanation: |
+    The closest point of the unit ball is obtained by rescaling onto the sphere: $\mathbf{w}'/\|\mathbf{w}'\|_2$ — an $O(D)$ operation, which is why
+    projecting onto a ball is "cheap" (slide 49). $\mathbf{w}'$ itself is outside $\mathcal{C}$; $\mathbf{0}$ and $\operatorname{sign}(\mathbf{w}')$ are not the closest points.
+  sources:
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 48, label: "02a slide 48 (annotated)"}
+    - {kind: lecture, pdf: lectures/02/lecture02a_optimization_annotated.pdf, page: 49, label: "02a slide 49 (annotated)"}
+  added: 2026-10-02

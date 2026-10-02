@@ -12,6 +12,7 @@ const CardPage = lazy(() => import('./pages/CardPage'))
 const Stats = lazy(() => import('./pages/Stats'))
 const Reports = lazy(() => import('./pages/Reports'))
 const Settings = lazy(() => import('./pages/Settings'))
+const Gallery = lazy(() => import('./pages/Gallery'))
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
               <Route index element={<Home />} />
               <Route path="browse" element={<Browse />} />
               <Route path="browse/:id" element={<CardPage />} />
+              <Route path="sheet" element={<Gallery />} />
               <Route path="stats" element={<Stats />} />
               <Route path="reports" element={<Reports />} />
               <Route path="settings" element={<Settings />} />

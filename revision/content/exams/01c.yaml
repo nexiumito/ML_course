@@ -1,0 +1,183 @@
+# Official past-exam questions whose primary lecture is 01c (stems and choices verbatim). Added in S3 (2026-10-02).
+
+- id: exam-2025-q4
+  type: mcq
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Loss Function)* Suppose that the teaching team of the ML course wants to develop an autograder that takes into account the
+    scores for each project, and frequency of class attendance and predict student performance on this final (between 0 and 100).
+    Which of the following functions is an appropriate loss function for this problem?
+  choices: ["Mean Absolute Error Loss", "Logistic Loss", "Hinge Loss", "0-1 Loss"]
+  answer: [0]
+  explanation: |
+    Official solution: the output is continuous (0–100), so this is a **regression** problem and the MAE is appropriate.
+    Logistic, hinge and 0-1 losses are classification losses (they compare a label with a score / a predicted class).
+  trap: "Read the target type first: real-valued ⇒ regression loss."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 4, label: "Final 2025 Q4"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 10, label: "01c slide 9"}
+  added: 2026-10-02
+
+- id: exam-2024-q5
+  type: mcq
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    Given a dataset $\mathcal{X} = \{1, 2, 4, 9, 16\}$, which choice of $b$ minimizes the mean average error (MAE):
+    $\mathcal{L}(b) = \frac{1}{5}\sum_{x\in\mathcal{X}} |x - b|$?
+  choices: ["$\\pi$", "$4.0$", "$\\sqrt{358/5}$", "$6.4$", "$2.0$", "$9.0$", "$\\sqrt[3]{16}$", "$2\\pi$", "$8.5$"]
+  answer: [1]
+  explanation: |
+    Official solution: the MAE is uniquely minimized by the **median**, here $4$ (5 points, the 3rd smallest).
+    $6.4$ is the mean (the MSE minimizer); the other values are distractors.
+  trap: "MAE → median, MSE → mean."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 4, label: "Final 2024 Q5"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+  notes: "answer = ticked box (4.0) on the rendered page, 2026-10-02"
+
+- id: exam-2023-q1
+  type: mcq
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Linear regression / Loss functions)* Figure 1 below shows the three different datasets (A, B, C) and the same linear model
+    used to predict each of these datasets (dashed line, from $\mathbb{R}^1$ to $\mathbb{R}^1$).
+
+    Choose the correct ordering with respect to MSE (Mean Squared Error) loss.
+  images:
+    - {src: img/exam-2023-q1.png, alt: "Three scatter plots A, B, C of 8 points each with the same dashed line y = x. A: one point 3 above the line. B: two points 2 above and 2 below the line. C: five points each 1 away from the line."}
+  choices:
+    - "$\\mathrm{MSE}_B > \\mathrm{MSE}_A > \\mathrm{MSE}_C$"
+    - "$\\mathrm{MSE}_B > \\mathrm{MSE}_C > \\mathrm{MSE}_A$"
+    - "At least two of the MSE losses are equal."
+    - "$\\mathrm{MSE}_A > \\mathrm{MSE}_C > \\mathrm{MSE}_B$"
+    - "$\\mathrm{MSE}_C > \\mathrm{MSE}_B > \\mathrm{MSE}_A$"
+    - "$\\mathrm{MSE}_A > \\mathrm{MSE}_B > \\mathrm{MSE}_C$"
+    - "$\\mathrm{MSE}_C > \\mathrm{MSE}_A > \\mathrm{MSE}_B$"
+  answer: [5]
+  explanation: |
+    Official solution: $\mathrm{MSE}_A = 9/8$, $\mathrm{MSE}_B = 8/8$, $\mathrm{MSE}_C = 5/8$ (8 points each).
+    A has one residual of 3 ($3^2 = 9$), B two residuals of 2 ($4+4$), C five residuals of 1. Squaring makes the single large error dominate.
+  trap: "Same data under MAE gives the reverse ordering (2023 Q2): the squared loss punishes one big error most."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 2, label: "Final 2023 Q1"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 6, label: "01c slide 5"}
+  added: 2026-10-02
+  notes: "choices in exam order; answer = ticked box on the rendered page (2026-10-02)"
+
+- id: exam-2023-q2
+  type: mcq
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Linear regression / Loss functions)* Same three datasets (A, B, C) and the same linear model as in Figure 1.
+
+    Choose the correct ordering with respect to MAE (Mean Absolute Error) loss.
+  images:
+    - {src: img/exam-2023-q1.png, alt: "Three scatter plots A, B, C of 8 points each with the same dashed line y = x. A: one point 3 above the line. B: two points 2 above and 2 below the line. C: five points each 1 away from the line."}
+  choices:
+    - "$\\mathrm{MAE}_A > \\mathrm{MAE}_C > \\mathrm{MAE}_B$"
+    - "$\\mathrm{MAE}_B > \\mathrm{MAE}_C > \\mathrm{MAE}_A$"
+    - "$\\mathrm{MAE}_A > \\mathrm{MAE}_B > \\mathrm{MAE}_C$"
+    - "$\\mathrm{MAE}_C > \\mathrm{MAE}_A > \\mathrm{MAE}_B$"
+    - "$\\mathrm{MAE}_B > \\mathrm{MAE}_A > \\mathrm{MAE}_C$"
+    - "At least two of the MAE losses are equal."
+    - "$\\mathrm{MAE}_C > \\mathrm{MAE}_B > \\mathrm{MAE}_A$"
+  answer: [6]
+  explanation: |
+    Official solution: $\mathrm{MAE}_A = 3/8$, $\mathrm{MAE}_B = 4/8$, $\mathrm{MAE}_C = 5/8$. Absolute errors add up linearly, so the
+    dataset with many small errors (C) now has the largest loss — the reverse of the MSE ordering (2023 Q1).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 2, label: "Final 2023 Q2"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 10, label: "01c slide 9"}
+  added: 2026-10-02
+  notes: "choices in exam order; answer = ticked box on the rendered page (2026-10-02)"
+
+- id: exam-2023-q18
+  type: tf
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    *(Optimization)* The Mean Absolute Error (MAE) loss function is more robust to outliers in the training dataset than the
+    Mean Squared Error (MSE) loss function.
+  answer: true
+  explanation: |
+    Official solution: the MSE squares the errors, so outliers produce huge contributions; the MAE does not amplify them
+    (linear growth). Lecture exercise: one outlier moves the MSE fit from 2.5 to 6 but the MAE fit only to 3.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 9, label: "Final 2023 Q18"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions_annotated.pdf, page: 10, label: "01c slide 9 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2019-q16
+  type: tf
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: "*(Robustness)* The $\\ell_1$ loss is less sensitive to outliers than $\\ell_2$."
+  answer: true
+  explanation: |
+    Official solution: True. The $\ell_1$ (absolute, MAE) loss grows linearly with the residual, the $\ell_2$ (squared, MSE) loss quadratically,
+    so large residuals weigh much more under $\ell_2$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 8, label: "Final 2019 Q16"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 14, label: "01c slide 14"}
+  added: 2026-10-02
+
+- id: exam-2016-q3
+  type: mcq
+  origin: exam_official
+  lecture: "01c"
+  themes: [loss-functions]
+  priority: core
+  front: |
+    You have data with lots of outliers. Everything else being equal, and assuming that you do not do any pre-processing, what cost
+    function will be less effected by these outliers? *(More than one answer can be correct.)*
+  choices: ["$(y - f(x))^2$ (MSE)", "$|y - f(x)|$ (MAE)"]
+  answer: [1]
+  multi: true
+  shuffle: false
+  explanation: "Official solution: (b), the MAE, since it weighs large outliers less heavily (linear instead of quadratic growth)."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q3"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 8, label: "01c slide 7"}
+  added: 2026-10-02
+
+- id: exam-2020-q18
+  type: mcq
+  origin: exam_official
+  lecture: "01c"
+  also_lectures: ["02a"]
+  themes: [loss-functions, convexity]
+  priority: core
+  front: |
+    *(Cost functions)* Which statement is true for the Mean Squared Error (MSE) loss $\mathrm{MSE}(\mathbf{x}, y) := (f_\mathbf{w}(\mathbf{x}) - y)^2$, with $f_\mathbf{w}$ a model
+    parametrized by the weights $\mathbf{w}$?
+  choices:
+    - "MSE is not necessarily convex with respect to the weights of the model $\\mathbf{w}$."
+    - "MSE is more robust to outliers than Mean Absolute Error (MAE)."
+    - "For any ML task you are trying to solve, minimizing MSE will provably yield the best model."
+  answer: [0]
+  explanation: |
+    Official solution: the MSE is convex in the model's **output**, but not necessarily in the **weights**: it is convex in $\mathbf{w}$ for a linear model,
+    not for a non-linear one (e.g. deep networks). It is less robust than the MAE (large errors are squared), and the "best" model depends on
+    the downstream application — the loss we minimize is only a proxy.
+  trap: "Convex in the prediction ≠ convex in the parameters."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 11, label: "Final 2020 Q18"}
+    - {kind: lecture, pdf: lectures/01/lecture01c_loss_functions.pdf, page: 12, label: "01c slide 12"}
+  added: 2026-10-02

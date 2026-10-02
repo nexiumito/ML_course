@@ -3,7 +3,7 @@ import { Sheet } from './ui'
 const ROWS: [string, string][] = [
   ['Space / Enter', 'Reveal · then Good · Continue'],
   ['1 2 3 4', 'Again · Hard · Good · Easy (self-graded)'],
-  ['1–6 or A–F', 'Select a choice (multiple choice)'],
+  ['1–9 or A–F', 'Select a choice (multiple choice)'],
   ['Enter', 'Check answer / continue'],
   ['T / F  or  ← / →', 'Answer True / False'],
   ['G', 'Toggle "I guessed" (correct ⇒ Hard)'],

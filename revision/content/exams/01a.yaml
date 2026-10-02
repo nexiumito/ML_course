@@ -1,0 +1,144 @@
+# Official past-exam questions filed under 01a = prerequisite math (linear algebra, matrix calculus, probability).
+# Stems and choices verbatim. Added in S3 (2026-10-02).
+
+- id: exam-2024-q4
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [probability]
+  priority: core
+  front: "If $X \\sim N(\\mu, \\sigma^2)$ and $Y = aX + b$, then which expression below gives the variance of $Y$?"
+  choices: ["$a^2\\sigma^2 + b$", "$a\\sigma^2 + b$", "$a\\sigma^2$", "$a^2\\sigma^2$"]
+  answer: [3]
+  explanation: |
+    Official solution: $\operatorname{Var}(aX) = a^2\operatorname{Var}(X)$ and adding a constant $b$ does not change the variance, so
+    $\operatorname{Var}(Y) = a^2\sigma^2$. The options with $+b$ confuse variance with mean; $a\sigma^2$ forgets to square $a$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 4, label: "Final 2024 Q4"}
+  added: 2026-10-02
+
+- id: exam-2023-q10
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: |
+    Given matrix $A \in \mathbb{R}^{d\times d}$ with eigenvectors $(1, 2, 1)^\top$ and $(1, 1, 0)^\top$, both with eigenvalue 4, and
+    $\operatorname{trace}(A) = 2$. What is the determinant of $A$?
+  choices:
+    - "$\\det(A) = -16$"
+    - "$\\det(A) = 128$"
+    - "$\\det(A) = 16$"
+    - "The determinant of a matrix cannot be determined, since the dimension of A is unknown."
+    - "$\\det(A) = -128$"
+    - "$\\det(A) = -96$"
+  answer: [5]
+  explanation: |
+    Official solution: the eigenvectors live in $\mathbb{R}^3$, so $d = 3$ and there are 3 eigenvalues. $\operatorname{trace}(A) = \sum\lambda_i$
+    gives $4 + 4 + \lambda_3 = 2$, so $\lambda_3 = -6$ and $\det(A) = \prod\lambda_i = 4\cdot 4\cdot(-6) = -96$.
+  trap: "The dimension is not unknown: it is read off the eigenvectors."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 6, label: "Final 2023 Q10"}
+  added: 2026-10-02
+
+- id: exam-2017-q7
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [ml-basics, optimization]
+  priority: core
+  front: "What is the gradient of $\\mathbf{x}^\\top W^\\top W\\mathbf{x}$ with respect to $\\mathbf{x}$ (written as a vector)?"
+  choices: ["$2W^\\top\\mathbf{x}$", "$2W^\\top W\\mathbf{x}$", "$2WW^\\top\\mathbf{x}$", "$2W$", "$2W\\mathbf{x}$"]
+  answer: [1]
+  explanation: |
+    Official solution: with $A = W^\top W$, $\mathbf{x}^\top A\mathbf{x} = \sum_{i,j}A_{ij}x_ix_j$ has gradient $A\mathbf{x} + A^\top\mathbf{x}$; $A$ is
+    symmetric, so the result is $2W^\top W\mathbf{x}$. Equivalently $\|W\mathbf{x}\|^2$ has gradient $2W^\top(W\mathbf{x})$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 5, label: "Final 2017 P7"}
+  added: 2026-10-02
+
+- id: exam-2017-q8
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: "What is the derivative of $WW$ with respect to $W_{i,j}$, where $W$ is an $n \\times n$ matrix?"
+  choices:
+    - "$W_{i,j}$"
+    - "add to the $n \\times n$ all-zero matrix the $j$-th row of $W$ and the $i$-th column of $W$"
+    - "the vector of length $n$ equal to the sum of the $j$-th row of $W$ and the $i$-th column of $W$"
+    - "$W + W^\\top$"
+    - "$W_{i,j}^2$"
+  answer: [1]
+  explanation: |
+    $(WW)_{kl} = \sum_m W_{km}W_{ml}$ is an $n\times n$ matrix, so its derivative w.r.t. one entry is an $n\times n$ matrix. $W_{ij}$ appears
+    (a) as $W_{km}$ with $k=i, m=j$: contributes $W_{jl}$ to entry $(i,l)$, i.e. **row $i$ receives the $j$-th row of $W$**; and
+    (b) as $W_{ml}$ with $m=i, l=j$: contributes $W_{ki}$ to entry $(k,j)$, i.e. **column $j$ receives the $i$-th column of $W$**.
+    The official solution describes the same two contributions (its wording of where the row is placed is loose).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 5, label: "Final 2017 P8"}
+  added: 2026-10-02
+  notes: "Official answer = option 2; placement (row i / column j) derived by hand 2026-10-02."
+
+- id: exam-2016-q5
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: "What is the gradient of $\\mathbf{x}^\\top W\\mathbf{x}$ with respect to all entries of $W$ (written as a matrix)? *(More than one answer can be correct.)*"
+  choices: ["$W\\mathbf{x}$", "$W^\\top\\mathbf{x}$", "$(W + W^\\top)\\mathbf{x}$", "$W$", "$\\mathbf{x}\\mathbf{x}^\\top$", "$\\mathbf{x}^\\top\\mathbf{x}$", "$WW^\\top$"]
+  answer: [4]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: (e). $\mathbf{x}^\top W\mathbf{x} = \sum_{i,j}W_{ij}x_ix_j$, so $\partial/\partial W_{ij} = x_ix_j$, i.e. the matrix $\mathbf{x}\mathbf{x}^\top$.
+    $(W+W^\top)\mathbf{x}$ is the gradient with respect to $\mathbf{x}$ (2016 Q6), not $W$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q5"}
+  added: 2026-10-02
+
+- id: exam-2016-q6
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [ml-basics, optimization]
+  priority: core
+  front: "What is the gradient of $\\mathbf{x}^\\top W\\mathbf{x}$ with respect to $\\mathbf{x}$ (written as a vector)? *(More than one answer can be correct.)*"
+  choices: ["$W\\mathbf{x}$", "$W^\\top\\mathbf{x}$", "$(W + W^\\top)\\mathbf{x}$", "$W$", "$\\mathbf{x}\\mathbf{x}^\\top$", "$\\mathbf{x}^\\top\\mathbf{x}$", "$WW^\\top$"]
+  answer: [2]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: (c). Differentiating $\sum_{i,j}W_{ij}x_ix_j$ w.r.t. $x_k$ gives two terms, one from $W\mathbf{x}$ and one from $\mathbf{x}^\top W$,
+    hence $(W + W^\top)\mathbf{x}$. $W\mathbf{x}$ alone is only correct when $W$ is symmetric (and then the answer is $2W\mathbf{x}$).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q6"}
+  added: 2026-10-02
+
+- id: exam-2016-q23
+  type: mcq
+  origin: exam_official
+  lecture: "01a"
+  themes: [ml-basics]
+  priority: detail
+  front: |
+    Let $f(x, y, z, u, v, w) = 3xyzuvw + x^2y^2w^2 - 7xz^5 + 3yvw^4$. What is
+
+    $$\Bigg[\frac{\partial f}{\partial x} + \frac{\partial f}{\partial y} + \frac{\partial f}{\partial z} + \frac{\partial f}{\partial u} + \frac{\partial f}{\partial v} + \frac{\partial f}{\partial w}\Bigg]_{x=y=z=u=v=w=1} \;?$$
+
+    *(More than one answer can be correct.)*
+  choices: ["-4", "-3", "-2", "-1", "0", "1", "2", "3", "4"]
+  answer: [4]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: (e) 0. The sum of all partial derivatives at the all-ones point is the derivative of $g(x) = f(x,x,x,x,x,x)$
+    $= 3x^6 + x^6 - 7x^6 + 3x^6 = 0$, so it is $0$. Directly, the six partials at the all-ones point are
+    $-2, 8, -32, 3, 6, 17$, which sum to $0$.
+  trap: "Chain rule: sum of partials at a diagonal point = derivative along the diagonal."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 6, label: "Final 2016 Q23"}
+  added: 2026-10-02

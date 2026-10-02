@@ -1,0 +1,95 @@
+# Official past-exam questions whose primary lecture is 01b (stems and choices verbatim). Added in S3 (2026-10-02).
+
+- id: exam-2020-q19
+  type: mcq
+  origin: exam_official
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: "*(Linear regression)* Which statement is true for linear regression?"
+  choices:
+    - "A linear regression model can be expressd as an inner product between feature vectors and a weight vector."
+    - "Linear regression, when using 'usual' loss functions, works fine when the dataset contains many outliers."
+    - "A good fit with linear regression implies a causal relationship between inputs and outputs."
+  answer: [0]
+  explanation: |
+    Official solution: $f_\mathbf{w}(\mathbf{x}) = w_0x_0 + w_1x_1 + \dots + w_nx_n = \mathbf{x}^\top\mathbf{w}$ (inner product). Outliers strongly affect the
+    best linear fit with usual losses (e.g. MSE), and correlation does not imply causation.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 11, label: "Final 2020 Q19"}
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 12, label: "01b slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2017-q18
+  type: mcq
+  origin: exam_official
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: |
+    Consider a linear regression problem with $N$ samples $\{(\mathbf{x}_n, y_n)\}_{n=1}^N$, where each input $\mathbf{x}_n$ is a $D$-dimensional vector
+    $\{-1, +1\}^D$, and all output values are $y_i \in \mathbb{R}$. Which of the following statements is correct?
+  choices:
+    - "Linear regression always \"works\" very well for $N \\ll D$"
+    - "A linear regressor works very well if the data is linearly separable."
+    - "Linear regression always \"works\" very well for $D \\ll N$"
+    - "None of the above."
+  answer: [3]
+  shuffle: false
+  explanation: |
+    Official solution: $D$ vs $N$ does not by itself decide whether it works ("always" is false either way). Linear separability matters for
+    classification but implies nothing for regression with real-valued outputs. Hence "None of the above".
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 10, label: "Final 2017 P18"}
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 14, label: "01b slide 19 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2016-q1
+  type: mcq
+  origin: exam_official
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: detail
+  front: |
+    Let the samples $\{(y_n, x_n)\}$ come from some fixed joint distribution $p(x, y)$, where $x_n$ and $y_n$ are scalars and both have zero
+    mean. Consider *linear* regression, i.e., we want to predict $Y$ from $X$ by means of $f(x) = \alpha x$ and we consider a square loss.
+    Meaningful regression is possible *(more than one answer can be correct)*
+  choices:
+    - "only if $X$ \"causes\" $Y$"
+    - "as long as $Y$ and $X$ have non-zero correlation"
+    - "only if $Y$ and $X$ are positively correlated, i.e., $\\mathbb{E}[XY] > 0$"
+    - "only if $Y$ and $X$ are negatively correlated, i.e., $\\mathbb{E}[XY] < 0$"
+  answer: [1]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: (b). Minimizing $\mathbb{E}[(Y - \alpha X)^2]$ gives $\alpha = \mathbb{E}[XY]/\mathbb{E}[X^2]$, which is non-zero (useful) exactly when
+    $X$ and $Y$ are correlated — the sign of the correlation only sets the sign of $\alpha$. Causation is not needed.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q1"}
+  added: 2026-10-02
+
+- id: exam-2016-q2
+  type: mcq
+  origin: exam_official
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: detail
+  front: |
+    Consider a linear regression problem with $N$ samples where the input is in $D$-dimensional space, and all output values are
+    $y_i \in \{-1, +1\}$. Which of the following statements is correct? *(More than one answer can be correct.)*
+  choices:
+    - "linear regression cannot \"work\" if $N \\gg D$"
+    - "linear regression cannot \"work\" if $N \\ll D$"
+    - "linear regression can be made to work perfectly if the data is linearly separable"
+  answer: [2]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: (c) only. The relative size of $N$ and $D$ alone does not make it fail. With $\pm1$ outputs the linear output is used
+    as a classifier (its sign): if the data is linearly separable, some linear function has the correct sign on every point.
+    Contrast with Final 2017 P18, where the outputs are real-valued and separability says nothing.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 2, label: "Final 2016 Q2"}
+  added: 2026-10-02
+  notes: "Official solution gives only the letter; the reasoning in the explanation is ours (sign of the linear output as classifier)."

@@ -24,6 +24,12 @@ Mock midterms (`exam/mock-midterm-exam/`, short derivation problems, mid-Novembe
 | 2017 | `mock-exam-2017.pdf` | `mock-exam-2017-solutions.pdf` | 5 / 5 |
 | 2018 | `mock-exam-2018.pdf` (2018-11-19) | `mock-exam-2018-solutions.pdf` | 6 / 7 |
 
+## Question index (revision app)
+Every question of finals 2016–2025 and of the mock midterms is classified in `revision/content/exam-index.yaml` (S3, 2026-10-02):
+type (mcq / tf / open), topic, course areas, lectures (once caught up), status (pending / added / open-excluded / excluded = Bayes nets & factor graphs, not in the 2026 syllabus / duplicate), page in the solutions PDF.
+431 entries: 107 open questions, 9 out of syllabus, 8 duplicates (mock 2017 MC items repeated in mock 2018). Official questions become cards in the revision app as their lectures are caught up (`revision/SPEC.md` §8.3).
+Known slips in official solutions: 2025 Q5 solution text says "(b)" but the ticked box (correct) is −(1/N)Xᵀ(y−Xw); 2021 Q6 solution discusses an "f5" absent from the question; 2017 P8 solution places the row loosely (row i of the derivative = j-th row of W).
+
 ## Current format (2019–2025, expected for Jan 2027)
 - **180 min**, closed book, **one double-sided A4 cheat sheet** (hand-written or ≥ 11 pt in 2020 rules), no electronics. Held at SwissTech (STCC). Each student gets a different (shuffled) version. Booklet of 20 pages; answers only in the booklet; last 2 pages scrap.
 - "This exam has many questions. We do not expect you to solve all of them even for the best grade."

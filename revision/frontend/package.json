@@ -9,10 +9,11 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check-math": "cd .. && uv run revision content dump-texts | node frontend/scripts/check-math.mjs"
   },
   "dependencies": {
-    "katex": "^0.19.0",
+    "katex": "^0.16.47",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",

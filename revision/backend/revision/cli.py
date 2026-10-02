@@ -55,6 +55,13 @@ def content_check(
         f"{len(content.course.lectures)} lectures",
         fg="green",
     )
+    unlockable = content.unlockable_exam_questions()
+    if unlockable:
+        typer.secho(
+            f"{len(unlockable)} official exam question(s) unlockable but not added yet "
+            f"(exam-index.yaml, status pending, all lectures active)",
+            fg="cyan",
+        )
     if db:
         from revision.db import open_db, orphan_items
 
@@ -67,6 +74,42 @@ def content_check(
         typer.echo(f"{len(orphans)} orphan item(s)")
         for r in orphans:
             typer.echo(f"  {r['item_id']} (reps {r['reps']})")
+
+
+@content_app.command("dump-texts")
+def content_dump_texts() -> None:
+    """JSON lines {id, field, text} of every shown text (cloze items rendered).
+
+    Piped into frontend/scripts/check-math.mjs (`npm run check-math`)."""
+    from revision.content import render_cloze
+
+    _cfg, content = _load_or_exit()
+    for lc in content.cards:
+        c = lc.card
+        fields = {"back": c.back, "explanation": c.explanation, "trap": c.trap}
+        if c.type == "cloze":
+            for i in lc.cloze:
+                fields[f"front c{i}"] = render_cloze(c.front, i, reveal=False)
+                fields[f"back c{i}"] = render_cloze(c.front, i, reveal=True)
+        else:
+            fields["front"] = c.front
+        for k, ch in enumerate(c.choices or []):
+            fields[f"choice {k}"] = ch
+        for field, text in fields.items():
+            if text:
+                print(json.dumps({"id": c.id, "field": field, "text": text}, ensure_ascii=False))
+
+
+@content_app.command("mark-added")
+def content_mark_added() -> None:
+    """Mark exam-index entries as `added` when their official card exists."""
+    from revision.content import mark_added_in_index
+
+    changed = mark_added_in_index(load_config().content_dir)
+    typer.echo(
+        f"{len(changed)} entr{'y' if len(changed) == 1 else 'ies'} marked added"
+        + (": " + ", ".join(changed) if changed else "")
+    )
 
 
 @app.command()

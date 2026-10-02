@@ -50,8 +50,8 @@ export function reviewKeyAction(key: string, c: KeyContext): KeyAction | null {
         return null
       }
       {
-        // mcq: 1–6 or A–F pick the choice at that display position (E/F are choices here, not shortcuts)
-        const pos = /^[1-6]$/.test(key) ? Number(key) - 1 : /^[a-f]$/i.test(key) ? key.toLowerCase().charCodeAt(0) - 97 : -1
+        // mcq: 1–9 or A–F pick the choice at that display position (E/F are choices here, not shortcuts)
+        const pos = /^[1-9]$/.test(key) ? Number(key) - 1 : /^[a-f]$/i.test(key) ? key.toLowerCase().charCodeAt(0) - 97 : -1
         if (pos >= 0 && pos < (c.nChoices ?? 0)) return { type: 'selectChoice', position: pos }
         if (key === 'Enter' && c.hasSelection) return { type: 'check' }
         return null

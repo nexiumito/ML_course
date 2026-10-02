@@ -48,7 +48,18 @@ export default function Browse() {
 
   return (
     <div>
-      <PageTitle right={data && <span className="text-sm text-slate-500">{data.total} cards</span>}>Browse</PageTitle>
+      <PageTitle
+        right={
+          <span className="flex items-center gap-3 text-sm text-slate-500">
+            {data && `${data.total} cards`}
+            <Link to={`/sheet${lecture ? `?lecture=${lecture}` : ''}`} className="text-indigo-600 hover:underline dark:text-indigo-400">
+              Sheet view →
+            </Link>
+          </span>
+        }
+      >
+        Browse
+      </PageTitle>
       <input
         type="search"
         value={q}

@@ -68,7 +68,7 @@ BAD_CASES = [
     ("tf missing answer", lambda t: card(t, "cards/04a.yaml", 2).pop("answer"), "requires 'answer: true|false'"),
     ("mcq index out of range", lambda t: card(t, "exams/04a.yaml", 1).update(answer=[4]), "out of range"),
     ("mcq empty answer", lambda t: card(t, "exams/04a.yaml", 1).update(answer=[]), "non-empty list"),
-    ("mcq one choice", lambda t: card(t, "exams/04a.yaml", 1).update(choices=["a"], answer=[0]), "2–6 choices"),
+    ("mcq one choice", lambda t: card(t, "exams/04a.yaml", 1).update(choices=["a"], answer=[0]), "2–10 choices"),
     ("mcq 2 answers not multi", lambda t: card(t, "exams/04a.yaml", 1).update(answer=[0, 1]), "exactly one answer"),
     ("mcq scalar answer", lambda t: card(t, "exams/04a.yaml", 1).update(answer=0), "field 'answer'"),
     (
@@ -154,6 +154,29 @@ BAD_CASES = [
         "duplicate lecture id",
     ),
     ("course out of order", lambda t: t["course"]["lectures"].reverse(), "course order"),
+    ("index missing", lambda t: t.update(index=None), "exam-index.yaml: missing"),
+    (
+        "official card not added in index",
+        lambda t: t["index"]["questions"][0].update(status="pending"),
+        "index status is 'pending'",
+    ),
+    ("official card not indexed", lambda t: t["index"]["questions"].pop(1), "has no index entry"),
+    (
+        "index added without card",
+        lambda t: t["index"]["questions"][2].update(status="added"),
+        "no exam_official card 'exam-2023-q31'",
+    ),
+    ("index type mismatch", lambda t: t["index"]["questions"][0].update(type="mcq"), "but card 'exam-2023-q30' is tf"),
+    ("index unknown area", lambda t: t["index"]["questions"][2].update(areas=["zzz"]), "unknown area 'zzz'"),
+    ("index unknown lecture", lambda t: t["index"]["questions"][2].update(lectures=["99z"]), "unknown lecture '99z'"),
+    ("index page too far", lambda t: t["index"]["questions"][2].update(page=9), "page 9 > page count 3"),
+    ("index open not excluded", lambda t: t["index"]["questions"][3].update(status="pending"), "must be open-excluded"),
+    (
+        "index duplicate entry",
+        lambda t: t["index"]["questions"].append(dict(t["index"]["questions"][2])),
+        "duplicate entry",
+    ),
+    ("index duplicate without target", lambda t: t["index"]["questions"][2].update(status="duplicate"), "need same_as"),
 ]
 
 
@@ -165,6 +188,19 @@ def test_bad_fixture_fails_clearly(cfg, tree, name, mutate, expected):
         load_content(cfg.content_dir, cfg.repo_root)
     joined = "\n".join(exc.value.errors)
     assert expected in joined, joined
+
+
+def test_mark_added_in_index(cfg, tree):
+    from revision.content import mark_added_in_index
+
+    tree["index"]["questions"][0]["status"] = "pending"
+    write_content(cfg.content_dir, tree)
+    assert mark_added_in_index(cfg.content_dir) == ["exam-2023-q30"]
+    load_content(cfg.content_dir, cfg.repo_root)  # consistent again
+
+
+def test_unlockable_exam_questions(content):
+    assert [e.card_id for e in content.unlockable_exam_questions()] == ["exam-2023-q31"]
 
 
 def test_yaml_syntax_error_reported(cfg):

@@ -1,0 +1,158 @@
+# Lecture 01b — Regression. Printed slide numbers: page N+1 = slide N for slides 1–12; page 14 prints "19"
+# (overparameterization), pages 15–20 = slides 13–18 (additional notes). Written in S3 (2026-10-02).
+
+- id: 01b-regression-definition
+  type: cloze
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: |
+    *(Regression)* Regression relates input variables to the output variable, to either {{c1::predict outputs for new inputs}}
+    and/or {{c2::understand (interpret) the effect of the inputs on the output}}.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 3, label: "01b slide 2"}
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 7, label: "01b slide 6"}
+  added: 2026-10-02
+
+- id: 01b-dataset-notation
+  type: cloze
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: |
+    *(Regression data)* The data are pairs $(\mathbf{x}_n, y_n)$: $y_n$ is the $n$-th output and $\mathbf{x}_n$ a vector of $D$ inputs.
+    $N$ (number of pairs) is the {{c1::data size}} and $D$ is the {{c2::dimensionality}}.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 4, label: "01b slide 3"}
+  added: 2026-10-02
+
+- id: 01b-univariate-model
+  type: cloze
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: "*(Univariate linear regression)* $y_n \\approx f(\\mathbf{x}_n) :=$ {{c1::$w_0 + w_1 x_{n1}$}}, with parameters $\\mathbf{w} = (w_0, w_1)$."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 11, label: "01b slide 10 (annotated)"}
+  added: 2026-10-02
+
+- id: 01b-multivariate-model
+  type: cloze
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: |
+    *(Multivariate linear regression)* $y_n \approx f(\mathbf{x}_n) := w_0 + w_1x_{n1} + \dots + w_Dx_{nD} =$ {{c1::$\tilde{\mathbf{x}}_n^\top\tilde{\mathbf{w}}$}},
+    where the tilde means {{c2::the vectors include the offset (bias) term: $\tilde{\mathbf{x}}_n = (1, x_{n1}, \dots, x_{nD})$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 12, label: "01b slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: 01b-number-of-parameters
+  type: cloze
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: |
+    *(Linear regression on $D$-dimensional inputs)* With an offset term the model has {{c1::$D+1$}} parameters; without it
+    ($f(\mathbf{x}) = \mathbf{x}^\top\mathbf{w}$, common for high-dimensional data) it has {{c2::$D$}}.
+  explanation: "Warning from the slides: for other models (e.g. neural networks) the number of weights is unrelated to $D$."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 12, label: "01b slide 11 (annotated)"}
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 19, label: "01b slide 17 (additional notes)"}
+  added: 2026-10-02
+
+- id: 01b-learning-is-optimization
+  type: basic
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression, optimization]
+  priority: detail
+  front: "*(Regression)* What do \"learning\", \"estimating\" or \"fitting\" a linear regression model mean, and what do they require?"
+  back: "Finding $\\tilde{\\mathbf{w}} = (w_0, \\dots, w_D)$ from the data — which requires an optimization algorithm (lecture 02a) and a loss (lecture 01c)."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 13, label: "01b slide 12"}
+  added: 2026-10-02
+
+- id: 01b-overparameterization
+  type: basic
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression, overfitting]
+  priority: core
+  front: "*(Regression)* What is the $D > N$ issue (overparameterization), and what fixes it?"
+  back: |
+    More parameters than data examples ("$p > n$"): the fit is **under-determined** — many weight vectors explain the data equally well
+    (e.g. $N = 1$ point and a line $w_0 + w_1x$: infinitely many lines). The model is over-parameterized. **Regularization** restores
+    identifiability (lecture 03d).
+  explanation: "The slide also notes that over-parameterization can help training dynamics if the issue is ignored."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 14, label: "01b slide 19 (annotated)"}
+  added: 2026-10-02
+
+- id: 01b-correlation-not-causation
+  type: basic
+  origin: concept
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: detail
+  front: "*(Regression)* Does a good linear regression fit show that the inputs cause the output?"
+  back: "No — regression finds correlation, not causation; interpret results with caution (Final 2020 Q19 distractor)."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 16, label: "01b slide 14 (additional notes)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-01b-parameter-count
+  type: mcq
+  origin: exam_style
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: core
+  front: "*(Linear regression)* A multivariate linear regression model with an offset term is fit on inputs $\\mathbf{x}_n \\in \\mathbb{R}^{D}$. How many parameters does it have?"
+  choices: ["$D + 1$", "$D$", "$N$", "$N(D+1)$"]
+  answer: [0]
+  explanation: |
+    One weight per input dimension plus the offset $w_0$: $D+1$ ($\tilde{\mathbf{w}} = (w_0, \dots, w_D)$). $D$ is the count without offset;
+    the number of parameters does not depend on $N$.
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 12, label: "01b slide 11 (annotated)"}
+  added: 2026-10-02
+
+- id: style-01b-overparameterized-unique
+  type: tf
+  origin: exam_style
+  lecture: "01b"
+  themes: [linear-regression, overfitting]
+  priority: core
+  front: "*(Linear regression)* With $D > N$ (more parameters than examples) and no regularization, the best-fitting weight vector is uniquely determined by the data."
+  answer: false
+  explanation: |
+    $D > N$ makes the problem under-determined: many weight vectors fit equally well (for $N = 1$ and $w_0 + w_1x$, every line through the point).
+    Regularization (e.g. ridge) restores a unique solution.
+  trap: "D > N ⇒ non-identifiable weights (XᵀX singular, lecture 03a)."
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression_annotated.pdf, page: 14, label: "01b slide 19 (annotated)"}
+  added: 2026-10-02
+
+- id: style-01b-prediction-vs-interpretation
+  type: mcq
+  origin: exam_style
+  lecture: "01b"
+  themes: [linear-regression]
+  priority: detail
+  front: "*(Regression)* \"What is the weight of a person who is 170 cm tall?\" — which goal of regression is this?"
+  choices: ["Prediction", "Interpretation", "Classification", "Clustering"]
+  answer: [0]
+  explanation: |
+    Predicting the output for a new input is **prediction**. Interpretation asks how inputs affect the output (e.g. "are taller people heavier?").
+    Classification and clustering are other tasks (discrete labels / no labels).
+  sources:
+    - {kind: lecture, pdf: lectures/01/lecture01b_regression.pdf, page: 7, label: "01b slide 6"}
+  added: 2026-10-02

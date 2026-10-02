@@ -41,7 +41,7 @@ Annotated versions (prof's handwriting, 2026-09-15): `lecture01b_regression_anno
   - Strictly convex ⇒ unique global minimum w★. Convex ⇒ every local minimum is global.
   - Sums of convex functions are convex ⇒ **MSE + linear model is convex in w** (each (yₙ − xₙᵀw)² is convex in w). Same for MAE (|affine| is convex).
   - Exercise slide 13 (annotated): with `f_w(x) = xᵀw`, `L(w) = Σₙ loss(yₙ − xᵀw)`: a convex function of the residual composed with an affine function of w is convex in w; sum stays convex. Sketch p.11: chord between two points of the graph lies above the graph.
-- Slide 14 plot (Breheny), annotated: red = MSE (least squares), green = MAE, purple = Huber, blue = Tukey, x-axis = residual eₙ. Reading left→right on robustness: MSE < Huber ≈ MAE < Tukey; on convexity: Tukey is the only non-convex one.
+- Slide 14 plot (Breheny; legend checked on the rendered slide 2026-10-02): black = least squares (MSE), green = absolute value (MAE), red = Huber, blue = Tukey, x-axis = residual eₙ; the professor wrote "MSE"/"MAE" next to the curves. Reading left→right on robustness: MSE < Huber ≈ MAE < Tukey; on convexity: Tukey is the only non-convex one.
 - Additional reading: **Huber loss** `½e² if |e| ≤ δ, δ|e| − ½δ² otherwise` (convex, differentiable, robust; δ hard to set); **Tukey's bisquare** (non-convex, robust; defined via gradient `e(1 − e²/δ²)²` for |e| ≤ δ, 0 beyond). Robust statistics (Wikipedia; Murphy §2.4). Karpathy's lossfunctions.tumblr.com.
 
 ## Exam-relevant points / pitfalls

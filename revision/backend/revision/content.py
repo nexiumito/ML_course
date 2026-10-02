@@ -30,12 +30,14 @@ Priority = Literal["core", "detail"]
 SourceKind = Literal["lecture", "exam", "lab", "doc"]
 
 FRONT_WARN_CHARS = 400
+MAX_CHOICES = 10  # past exams have up to 9 choices
 BACK_WARN_CHARS = 300
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*[a-z0-9]$")
 EXAM_FINAL_ID_RE = re.compile(r"^exam-(\d{4})-q(\d{1,2})$")
 EXAM_MOCK_ID_RE = re.compile(r"^mock-(\d{4})-q(\d{1,2})([a-z]?)$")
 TODO_RE = re.compile(r"\bTODO\b")
+CONTROL_RE = re.compile(r"[\x00-\x09\x0b-\x1f\x7f]")  # anything but newline
 
 
 class _Strict(BaseModel):
@@ -94,6 +96,43 @@ class Lecture(_Strict):
 class Theme(_Strict):
     id: str
     label: str
+
+
+class IndexEntry(_Strict):
+    """One question of a past exam in content/exam-index.yaml (SPEC §8.3)."""
+
+    exam: str  # final-YYYY | mock-YYYY
+    q: str
+    type: Literal["mcq", "tf", "open"]
+    topic: str
+    areas: list[str]
+    lectures: list[str] | None = None
+    status: Literal["pending", "added", "open-excluded", "excluded", "duplicate"]
+    page: int = Field(ge=1)
+    figure: bool = False
+    multi: bool = False
+    same_as: str | None = None  # duplicate: card id of the identical question
+    note: str | None = None
+
+    @property
+    def card_id(self) -> str:
+        kind, year = self.exam.split("-")
+        return f"{'exam' if kind == 'final' else 'mock'}-{year}-q{self.q}"
+
+    @property
+    def pdf(self) -> str:
+        kind, year = self.exam.split("-")
+        if kind == "final":
+            return f"exam/final-exam-{year}-solutions.pdf"
+        return f"exam/mock-midterm-exam/mock-exam-{year}-solutions.pdf"
+
+
+class ExamIndex(_Strict):
+    areas: dict[str, str]
+    questions: list[IndexEntry]
+
+
+EXAM_KEY_RE = re.compile(r"^(final|mock)-\d{4}$")
 
 
 class Course(_Strict):
@@ -268,6 +307,7 @@ class Content:
     cards: list[LoadedCard]
     warnings: list[str] = field(default_factory=list)
     pdf_pages: dict[str, int] = field(default_factory=dict)  # repo-relative PDF -> page count
+    exam_index: ExamIndex | None = None
 
     def __post_init__(self) -> None:
         self.by_id: dict[str, LoadedCard] = {c.card.id: c for c in self.cards}
@@ -278,6 +318,18 @@ class Content:
         for lc in self.cards:
             for spec in lc.item_specs():
                 self.items[spec.item_id] = (lc, spec)
+
+    def unlockable_exam_questions(self) -> list[IndexEntry]:
+        """Pending official questions whose lectures are all active (to add in a content session)."""
+        if not self.exam_index:
+            return []
+        return [
+            e
+            for e in self.exam_index.questions
+            if e.status == "pending"
+            and e.lectures
+            and all(self.lectures.get(lid, None) and self.lectures[lid].active for lid in e.lectures)
+        ]
 
     def is_active(self, card: Card) -> bool:
         return all(self.lectures[lid].active for lid in [card.lecture, *card.also_lectures])
@@ -471,8 +523,8 @@ class _Validator:
         elif card.type == "mcq":
             self._forbid(where, card, "back")
             n = len(card.choices or [])
-            if not 2 <= n <= 6:
-                err(f"{where}: mcq needs 2–6 choices (got {n})")
+            if not 2 <= n <= MAX_CHOICES:
+                err(f"{where}: mcq needs 2–{MAX_CHOICES} choices (got {n})")
             if not isinstance(card.answer, list) or not card.answer:
                 err(f"{where}: mcq requires 'answer' = non-empty list of 0-based choice indices")
             else:
@@ -501,6 +553,8 @@ class _Validator:
                 continue
             if TODO_RE.search(text):
                 err(f"{where}: leftover TODO in {name}")
+            if CONTROL_RE.search(text):
+                err(f"{where}: control character (tab / escape mangled?) in {name}")
             if _unbalanced_dollars(text):
                 err(f"{where}: unbalanced '$' in {name}")
             if not text.strip():
@@ -588,6 +642,91 @@ class _Validator:
         return loaded
 
 
+def _check_exam_index(v: _Validator, course: Course, cards: list[LoadedCard]) -> ExamIndex | None:
+    rel = "exam-index.yaml"
+    path = v.content_dir / rel
+    official = {lc.card.id: lc.card for lc in cards if lc.card.origin == "exam_official"}
+    if not path.exists():
+        for cid in official:
+            v.errors.append(f"{rel}: missing, but official exam card '{cid}' exists")
+        return None
+    raw = _read_yaml(path, rel, v.errors)
+    if raw is None:
+        return None
+    try:
+        index = ExamIndex.model_validate(raw)
+    except ValidationError as e:
+        v.errors.extend(_fmt_pydantic(rel, e))
+        return None
+    err = v.errors.append
+    lectures = {lec.id for lec in course.lectures}
+    by_card: dict[str, IndexEntry] = {}
+    for e in index.questions:
+        where = f"{rel}: {e.exam} q{e.q}"
+        if not EXAM_KEY_RE.match(e.exam):
+            err(f"{where}: exam must be final-YYYY or mock-YYYY")
+            continue
+        if e.card_id in by_card:
+            err(f"{where}: duplicate entry")
+        by_card[e.card_id] = e
+        for a in e.areas:
+            if a not in index.areas:
+                err(f"{where}: unknown area '{a}' (declare it under areas:)")
+        for lid in e.lectures or []:
+            if lid not in lectures:
+                err(f"{where}: unknown lecture '{lid}'")
+        n_pages = v.check_repo_file(where, e.pdf, pdf=True)
+        if n_pages is not None and e.page > n_pages:
+            err(f"{where}: page {e.page} > page count {n_pages}")
+        if e.status == "added":
+            card = official.get(e.card_id)
+            if card is None:
+                err(f"{where}: status added but no exam_official card '{e.card_id}'")
+            elif card.type != e.type:
+                err(f"{where}: type {e.type} but card '{e.card_id}' is {card.type}")
+        if e.status == "duplicate" and not e.same_as:
+            err(f"{where}: duplicate entries need same_as: <card id>")
+        if e.type == "open" and e.status not in ("open-excluded", "excluded"):
+            err(f"{where}: open questions must be open-excluded (out of scope for now)")
+    for e in index.questions:
+        if e.status == "duplicate" and e.same_as and e.same_as not in by_card:
+            err(f"{rel}: {e.exam} q{e.q}: same_as '{e.same_as}' is not an indexed question")
+    for cid in official:
+        e = by_card.get(cid)
+        if e is None:
+            err(f"{rel}: official card '{cid}' has no index entry")
+        elif e.status != "added":
+            err(f"{rel}: official card '{cid}' exists but its index status is '{e.status}' (set it to added)")
+    return index
+
+
+def mark_added_in_index(content_dir: Path) -> list[str]:
+    """Set `status: added` on exam-index entries whose official card exists (line-based, keeps the file layout).
+    Returns the card ids that changed."""
+    path = content_dir / "exam-index.yaml"
+    card_ids: set[str] = set()
+    for f in sorted((content_dir / "exams").glob("*.yaml")):
+        for c in yaml.safe_load(f.read_text(encoding="utf-8")) or []:
+            if isinstance(c, dict) and c.get("origin") == "exam_official":
+                card_ids.add(c["id"])
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+    exam = q = None
+    changed: list[str] = []
+    for i, line in enumerate(lines):
+        if line.startswith("- exam: "):
+            exam, q = line.split(":", 1)[1].strip(), None
+        elif line.startswith("  q: "):
+            q = line.split(":", 1)[1].strip().strip("'\"")
+        elif line.startswith("  status: pending") and exam and q:
+            kind, year = exam.split("-")
+            cid = f"{'exam' if kind == 'final' else 'mock'}-{year}-q{q}"
+            if cid in card_ids:
+                lines[i] = line.replace("pending", "added")
+                changed.append(cid)
+    path.write_text("".join(lines), encoding="utf-8")
+    return changed
+
+
 def load_content(content_dir: Path, repo_root: Path) -> Content:
     """Load and validate all content. Raises ContentError (with every error found) on failure."""
     v = _Validator(repo_root, content_dir)
@@ -595,6 +734,7 @@ def load_content(content_dir: Path, repo_root: Path) -> Content:
     if course is None:
         raise ContentError(v.errors, v.warnings)
     cards = v.load_cards(course)
+    index = _check_exam_index(v, course, cards)
     if v.errors:
         raise ContentError(v.errors, v.warnings)
-    return Content(course=course, cards=cards, warnings=v.warnings, pdf_pages=v.pdf_pages)
+    return Content(course=course, cards=cards, warnings=v.warnings, pdf_pages=v.pdf_pages, exam_index=index)

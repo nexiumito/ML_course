@@ -161,8 +161,53 @@ def good_content() -> dict:
             "back": "hidden",
         },
     ]
+    index = {
+        "areas": {"generalization": "04a", "cv": "04a"},
+        "questions": [
+            {
+                "exam": "final-2023",
+                "q": "30",
+                "type": "tf",
+                "topic": "Hoeffding",
+                "areas": ["generalization"],
+                "lectures": ["04a"],
+                "status": "added",
+                "page": 2,
+            },
+            {
+                "exam": "final-2025",
+                "q": "24",
+                "type": "mcq",
+                "topic": "CV cost",
+                "areas": ["cv"],
+                "lectures": ["04a"],
+                "status": "added",
+                "page": 1,
+            },
+            {
+                "exam": "final-2023",
+                "q": "31",
+                "type": "tf",
+                "topic": "selection",
+                "areas": ["generalization"],
+                "lectures": ["04a"],
+                "status": "pending",
+                "page": 3,
+            },
+            {
+                "exam": "final-2023",
+                "q": "40",
+                "type": "open",
+                "topic": "open",
+                "areas": [],
+                "status": "open-excluded",
+                "page": 3,
+            },
+        ],
+    }
     return {
         "course": course,
+        "index": index,
         "files": {
             "cards/04a.yaml": cards_04a,
             "exams/04a.yaml": exams_04a,
@@ -179,6 +224,11 @@ def write_content(content_dir: Path, tree: dict) -> None:
         for f in d.glob("*.yaml"):
             f.unlink()
     (content_dir / "course.yaml").write_text(yaml.safe_dump(tree["course"], sort_keys=False, allow_unicode=True))
+    idx = content_dir / "exam-index.yaml"
+    if tree.get("index") is None:
+        idx.unlink(missing_ok=True)
+    else:
+        idx.write_text(yaml.safe_dump(tree["index"], sort_keys=False, allow_unicode=True))
     for rel, cards in tree["files"].items():
         (content_dir / rel).write_text(yaml.safe_dump(cards, sort_keys=False, allow_unicode=True))
 
@@ -190,6 +240,7 @@ def repo(tmp_path: Path) -> Path:
     make_pdf(root / "lectures/04/lecture04b.pdf", 4)
     make_pdf(root / "lectures/05/lecture05a.pdf", 4)
     make_pdf(root / "exam/final-exam-2023-solutions.pdf", 3)
+    make_pdf(root / "exam/final-exam-2025-solutions.pdf", 2)
     make_pdf(root / "labs/ex04/exercise04.pdf", 1)
     (root / "secret.txt").write_text("not served")
     img = root / "revision/content/img/exam-2025-q24.png"

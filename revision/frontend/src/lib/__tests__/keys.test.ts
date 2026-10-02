@@ -32,6 +32,7 @@ describe('reviewKeyAction', () => {
     expect(k('E', q)).toEqual({ type: 'selectChoice', position: 4 })
     expect(k('f', q)).toEqual({ type: 'selectChoice', position: 5 })
     expect(k('5', { ...q, nChoices: 4 })).toBeNull()
+    expect(k('9', { ...q, nChoices: 9 })).toEqual({ type: 'selectChoice', position: 8 })
     expect(k('Enter', q)).toBeNull()
     expect(k('Enter', { ...q, hasSelection: true })).toEqual({ type: 'check' })
   })

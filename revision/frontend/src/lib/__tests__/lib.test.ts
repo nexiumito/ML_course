@@ -16,17 +16,17 @@ describe('normalizeMath', () => {
     expect(out).toContain('$$\na\n$$')
     expect(normalizeMath('costs \\$$5')).toBe('costs \\$$5')
   })
-  it('uses displaystyle for inline fractions only', () => {
-    expect(normalizeMath('a $\\frac{1}{2}$ b')).toBe('a $\\displaystyle \\frac{1}{2}$ b')
-    expect(normalizeMath('a $x^2$ b')).toBe('a $x^2$ b')
-    expect(normalizeMath('$\\displaystyle \\frac{1}{2}$')).toBe('$\\displaystyle \\frac{1}{2}$')
+  it('uses \\dfrac for inline fractions only', () => {
+    expect(normalizeMath('a $\\frac{1}{2}$ b')).toBe('a $\\dfrac{1}{2}$ b')
+    expect(normalizeMath('a $\\sum_n x_n^2$ b')).toBe('a $\\sum_n x_n^2$ b')
+    expect(normalizeMath('$\\tfrac{1}{2} + \\fracture$')).toBe('$\\tfrac{1}{2} + \\fracture$')
   })
   it('does not treat display blocks as inline math', () => {
     expect(normalizeMath('$$\\frac{a}{b}$$')).toBe('\n\n$$\n\\frac{a}{b}\n$$\n\n')
   })
   it('works right after a cloze marker', () => {
     expect(normalizeMath(`${CLOZE_START}$\\sqrt{\\frac{a}{b}}$${CLOZE_END}`)).toBe(
-      `${CLOZE_START}$\\displaystyle \\sqrt{\\frac{a}{b}}$${CLOZE_END}`,
+      `${CLOZE_START}$\\sqrt{\\dfrac{a}{b}}$${CLOZE_END}`,
     )
   })
 })

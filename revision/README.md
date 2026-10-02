@@ -25,9 +25,12 @@ uv run revision reports list [--all]     # card reports flagged in the app (mark
 uv run revision reports resolve 3 --note "fixed formula"
 uv run revision backup                   # online SQLite backup → data/backups/ (keeps 30)
 uv run revision export -o dump.json      # full JSON dump
+uv run revision content mark-added       # exam-index: set status added for every official card that exists
+uv run revision content dump-texts       # JSON lines of every shown text (input of `npm run check-math`)
 uv run pytest                            # backend tests
 uv run ruff check backend && uv run ruff format --check backend
 cd frontend && npm run typecheck && npm run lint && npm test   # vitest
+cd frontend && npm run check-math        # every card text through the app's KaTeX pipeline (fails on errors)
 ```
 
 ## Add content
@@ -36,8 +39,10 @@ cd frontend && npm run typecheck && npm run lint && npm test   # vitest
 2. The lecture must be listed in `content/course.yaml`; themes come from its controlled vocabulary.
 3. `uv run revision content check` must pass; with `serve --reload` the app reloads on YAML changes
    (or `POST /api/admin/reload`).
-4. Check every new card in the app at desktop **and 375 px** width (rendering, KaTeX, source page) — see the math-layout
-   rule in `SPEC.md` §8.2 (10b) — then commit (title-only message).
+4. `npm run check-math`, then check every new card in the app at desktop **and 375 px** width: `/sheet?lecture=<id>&check=1`
+   shows all cards of a lecture with answers plus an automatic layout check (see `SPEC.md` §8.2 rule 10b and §8.7).
+5. Official questions: pick `pending` entries of `content/exam-index.yaml` whose lectures are active, write them in
+   `content/exams/<lecture>.yaml`, run `uv run revision content mark-added`, then commit (title-only message).
 
 ## Layout
 ```

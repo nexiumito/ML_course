@@ -60,7 +60,7 @@ Sections: learning as optimization → grid search → landscapes → smooth opt
 
 ## Not exam material (additional notes)
 - Big-O: f = O(g) iff ∃c, x₀: f(x) ≤ c·g(x) ∀x ≥ x₀. Matrix–matrix (N×D)(D×K): O(NDK); matrix–vector O(ND).
-- SGD theory: with large N, random-example steps are cheap; convergence needs γ^(t) → 0 "appropriately" — **Robbins–Monro:** Σₜ γ^(t) = ∞ and Σₜ (γ^(t))² < ∞, e.g. γ^(t) = 1/t^α with α ∈ (0.5, 1].
+- SGD theory: with large N, random-example steps are cheap; convergence needs γ^(t) → 0 "appropriately" — **Robbins–Monro:** Σₜ γ^(t) = ∞ and Σₜ (γ^(t))² < ∞, slide 54 suggests γ^(t) = 1/(t+1)^r with r ∈ (0.5, 1) (checked on the rendered slide 2026-10-02).
 - Reading: Bubeck *Convex Optimization: Algorithms and Complexity*; Boyd & Vandenberghe.
 
 ## Exercises listed on the slides (→ Lab 2) — [annot] "chain rule everywhere"

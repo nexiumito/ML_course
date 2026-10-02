@@ -73,7 +73,7 @@ const choiceStyles: Record<ChoiceState, string> = {
   neutral: 'ring-slate-200 bg-white opacity-70 dark:bg-slate-900 dark:ring-slate-700',
 }
 
-const LETTERS = 'ABCDEF'
+const LETTERS = 'ABCDEFGHIJ'
 
 /** MCQ choices in display `order` (original indices). After grading, shows ✓ / ✗ with text, never color alone. */
 export function ChoiceList({
@@ -127,7 +127,7 @@ export function ChoiceList({
             >
               {LETTERS[pos]}
             </span>
-            <span className="min-w-0 flex-1">
+            <span className="min-w-0 flex-1 overflow-x-auto overflow-y-hidden py-0.5">
               <Markdown>{choices[orig]}</Markdown>
             </span>
             {mark && (
