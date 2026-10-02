@@ -1,5 +1,150 @@
-# Lecture 04a — Generalization, Model Selection, Validation (Flammarion deck: slide N = PDF page N).
-# Concept cards + unofficial exam-style cards. Sample set written in S1 (2026-10-02); full set in M6.
+# Lecture 04a — Generalization, Model Selection, Validation (Flammarion deck: slide N = PDF page N, title = p. 1).
+# Annotated PDF not yet published (as of 2026-10-02) → sources point to the plain deck.
+# Slides 23–27 (Hoeffding proof) were a bonus ("Do we still have some time?"), skipped by the student → `detail` only.
+# Sample set written in S1 (2026-10-02); full set in S5 (2026-10-02).
+
+# ---------------------------------------------------------------- setup: hyperparameters, risks
+
+- id: 04a-model-selection-problem
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [model-selection]
+  priority: detail
+  front: "*(Model selection)* What is the model selection problem? Give the two examples of the lecture."
+  back: |
+    Choosing the **hyperparameters** of a learning algorithm, which control the model complexity:
+    the ridge parameter $\lambda$, and the degree $d$ of a polynomial feature expansion.
+  explanation: "For neural networks: optimizer, step-size, batch size, architecture, width/depth, weight decay, early stopping, data augmentation… (slide 4)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 3, label: "04a slide 3"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 4, label: "04a slide 4"}
+  added: 2026-10-02
+
+- id: 04a-probabilistic-setup
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Probabilistic setup)* The data $S = \{(x_n, y_n)\}_{n=1}^N$ are drawn {{c1::i.i.d. from an unknown distribution $\mathcal{D}$ on $\mathcal{X} \times \mathcal{Y}$}}.
+    A learning algorithm maps the data to a predictor: {{c2::$\mathcal{A}(S) = f_S$}}.
+  explanation: "Write $f_{S,\\lambda}$ to show the dependence on a hyperparameter. Ridge example: $\\mathcal{A}$ = gradient descent or the least-squares closed form."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 5, label: "04a slide 5"}
+  added: 2026-10-02
+
+- id: 04a-fs-is-a-function
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: "*(Notation)* What is the difference between $f_S$ and $f_S(x)$?"
+  back: |
+    $f_S = \mathcal{A}(S)$ is a **function** (the predictor trained on $S$); $f_S(x)$ is **one prediction**, the value of that function at the input $x$.
+  explanation: "Because $S$ is random, $f_S$ is a random function — the starting point of the bias–variance analysis (04b)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 5, label: "04a slide 5"}
+  added: 2026-10-02
+
+- id: 04a-true-risk
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(True risk)* The true (expected, generalization) risk of $f$ is
+
+    {{c1::$L_\mathcal{D}(f) = \mathbb{E}_{(x,y)\sim\mathcal{D}}\big[\ell(y, f(x))\big]$}}
+
+    It cannot be computed because {{c2::$\mathcal{D}$ is unknown}}.
+  explanation: "It is the quantity we fundamentally care about. Examples of $\\ell$: $\\frac12(y - y')^2$, logistic loss, hinge loss."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 6, label: "04a slide 6"}
+  added: 2026-10-02
+
+- id: 04a-empirical-risk
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Empirical risk)* $L_S(f) =$ {{c1::$\frac{1}{|S|}\sum_{(x_n,y_n)\in S} \ell(y_n, f(x_n))$}}
+
+    For a **fixed** $f$ it is a random variable and an {{c2::unbiased}} estimator of $L_\mathcal{D}(f)$; by the law of large numbers
+    {{c3::$L_S(f) \to L_\mathcal{D}(f)$ as $|S| \to \infty$}}, but with fluctuations.
+  explanation: "The **generalization gap** is $|L_\\mathcal{D}(f) - L_S(f)|$."
+  trap: "Unbiased only for f fixed independently of S — not for the training error L_S(f_S)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 7, label: "04a slide 7"}
+  added: 2026-10-02
+
+- id: 04a-training-error-not-reliable
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [generalization, overfitting]
+  priority: core
+  front: "*(Generalization)* Why is the training error $L_S(f_S)$ not a reliable estimate of the true risk $L_\\mathcal{D}(f_S)$?"
+  back: |
+    $f_S$ is itself a function of $S$ (it was fitted to minimize $L_S$), so the same data both trains and evaluates:
+    $L_S(f_S)$ can be far below $L_\mathcal{D}(f_S)$ — that gap is **overfitting**.
+  explanation: "Fix: evaluate on an independent test set, $L_{S_\\text{test}}(f_{S_\\text{train}}) \\approx L_\\mathcal{D}(f_{S_\\text{train}})$ (slide 9)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 8, label: "04a slide 8"}
+  added: 2026-10-02
+
+- id: 04a-train-test-split
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization, model-selection]
+  priority: core
+  front: |
+    *(Train/test split)* Split $S = S_\text{train} \cup S_\text{test}$, learn $f_{S_\text{train}}$ on $S_\text{train}$ and compute the test error $L_{S_\text{test}}(f_{S_\text{train}})$.
+    Because {{c1::$S_\text{test}$ and $S_\text{train}$ are independent}}, {{c2::$L_{S_\text{test}}(f_{S_\text{train}}) \approx L_\mathcal{D}(f_{S_\text{train}})$}}.
+  explanation: "Price: less data both for learning and for validation (trade-off)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 9, label: "04a slide 9"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- Hoeffding: one model
+
+- id: 04a-hoeffding-inequality
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization, probability]
+  priority: core
+  front: |
+    *(Hoeffding's inequality)* For $\Theta_1, \dots, \Theta_N$ i.i.d. with mean $\mathbb{E}[\Theta]$ and range $[a, b]$, for any $\varepsilon \ge 0$:
+
+    $$\mathbb{P}\Big[\Big|\frac1N\sum_{n=1}^N \Theta_n - \mathbb{E}[\Theta]\Big| \ge \varepsilon\Big] \le \;?$$
+
+    Answer: {{c1::$2\exp\!\big(-\tfrac{2N\varepsilon^2}{(b-a)^2}\big)$}}
+  explanation: "A concentration bound: the empirical mean concentrates around its expectation, exponentially fast in $N\\varepsilon^2$."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 13, label: "04a slide 13"}
+  added: 2026-10-02
+
+- id: 04a-why-losses-iid
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: "*(Hoeffding)* Why are the test losses $\\Theta_n = \\ell(y_n, f(x_n))$, $(x_n, y_n) \\in S_\\text{test}$, i.i.d. random variables in $[a, b]$?"
+  back: |
+    The test samples are drawn i.i.d. **and** $f$ is fixed — it was not learned on $S_\text{test}$. Their mean is
+    $L_{S_\text{test}}(f)$ and their expectation is $L_\mathcal{D}(f)$, so Hoeffding applies.
+  trap: "On the training set the losses ℓ(y_n, f_S(x_n)) are NOT independent: f_S depends on all training points (Final 2023 Q30)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 12, label: "04a slide 12"}
+  added: 2026-10-02
 
 - id: 04a-hoeffding-bound
   type: cloze
@@ -22,20 +167,208 @@
     - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 13, label: "04a slide 13"}
   added: 2026-10-02
 
-- id: 04a-training-error-not-reliable
+- id: 04a-hoeffding-epsilon
   type: basic
   origin: concept
   lecture: "04a"
-  themes: [generalization, overfitting]
-  priority: core
-  front: "*(Generalization)* Why is the training error $L_S(f_S)$ not a reliable estimate of the true risk $L_\\mathcal{D}(f_S)$?"
+  themes: [generalization]
+  priority: detail
+  front: "*(Hoeffding)* How do you get the deviation $\\varepsilon = \\sqrt{(b-a)^2\\ln(2/\\delta) / (2|S_\\text{test}|)}$ from Hoeffding's inequality?"
   back: |
-    $f_S$ is itself a function of $S$ (it was fitted to minimize $L_S$), so the same data both trains and evaluates:
-    $L_S(f_S)$ can be far below $L_\mathcal{D}(f_S)$ — that gap is **overfitting**.
-  explanation: "Fix: evaluate on an independent test set, $L_{S_\\text{test}}(f_{S_\\text{train}}) \\approx L_\\mathcal{D}(f_{S_\\text{train}})$ (slide 9)."
+    Apply it to $\Theta_n = \ell(y_n, f(x_n))$ with $N = |S_\text{test}|$, set the right-hand side equal to the failure probability,
+    $\delta = 2e^{-2|S_\text{test}|\varepsilon^2/(b-a)^2}$, and solve for $\varepsilon$.
   sources:
-    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 8, label: "04a slide 8"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 13, label: "04a slide 13"}
   added: 2026-10-02
+
+- id: 04a-computable-upper-bound
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Why care?)* After training $f_{S_\text{train}}$, with probability $\ge 1-\delta$:
+
+    $$L_\mathcal{D}(f_{S_\text{train}}) \le L_{S_\text{test}}(f_{S_\text{train}}) + \sqrt{\frac{(b-a)^2\ln(2/\delta)}{2|S_\text{test}|}}$$
+
+    The left side is {{c1::not computable}}; the right side is {{c2::computable}} — a probabilistic {{c3::upper}} bound on the expected risk.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 11, label: "04a slide 11"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- model selection with K candidates
+
+- id: 04a-model-selection-procedure
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [model-selection]
+  priority: core
+  front: "*(Model selection)* How do you choose $\\lambda$ among candidates $\\{\\lambda_k\\}_{k=1}^K$ with a single train/test split?"
+  back: |
+    1. Split $S = S_\text{train} \cup S_\text{test}$.
+    2. Train $K$ times on the same $S_\text{train}$ → $f_{S_\text{train},\lambda_k}$.
+    3. Compute each test error $L_{S_\text{test}}(f_{S_\text{train},\lambda_k})$ and keep the $\lambda$ with the smallest one.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 14, label: "04a slide 14"}
+  added: 2026-10-02
+
+- id: 04a-k-models-bound
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [model-selection, generalization]
+  priority: core
+  front: |
+    *(K models)* For $K$ candidates $f_1, \dots, f_K$ evaluated on the same test set, with probability $\ge 1-\delta$:
+
+    $\max_k |L_\mathcal{D}(f_k) - L_{S_\text{test}}(f_k)| \le$ {{c1::$\sqrt{\frac{(b-a)^2 \ln(2K/\delta)}{2|S_\text{test}|}}$}}
+
+    Testing $K$ models costs only {{c2::a factor $\ln K$ inside the root}}, so many models can be tested cheaply.
+  explanation: "The slide says the error only goes up by $\\sqrt{\\ln K}$; the result extends to infinitely many models."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 17, label: "04a slide 17"}
+  added: 2026-10-02
+
+- id: 04a-union-bound-proof
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [model-selection, probability]
+  priority: detail
+  front: "*(K models)* Prove the $\\ln(2K/\\delta)$ bound on $\\max_k |L_\\mathcal{D}(f_k) - L_{S_\\text{test}}(f_k)|$ from the one-model case."
+  back: |
+    Union bound: $\mathbb{P}[\max_k |\cdot| \ge \varepsilon] = \mathbb{P}[\cup_k \{|\cdot|_k \ge \varepsilon\}] \le \sum_k \mathbb{P}[|\cdot|_k \ge \varepsilon] \le 2Ke^{-2N\varepsilon^2/(b-a)^2}$,
+    then set this equal to $\delta$ and solve for $\varepsilon$ ($N = |S_\text{test}|$).
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 18, label: "04a slide 18"}
+  added: 2026-10-02
+
+- id: 04a-selected-near-best
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [model-selection]
+  priority: core
+  front: |
+    *(Selected vs best model)* Let $k^\star = \arg\min_k L_\mathcal{D}(f_k)$ and $\hat k = \arg\min_k$ {{c1::$L_{S_\text{test}}(f_k)$}}. Then
+
+    $$\mathbb{P}\Bigg[L_\mathcal{D}(f_{\hat k}) \ge L_\mathcal{D}(f_{k^\star}) + c\,\sqrt{\frac{(b-a)^2\ln(2K/\delta)}{2|S_\text{test}|}}\,\Bigg] \le \delta$$
+
+    with the constant $c =$ {{c2::$2$}}.
+  explanation: "Choosing by the empirical (test) risk gives a model whose true risk is close to the best true risk in the family."
+  trap: "Holds with k̂ chosen on the TEST error and |S_test| — not with the training error (Final 2023 Q31)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 19, label: "04a slide 19"}
+  added: 2026-10-02
+
+- id: 04a-factor-two
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [model-selection]
+  priority: core
+  front: "*(Selected vs best model)* Why is there a factor $2$ in the bound $L_\\mathcal{D}(f_{\\hat k}) \\le L_\\mathcal{D}(f_{k^\\star}) + 2\\varepsilon$?"
+  back: |
+    On the event where all $K$ deviations are $\le \varepsilon$:
+    $L_\mathcal{D}(f_{\hat k}) \le L_{S_\text{test}}(f_{\hat k}) + \varepsilon \le L_{S_\text{test}}(f_{k^\star}) + \varepsilon \le L_\mathcal{D}(f_{k^\star}) + 2\varepsilon$.
+    Worst case: $\hat k$ is underestimated by $\varepsilon$ and $k^\star$ overestimated by $\varepsilon$.
+  explanation: "The middle inequality is the definition of $\\hat k$ (smallest test error). Picture on slide 20."
+  notes: "Chain of inequalities written out from the slide-20 picture (standard argument, not spelled out on the slide)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 20, label: "04a slide 20"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- cross-validation
+
+- id: 04a-single-split-wasteful
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [cross-validation]
+  priority: detail
+  front: "*(Cross-validation)* What is the drawback of a single train/test split that cross-validation fixes?"
+  back: "It is not an efficient use of the data: the test points are never used for training and the training points are never used for testing."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 21, label: "04a slide 21"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+- id: 04a-m-fold-cv
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [cross-validation]
+  priority: core
+  front: |
+    *(M-fold cross-validation)* 1. Randomly partition the data into {{c1::$M$ groups}}. \
+    2. Train {{c2::$M$ times}}, each time leaving out exactly one group for testing and training on the {{c3::$M - 1$ other groups}}. \
+    3. {{c4::Average the $M$ results}}.
+  explanation: "Usually called **K-fold** (exams, lab 4); the lecture writes M because K already counts the hyperparameter values."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+- id: 04a-cv-properties
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [cross-validation]
+  priority: detail
+  front: |
+    *(Cross-validation)* M-fold CV uses all data for training and all data for testing, {{c1::each data point the same number of times}},
+    and returns an estimate of the generalization error {{c2::and of its variance}}.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+- id: 04a-cv-cost
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [cross-validation, model-selection]
+  priority: core
+  front: |
+    *(Cross-validation cost)* Selecting among $L$ hyperparameter values with K-fold CV trains the algorithm {{c1::$K \cdot L$}} times.
+  explanation: "A full K-fold CV (K trainings) is run for **each** candidate value (Final 2025 Q24: 5 λ × 5 folds = 25)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 14, label: "04a slide 14"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- bonus: Hoeffding proof (detail)
+
+- id: 04a-hoeffding-proof-steps
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [probability]
+  priority: detail
+  front: "*(Bonus — Hoeffding proof)* Key steps to bound $\\mathbb{P}\\{\\frac1N\\sum_n \\Theta_n \\ge \\varepsilon\\}$ for $\\mathbb{E}[\\Theta] = 0$?"
+  back: |
+    With $\bar\Theta = \frac1N\sum_n\Theta_n$ and $s \ge 0$: Markov on $e^{s\bar\Theta}$ → product of the $\mathbb{E}[e^{s\Theta_n/N}]$ (independence) → $N$-th power (identical distribution)
+    → Hoeffding's lemma → $e^{s^2(b-a)^2/(8N) - s\varepsilon}$, minimized at $s = 4N\varepsilon/(b-a)^2$.
+  explanation: "Result $e^{-2N\\varepsilon^2/(b-a)^2}$; the lower tail is symmetric, hence the factor 2. Bonus slides, never asked in finals 2016–2025."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 25, label: "04a slide 25"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 26, label: "04a slide 26"}
+  added: 2026-10-02
+
+- id: 04a-hoeffding-lemma
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [probability]
+  priority: detail
+  front: |
+    *(Bonus — Hoeffding's lemma)* If $\mathbb{E}[X] = 0$ and $X \in [a, b]$, then for any $s \ge 0$: $\mathbb{E}[e^{sX}] \le$ {{c1::$e^{s^2(b-a)^2/8}$}}.
+  explanation: "Proof idea: on $[a,b]$ the convex function $x \\mapsto e^{sx}$ lies below its chord; take expectations using $\\mathbb{E}[X] = 0$."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 27, label: "04a slide 27"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
 
 - id: style-04a-k-models-cost
   type: tf
@@ -55,4 +388,124 @@
   sources:
     - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 17, label: "04a slide 17"}
     - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 18, label: "04a slide 18"}
+  added: 2026-10-02
+
+- id: style-04a-halve-deviation
+  type: mcq
+  origin: exam_style
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Hoeffding)* For a fixed $\delta$, by how much must the test set grow to **halve** the Hoeffding deviation
+    $\sqrt{(b-a)^2\ln(2/\delta)/(2|S_\text{test}|)}$?
+  choices: ["×4", "×2", "×√2", "×e²"]
+  answer: [0]
+  explanation: |
+    The deviation scales as $1/\sqrt{|S_\text{test}|}$: dividing it by 2 needs $2^2 = 4$ times more test points.
+    ×2 would only divide it by $\sqrt 2$. (Same reasoning as Final 2019 Q1: interval ÷ 3 ⇒ 9N samples.)
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 10, label: "04a slide 10"}
+  added: 2026-10-02
+
+- id: style-04a-delta-in-log
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Hoeffding)* With $|S_\text{test}|$ fixed, asking for confidence $1 - \delta = 0.999$ instead of $0.9$ makes the Hoeffding
+    deviation $\sqrt{(b-a)^2\ln(2/\delta)/(2|S_\text{test}|)}$ about 100 times larger.
+  answer: false
+  explanation: |
+    $\delta$ only enters through $\ln(2/\delta)$: $\sqrt{\ln(2000)/\ln(20)} = \sqrt{7.60/3.00} \approx 1.6$. The deviation grows by a factor ≈ 1.6,
+    not 100 — this is what "high-probability bound: δ is only in the ln" means.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 10, label: "04a slide 10"}
+  added: 2026-10-02
+
+- id: style-04a-training-error-unbiased
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: "*(Generalization)* The training error $L_S(f_S)$ is an unbiased estimator of the true risk $L_\\mathcal{D}(f_S)$ of the trained model."
+  answer: false
+  explanation: |
+    $L_S(f)$ is unbiased for a **fixed** $f$ chosen independently of $S$. Here $f_S$ was fitted to make $L_S$ small, so $L_S(f_S)$ is
+    optimistic (typically below $L_\mathcal{D}(f_S)$): that gap is overfitting.
+  trap: "Unbiasedness of the empirical risk needs f independent of the data it is evaluated on."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 7, label: "04a slide 7"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 8, label: "04a slide 8"}
+  added: 2026-10-02
+
+- id: style-04a-select-within-epsilon
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [model-selection]
+  priority: core
+  front: |
+    *(Model selection)* Let $\varepsilon = \sqrt{(b-a)^2\ln(2K/\delta)/(2|S_\text{test}|)}$. If $\hat k$ minimizes the test error over $K$ candidates
+    and $k^\star$ minimizes the true risk, then with probability $\ge 1-\delta$: $L_\mathcal{D}(f_{\hat k}) \le L_\mathcal{D}(f_{k^\star}) + \varepsilon$.
+  answer: false
+  explanation: |
+    The guarantee of the lecture is $L_\mathcal{D}(f_{\hat k}) \le L_\mathcal{D}(f_{k^\star}) + 2\varepsilon$: one $\varepsilon$ because the test error of $f_{\hat k}$
+    may underestimate its true risk, one because the test error of $f_{k^\star}$ may overestimate its true risk.
+  trap: "Selected vs best: factor 2."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 19, label: "04a slide 19"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 20, label: "04a slide 20"}
+  added: 2026-10-02
+
+- id: style-04a-cv-each-point
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [cross-validation]
+  priority: detail
+  front: "*(Cross-validation)* In M-fold cross-validation, every data point is used exactly once for testing and $M - 1$ times for training."
+  answer: true
+  explanation: |
+    The $M$ groups partition the data and each run holds out exactly one group: a point is in the test group of exactly one run,
+    and in the training set of the other $M - 1$ runs.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+- id: style-04a-cv-training-error
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [cross-validation, overfitting]
+  priority: core
+  front: "*(Cross-validation)* Using cross-validation reduces the training error of a given model."
+  answer: false
+  explanation: |
+    CV only **estimates** the generalization error (and its variance) to compare models or hyperparameters; it does not change how a given
+    model is fitted. It helps **select** a model that overfits less.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+- id: style-04a-min-test-error-biased
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [model-selection, generalization]
+  priority: detail
+  front: |
+    *(Model selection)* After choosing among $K$ hyperparameter values the one with the smallest test error, that smallest test error is still an
+    unbiased estimate of the true risk of the chosen model.
+  answer: false
+  explanation: |
+    The chosen model depends on $S_\text{test}$, so its test error is the minimum of $K$ noisy estimates: optimistic on average. This is why the
+    $K$-model bound pays $\ln(2K/\delta)$ instead of $\ln(2/\delta)$ — the test set has been used for a choice.
+  notes: "Optimism of the minimum over K estimates: standard consequence; the slides justify selection through the max-deviation bound (slide 17)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 16, label: "04a slide 16"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 17, label: "04a slide 17"}
   added: 2026-10-02

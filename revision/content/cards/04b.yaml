@@ -1,0 +1,426 @@
+# Lecture 04b — Bias–Variance Decomposition (Flammarion deck: almost no printed slide numbers → labels use the PDF page, "04b p. N").
+# Annotated PDF not yet published (as of 2026-10-02) → sources point to the plain deck. Written in S5 (2026-10-02).
+
+# ---------------------------------------------------------------- motivation, experiment
+
+- id: 04b-question
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: "*(Bias–variance)* Which question does the bias–variance decomposition answer, compared with the bounds of 04a?"
+  back: |
+    How the risk behaves as a function of the **complexity of the model class** — a *qualitative* analysis (04a was *quantitative*: bounds,
+    split, selection). It helps decide how complex/rich the model should be.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 2, label: "04b p. 2"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 4, label: "04b p. 4"}
+  added: 2026-10-02
+
+- id: 04b-fs-random
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* Why is the learned predictor $f_S$ random?"
+  back: |
+    We observed **one** training set among many possible ones: even with the same inputs $x_1, \dots, x_N$, the outputs $y_n$ vary (noise).
+    A different $S$ gives a different $f_S$, hence different predictions.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 9, label: "04b p. 9"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 10, label: "04b p. 10"}
+  added: 2026-10-02
+
+- id: 04b-sensitivity
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance, overfitting]
+  priority: core
+  front: |
+    *(1-D experiment)* For a simple model, moving one observation causes {{c1::only a small shift of the fitted line}} (underfitting regime);
+    for a complex model, changing one observation {{c2::may change the predictions considerably}} (overfitting regime).
+  explanation: "Simple models are less sensitive to the training set."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 10, label: "04b p. 10"}
+  added: 2026-10-02
+
+- id: 04b-simple-vs-complex
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Bias–variance)* Simple models (e.g. degree 1) have {{c1::large bias and small variance}};
+    complex models (e.g. degree 9) have {{c2::small bias and large variance}}.
+  explanation: |
+    Bias: the **average** of the predictions $f_S$ over training sets does (not) fit the truth. Variance: how much $f_S$ changes with $S$.
+    Degree 4 balances both in the lecture's experiment.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 11, label: "04b p. 11"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 12, label: "04b p. 12"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- data model and decomposition
+
+- id: 04b-data-model
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Data model)* $y = f(x) + \varepsilon$ with $x \sim \mathcal{D}_x$, $f$ arbitrary and unknown, and the noise $\varepsilon \sim \mathcal{D}_\varepsilon$ i.i.d.,
+    {{c1::independent of $x$}}, with {{c2::$\mathbb{E}[\varepsilon] = 0$}}. The loss is the {{c3::square loss}}.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 15, label: "04b p. 15"}
+  added: 2026-10-02
+
+- id: 04b-not-realizable
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Data model)* What does it mean that the model is generally **not realizable**?"
+  back: "The true function $f$ is **not in our model class** (no predictor of the class equals $f$) — not that something is impossible to compute."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 15, label: "04b p. 15"}
+  added: 2026-10-02
+
+- id: 04b-pointwise-error
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: |
+    *(Error decomposition)* The decomposition holds at every point, so fix $x_0$:
+    $L(f_S) =$ {{c1::$\mathbb{E}_{\varepsilon\sim\mathcal{D}_\varepsilon}\big[(f(x_0) + \varepsilon - f_S(x_0))^2\big]$}}.
+    It is a random variable whose randomness comes from {{c2::the training set $S$}}.
+  explanation: "We then study $\\mathbb{E}_{S\\sim\\mathcal{D}}[L(f_S)]$, i.e. the average over many training sets $S_1, \\dots, S_k$ (p. 18–19)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 17, label: "04b p. 17"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 19, label: "04b p. 19"}
+  added: 2026-10-02
+
+- id: 04b-decomposition
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Bias–variance decomposition)* $\mathbb{E}_{S,\varepsilon}\big[(f(x_0) + \varepsilon - f_S(x_0))^2\big] =$ noise + bias² + variance, with
+
+    noise $=$ {{c1::$\operatorname{Var}_{\varepsilon\sim\mathcal{D}_\varepsilon}[\varepsilon]$}}
+
+    bias² $=$ {{c2::$\big(f(x_0) - \mathbb{E}_{S'\sim\mathcal{D}}[f_{S'}(x_0)]\big)^2$}}
+
+    variance $=$ {{c3::$\mathbb{E}_{S\sim\mathcal{D}}\big[(f_S(x_0) - \mathbb{E}_{S'\sim\mathcal{D}}[f_{S'}(x_0)])^2\big]$}}
+  explanation: "$S'$ is a second training set independent of $S$; $\\mathbb{E}_{S'}[f_{S'}(x_0)]$ is just the average prediction (a constant)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+- id: 04b-derivation
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* Derive the decomposition of $\\mathbb{E}_{S,\\varepsilon}[(f(x_0) + \\varepsilon - f_S(x_0))^2]$ (key steps)."
+  back: |
+    1. Expand the square: $\mathbb{E}[\varepsilon^2] + 2\mathbb{E}[\varepsilon(f(x_0) - f_S(x_0))] + \mathbb{E}_S[(f(x_0) - f_S(x_0))^2]$; the cross term is $0$ ($\varepsilon \perp S$, $\mathbb{E}\varepsilon = 0$).
+    2. Add and subtract $\mathbb{E}_{S'}[f_{S'}(x_0)]$ inside the last square and expand.
+    3. The new cross term is $0$ since $\mathbb{E}_S[\mathbb{E}_{S'}[f_{S'}(x_0)] - f_S(x_0)] = 0$.
+  explanation: "Result: $\\operatorname{Var}[\\varepsilon]$ + bias² + variance. A 2-pt open question in 2025; Final 2023 Q11 tests step 1."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 20, label: "04b p. 20"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 21, label: "04b p. 21"}
+  added: 2026-10-02
+
+- id: 04b-noise-cross-term
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* Why does the cross term $2\\,\\mathbb{E}_{S,\\varepsilon}[\\varepsilon(f(x_0) - f_S(x_0))]$ vanish?"
+  back: |
+    $\varepsilon$ (the noise at $x_0$) is independent of the training set $S$, so the expectation factorizes:
+    $\mathbb{E}_\varepsilon[\varepsilon] \cdot \mathbb{E}_S[f(x_0) - f_S(x_0)] = 0 \cdot (\dots) = 0$.
+  trap: "Two ingredients: independence ε ⊥ S AND zero mean E[ε] = 0."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 20, label: "04b p. 20"}
+  added: 2026-10-02
+
+- id: 04b-add-subtract-trick
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: |
+    *(Bias–variance)* To split $\mathbb{E}_S[(f(x_0) - f_S(x_0))^2]$ into bias² + variance, add and subtract the constant
+    {{c1::$\mathbb{E}_{S'\sim\mathcal{D}}[f_{S'}(x_0)]$}}, where $S'$ is {{c2::a second training set independent of $S$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 21, label: "04b p. 21"}
+  added: 2026-10-02
+
+- id: 04b-three-lower-bounds
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* What does the fact that the three terms are non-negative imply?"
+  back: "Each term alone is a **lower bound** on the (expected) true error ⇒ to minimize the error we need **low bias and low variance simultaneously**."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- the three terms
+
+- id: 04b-noise-term
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Noise)* Even the true model has error {{c1::$L(f) = \mathbb{E}[\varepsilon^2]$}}: the noise is a strict lower bound on the achievable error.
+    It cannot be predicted from the data because {{c2::it is independent of them}}, and it is the only term that does not depend on {{c3::the algorithm / model complexity}}.
+  explanation: "On the plot of error vs complexity, noise is a flat line (p. 23)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 23, label: "04b p. 23"}
+  added: 2026-10-02
+
+- id: 04b-bias-term
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias)* What does the bias term $(f(x_0) - \\mathbb{E}_S[f_S(x_0)])^2$ measure, and how does it vary with model complexity?"
+  back: |
+    The squared gap between the true value $f(x_0)$ and the **average** prediction over training sets — how far off the predictions are *in general*.
+    Typically high for low complexity, low for high complexity (decreasing curve).
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 24, label: "04b p. 24"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 25, label: "04b p. 25"}
+  added: 2026-10-02
+
+- id: 04b-variance-term
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Variance)* What does the variance term $\\mathbb{E}_S[(f_S(x_0) - \\mathbb{E}_{S'}[f_{S'}(x_0)])^2]$ measure, and how does it vary with model complexity?"
+  back: |
+    The variability of the prediction at $x_0$ across training-set realizations. Complex models: small changes of $S$ cause large changes of the
+    predictions ⇒ variance increases with complexity.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 26, label: "04b p. 26"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 27, label: "04b p. 27"}
+  added: 2026-10-02
+
+- id: 04b-u-shape
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance, overfitting]
+  priority: core
+  front: |
+    *(Bias–variance trade-off)* As a function of model complexity the true error (noise + bias² + variance) is {{c1::U-shaped}}:
+    too low complexity ⇒ {{c2::poor approximation (underfitting, bias dominates)}}; too high ⇒ {{c3::variance issues (overfitting)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 28, label: "04b p. 28"}
+  added: 2026-10-02
+
+- id: 04b-target-picture
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: "*(Bias–variance)* In the target (dartboard) picture, what do high bias and high variance look like?"
+  back: "High bias: the shots are centred away from the bullseye. High variance: the shots are widely scattered. Goal: tight cluster on the bullseye."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 30, label: "04b p. 30"}
+  added: 2026-10-02
+
+- id: 04b-ridge-lambda-bias-variance
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  also_lectures: ["03d"]
+  themes: [bias-variance, ridge]
+  priority: core
+  front: |
+    *(Ridge, bias–variance)* Increasing $\lambda$: the noise term {{c1::is unchanged}}, the bias {{c2::increases}}, the variance {{c3::decreases}}
+    (as $\lambda \to \infty$, $\mathbf{w} \to 0$ and the variance → 0).
+  explanation: |
+    Large $\lambda$ = simpler model (weights shrunk). So ridge vs least squares: **larger bias, smaller variance** (Final 2022 Q6).
+    Complexity grows with the degree $d$ but **decreases** with $\lambda$.
+  notes: "Three-term behaviour and the λ = ∞ limit from Final 2020 Q39's official solution (open question, excluded); ridge vs OLS from 2022 Q6."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 32, label: "04b p. 32"}
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 17, label: "Final 2020 Q39 (open)"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- in practice, double descent
+
+- id: 04b-in-practice
+  type: basic
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance, model-selection]
+  priority: core
+  front: "*(Bias–variance in practice)* Why can't you simply draw the bias and variance curves of your problem, and what do you draw instead?"
+  back: |
+    The bias is unknown ($f$ is unknown); training once per complexity level gives no variance; and the curve needs a sweep over complexity levels.
+    Instead draw **learning curves** (train/test error vs amount of data), easy with SGD.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 31, label: "04b p. 31"}
+  added: 2026-10-02
+
+- id: 04b-learning-curves
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance, overfitting]
+  priority: core
+  front: |
+    *(Learning curves)* High **variance**: a {{c1::large gap between training and test error, test error still decreasing}} ⇒ more data helps.
+    High **bias**: {{c2::both curves meet at a high plateau}} ⇒ more data is useless.
+  notes: "Reading of the two learning-curve plots of p. 31 (explained during the 04b catch-up, SPEC §8.4); the slide only says 'Draw learning curve!'."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 31, label: "04b p. 31"}
+  added: 2026-10-02
+
+- id: 04b-double-descent
+  type: cloze
+  origin: concept
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: |
+    *(Double descent)* Beyond the {{c1::interpolation threshold}} (training risk → 0), the test risk can {{c2::decrease again}}:
+    classical U-shaped regime (under-parameterized), then the modern interpolating regime (over-parameterized).
+  explanation: "\"This depends on the algorithm!\" (Belkin, Hsu, Ma, Mandal, PNAS 2019). Not asked in finals 2016–2025."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 34, label: "04b p. 34"}
+  added: 2026-10-02
+
+# ---------------------------------------------------------------- unofficial exam-style
+
+- id: style-04b-variance-expression
+  type: mcq
+  origin: exam_style
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* Which expression is the **variance** term of the bias–variance decomposition at $x_0$?"
+  choices:
+    - "$\\mathbb{E}_S\\big[(f_S(x_0) - \\mathbb{E}_{S'}[f_{S'}(x_0)])^2\\big]$"
+    - "$\\big(f(x_0) - \\mathbb{E}_{S'}[f_{S'}(x_0)]\\big)^2$"
+    - "$\\mathbb{E}_S\\big[(f(x_0) - f_S(x_0))^2\\big]$"
+    - "$\\operatorname{Var}_\\varepsilon[\\varepsilon]$"
+  answer: [0]
+  explanation: |
+    Variance = spread of the predictions around the **average prediction**. $(f(x_0) - \mathbb{E}_{S'}[f_{S'}(x_0)])^2$ is bias²,
+    $\operatorname{Var}_\varepsilon[\varepsilon]$ the noise, and $\mathbb{E}_S[(f(x_0) - f_S(x_0))^2]$ is bias² + variance (the error without the noise term).
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+- id: style-04b-noise-complexity
+  type: tf
+  origin: exam_style
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* Choosing a richer model class reduces the noise term of the bias–variance decomposition."
+  answer: false
+  explanation: "The noise $\\operatorname{Var}[\\varepsilon]$ depends only on the data distribution: it is the same for every model and algorithm (flat line, p. 23)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 23, label: "04b p. 23"}
+  added: 2026-10-02
+
+- id: style-04b-more-data-high-bias
+  type: tf
+  origin: exam_style
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Learning curves)* The training and test errors of a model have both converged to the same high value as the training set grew.
+    Collecting more training data will substantially lower the test error.
+  answer: false
+  explanation: "Curves meeting at a high plateau = **high bias**: the model class is too simple. More data does not help; a richer model (or smaller λ) does."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 31, label: "04b p. 31"}
+  added: 2026-10-02
+
+- id: style-04b-error-below-bias
+  type: tf
+  origin: exam_style
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias–variance)* Under the square loss, the expected error $\\mathbb{E}_{S,\\varepsilon}[(f(x_0) + \\varepsilon - f_S(x_0))^2]$ can be smaller than the bias term at $x_0$ if the variance is small enough."
+  answer: false
+  explanation: "The three terms are non-negative, so each one (bias² included) is a lower bound on the expected error. A small variance cannot compensate a large bias."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+- id: style-04b-cross-term-reason
+  type: tf
+  origin: exam_style
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: |
+    *(Bias–variance)* In the derivation, $\mathbb{E}_{S,\varepsilon}[\varepsilon(f(x_0) - f_S(x_0))] = 0$ because the noise $\varepsilon$ is independent of $x_0$.
+  answer: false
+  explanation: |
+    $x_0$ is fixed. The term vanishes because $\varepsilon$ is independent of the **training set** $S$ (so the expectation factorizes) **and** $\mathbb{E}[\varepsilon] = 0$.
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 20, label: "04b p. 20"}
+  added: 2026-10-02
+
+- id: style-04b-lambda-infinity
+  type: tf
+  origin: exam_style
+  lecture: "04b"
+  also_lectures: ["03d"]
+  themes: [bias-variance, ridge]
+  priority: core
+  front: "*(Ridge, bias–variance)* In ridge regression, as $\\lambda \\to \\infty$ the variance term tends to $0$."
+  answer: true
+  explanation: |
+    $\lambda \to \infty$ forces $\mathbf{w} \to 0$ whatever the training set, so the predictor becomes the constant $0$: no variability across $S$
+    (zero variance), but a large bias $f(x_0)^2$ — underfitting.
+  sources:
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+- id: style-04b-double-descent
+  type: tf
+  origin: exam_style
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: detail
+  front: "*(Double descent)* Once a model class is rich enough to interpolate the training data, increasing its complexity further can only increase the test risk."
+  answer: false
+  explanation: "Double descent: past the interpolation threshold the test risk can decrease again (modern interpolating regime) — it depends on the algorithm."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 34, label: "04b p. 34"}
+  added: 2026-10-02

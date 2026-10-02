@@ -223,7 +223,7 @@ questions:
   topic: bias / variance / noise definitions
   areas: [bias-variance]
   lectures: [04b]
-  status: pending
+  status: added
   page: 12
 - exam: final-2025
   q: '26'
@@ -627,7 +627,7 @@ questions:
   topic: non-random train/test split causes underfitting?
   areas: [generalization]
   lectures: [04a]
-  status: pending
+  status: added
   page: 14
 - exam: final-2024
   q: '31'
@@ -656,7 +656,7 @@ questions:
   topic: training until low test loss prevents overfitting?
   areas: [generalization]
   lectures: [04a]
-  status: pending
+  status: added
   page: 15
 - exam: final-2024
   q: '35'
@@ -827,7 +827,7 @@ questions:
   topic: bias-variance derivation step
   areas: [bias-variance]
   lectures: [04b]
-  status: pending
+  status: added
   page: 7
 - exam: final-2023
   q: '12'
@@ -974,7 +974,7 @@ questions:
   topic: model selection bound with the training error
   areas: [generalization]
   lectures: [04a]
-  status: pending
+  status: added
   page: 11
 - exam: final-2023
   q: '32'
@@ -1097,7 +1097,7 @@ questions:
   topic: 'ridge vs OLS: bias and variance'
   areas: [bias-variance, regularization]
   lectures: [03d, 04b]
-  status: pending
+  status: added
   page: 4
 - exam: final-2022
   q: '7'
@@ -1247,7 +1247,7 @@ questions:
   topic: high bias implies low variance?
   areas: [bias-variance]
   lectures: [04b]
-  status: pending
+  status: added
   page: 12
 - exam: final-2022
   q: '28'
@@ -1465,7 +1465,7 @@ questions:
   topic: cost of K-fold cross-validation in K
   areas: [generalization]
   lectures: [04a]
-  status: pending
+  status: added
   page: 3
 - exam: final-2021
   q: '4'
@@ -1473,7 +1473,7 @@ questions:
   topic: quadratic vs constant model
   areas: [bias-variance]
   lectures: [04b]
-  status: pending
+  status: added
   page: 3
 - exam: final-2021
   q: '5'
@@ -1634,7 +1634,7 @@ questions:
   topic: training error at least sigma^2?
   areas: [bias-variance]
   lectures: [04b]
-  status: pending
+  status: added
   page: 14
 - exam: final-2021
   q: '27'
@@ -2135,7 +2135,7 @@ questions:
   topic: samples needed for a confidence interval of size delta/3
   areas: [generalization]
   lectures: [04a]
-  status: pending
+  status: added
   page: 2
 - exam: final-2019
   q: '2'
@@ -2234,7 +2234,7 @@ questions:
   topic: training risk converges with infinite data (finite model class)
   areas: [generalization]
   lectures: [04a]
-  status: pending
+  status: added
   page: 8
 - exam: final-2019
   q: '16'
@@ -2767,7 +2767,7 @@ questions:
   topic: algorithm almost independent of the data
   areas: [bias-variance]
   lectures: [04b]
-  status: pending
+  status: added
   multi: true
   page: 3
 - exam: final-2016
@@ -2986,7 +2986,7 @@ questions:
   topic: complex models tend to ...
   areas: [bias-variance, overfitting]
   lectures: [03b, 04b]
-  status: pending
+  status: added
   multi: true
   page: 5
 - exam: mock-2018
@@ -2995,7 +2995,7 @@ questions:
   topic: simple models tend to ...
   areas: [bias-variance, overfitting]
   lectures: [03b, 04b]
-  status: pending
+  status: added
   multi: true
   page: 5
 - exam: mock-2018

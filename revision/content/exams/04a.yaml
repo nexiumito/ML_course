@@ -45,3 +45,120 @@
     - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 12, label: "Final 2025 Q24"}
     - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
   added: 2026-10-02
+
+- id: exam-2023-q31
+  type: tf
+  origin: exam_official
+  lecture: "04a"
+  themes: [model-selection, generalization]
+  priority: core
+  front: |
+    *(Model Selection)* Suppose we want to optimize the hyperparameter $\lambda$ over the values $\lambda_1, \dots, \lambda_K$ and suppose the loss
+    function $\ell \in [a, b]$ is bounded. Let $\lambda_{\hat k}$ be the hyperparameter value leading to the predictor $f_{\hat k}$ with the smallest
+    training error and let $\lambda_{k^\star}$ be the hyperparameter value leading to the predictor $f_{k^\star}$ with the smallest true error
+    $L_\mathcal{D}(f_{k^\star})$. Then, using Hoeffding's Inequality, we get
+
+    $$\mathbb{P}_{S_\text{train}}\Bigg[L_\mathcal{D}(f_{\hat k}) \ge L_\mathcal{D}(f_{k^\star}) + 2\sqrt{\frac{(b-a)^2\ln(2K/\delta)}{2|S_\text{train}|}}\,\Bigg] \le \delta.$$
+  answer: false
+  explanation: |
+    Official solution: the bound holds for $f_{\tilde k}$, the predictor with the smallest **validation/test** error $L_{S_\text{test}}(f_{\tilde k})$,
+    with $|S_\text{test}|$ in the bound and the probability over $S_\text{test}$. With the training error Hoeffding does not apply: the training losses
+    are not independent since each $f_k$ depends on the whole training set (same reason as Q30).
+  trap: "Selection bound = choose on the test/validation error, |S_test| in the root."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 11, label: "Final 2023 Q31"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 19, label: "04a slide 19"}
+  added: 2026-10-02
+
+- id: exam-2024-q30
+  type: tf
+  origin: exam_official
+  lecture: "04a"
+  themes: [generalization, overfitting]
+  priority: detail
+  front: "*(Overfitting)* When using a train/test split, if the split is not random, this will primarily cause underfitting."
+  answer: false
+  explanation: |
+    Official solution: with a non-random split the training data might not be representative of the entire dataset, so **overfitting**
+    (to the particular training part) should be expected. The lecture's split assumes $S_\text{train}$ and $S_\text{test}$ are drawn independently from $\mathcal{D}$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 14, label: "Final 2024 Q30"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 9, label: "04a slide 9"}
+  added: 2026-10-02
+
+- id: exam-2024-q34
+  type: tf
+  origin: exam_official
+  lecture: "04a"
+  themes: [generalization, overfitting]
+  priority: core
+  front: "*(Overfitting)* Training your model until it achieves a low loss value on your test data is a good way to prevent overfitting."
+  answer: false
+  explanation: |
+    Official solution: the test set would cease being a good measure of performance on unseen data. The test error estimates $L_\mathcal{D}$
+    only because the model is independent of $S_\text{test}$; once you train on (or until good results on) the test set, that independence is gone.
+  trap: "Never tune or train on the test set."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 15, label: "Final 2024 Q34"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 9, label: "04a slide 9"}
+  added: 2026-10-02
+
+- id: exam-2021-q3
+  type: mcq
+  origin: exam_official
+  lecture: "04a"
+  themes: [cross-validation]
+  priority: core
+  front: |
+    *(Cross Validation)* Consider the K-fold cross validation on a linear regression model with a sufficiently large amount of training data.
+    When $K$ is large, the computational complexity of the K-fold cross validation with respect to $K$ is of order
+  choices: ["$\\mathcal{O}(1/K)$.", "$\\mathcal{O}(K)$.", "$\\mathcal{O}(1)$.", "$\\mathcal{O}(K(K-1))$."]
+  answer: [1]
+  explanation: |
+    Official solution: there are $K$ training processes, and each uses a fraction $(K-1)/K = \mathcal{O}(1)$ of the data, so the total is $\mathcal{O}(K)$.
+    $\mathcal{O}(K(K-1))$ would wrongly count the training-set size as growing with $K$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 3, label: "Final 2021 Q3"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02
+
+- id: exam-2019-q1
+  type: mcq
+  origin: exam_official
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Shrinking Confidence)* Assume that you get a confidence interval of size $\delta$ for some problem given $N$ iid samples.
+    Expressed as a function of $N$, how many iid samples do you need to get a confidence interval of size $\delta/3$?
+  choices: ["$3N$", "$N/3$", "$N^3$", "$9N$", "$\\sqrt{3N}$", "$e^{3N}$"]
+  answer: [3]
+  explanation: |
+    Official solution: the size of the confidence interval decays as $1/\sqrt{N}$, so dividing it by 3 needs $3^2 = 9$ times as many samples: $9N$.
+    Here $\delta$ is the **interval size**, not the failure probability of the lecture's bounds.
+  trap: "Width ∝ 1/√N ⇒ divide the width by c ⇒ c² times more samples."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 2, label: "Final 2019 Q1"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 10, label: "04a slide 10"}
+  added: 2026-10-02
+
+- id: exam-2019-q15
+  type: tf
+  origin: exam_official
+  lecture: "04a"
+  themes: [generalization, model-selection]
+  priority: detail
+  front: |
+    *(Infinite Data)* Assume that your training data $S = \{(\mathbf{x}_n, y_n)\}$ is iid and comes from a fixed distribution $\mathcal{D}$ that is unknown
+    but is known to have bounded support. Assume that your family of models contains a finite number of elements and that you choose the best such
+    element according to the training data. You then evaluate the risk for this chosen model. Call this the training risk. As $|S|$ tends to
+    infinity, this training risk converges to the true (according to the distribution $\mathcal{D}$) risk of the best model in this family.
+  answer: true
+  explanation: |
+    Official solution: for every given model the empirical risk converges to the true risk; with finitely many models the convergence is
+    **uniform**, so choosing by the empirical risk becomes equivalent to choosing by the true risk. Same idea as the union bound over $K$
+    models (only $\ln K$ in the bound).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 8, label: "Final 2019 Q15"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 17, label: "04a slide 17"}
+  added: 2026-10-02

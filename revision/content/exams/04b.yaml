@@ -1,0 +1,201 @@
+# Official past-exam questions whose primary lecture is 04b (stems and choices verbatim). Answers read from the ticked boxes.
+
+- id: exam-2025-q25
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Bias-Variance Decomposition)* Which of the following statements correctly describes the bias, variance, and noise components in the
+    bias-variance decomposition?
+  choices:
+    - "A highly complex model (e.g., a high-degree polynomial) has high **Bias** because it \"overfits\" the data, and low **Variance** because it fits the training points well."
+    - "**Bias** measures a variability of a model's prediction when trained on different datasets from the same distribution."
+    - "The **Noise** term, represents the irreducible error, and is the only component that does not depend on the choice of the learning algorithm or model complexity."
+    - "The **Variance** term, measures the difference between the true function $f(x)$ and the average prediction $\\mathbb{E}_S[f_S(x)]$ over all possible training sets."
+  answer: [2]
+  explanation: |
+    Official solution: the definitions given for bias and variance are swapped (variability across datasets = variance; gap to the average
+    prediction = bias), and a highly complex model has **high variance and low bias**. Only the noise statement is correct.
+  trap: "Bias = truth vs AVERAGE prediction; variance = spread across training sets."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 12, label: "Final 2025 Q25"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+- id: exam-2023-q11
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  shuffle: false
+  front: |
+    *(Bias-Variance Decomposition)* Consider data consisting of input-output pairs $(x, y)$ coming from an unknown distribution $\mathcal{D}$, where the
+    input $x \in \mathcal{X}$ follows an unknown distribution $\mathcal{D}_x$ and the output $y \in \mathbb{R}$ is generated as $y = f(x) + \varepsilon g(x)$.
+    The functions $f, g : \mathcal{X} \to \mathbb{R}$ are unknown, and the random error term $\varepsilon \sim \mathcal{D}_\varepsilon$ is independent of the input
+    and has mean 0 and variance $\sigma^2$. Given a training set $S$ sampled from $\mathcal{D}$, let $h_S : \mathbb{R}^d \to \mathbb{R}$ be the predictor learned
+    by our ML algorithm. Let $L(h_S) = \mathbb{E}_{\varepsilon\sim\mathcal{D}_\varepsilon}\big[(f(x_0) + \varepsilon g(x_0) - h_S(x_0))^2\big]$ be the error at some fixed point $x_0$.
+    Which of the following answers gives the **correct** expression for the expected error
+
+    $$\mathbb{E}_{S\sim\mathcal{D}}[L(h_S)] = \mathbb{E}_{S\sim\mathcal{D},\varepsilon\sim\mathcal{D}_\varepsilon}\big[(f(x_0) + \varepsilon g(x_0) - h_S(x_0))^2\big]\;?$$
+  choices:
+    - "$\\sigma^2 g(x_0)^2 + \\mathbb{E}_{S\\sim\\mathcal{D}}[(f(x_0) - h_S(x_0))^2]$;"
+    - "$\\sigma^2 g(x_0)^2 + 2g(x_0)\\sigma\\,\\mathbb{E}_{S\\sim\\mathcal{D}}[f(x_0) - h_S(x_0)] + \\mathbb{E}_{S\\sim\\mathcal{D}}[(f(x_0) - h_S(x_0))^2]$;"
+    - "$\\sigma^2 + (f(x_0) - \\mathbb{E}_{S\\sim\\mathcal{D}}[h_S(x_0)])^2 + \\mathbb{E}_{S\\sim\\mathcal{D}}[(h_S(x_0) - \\mathbb{E}_{S'\\sim\\mathcal{D}}[h_{S'}(x_0)])^2]$;"
+    - "None of the above expressions equals $\\mathbb{E}_{S\\sim\\mathcal{D}}[L(h_S)]$."
+  answer: [0]
+  explanation: |
+    Official solution: expand the square. $\mathbb{E}[\varepsilon^2 g(x_0)^2] = \sigma^2 g(x_0)^2$; the cross term
+    $\mathbb{E}[2\varepsilon g(x_0)(f(x_0) - h_S(x_0))] = 2g(x_0)\,\mathbb{E}[\varepsilon]\,\mathbb{E}_S[f(x_0) - h_S(x_0)] = 0$ (independence of $\varepsilon$ and $S$,
+    zero mean). The second choice wrongly uses $\sigma$ instead of $\mathbb{E}[\varepsilon] = 0$; the third forgets the factor $g(x_0)^2$ on the noise.
+  trap: "Noise term = Var of the noise AT x₀: here σ² g(x₀)²."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 7, label: "Final 2023 Q11"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 20, label: "04b p. 20"}
+  added: 2026-10-02
+  notes: "Solution text only shows the derivation; answer read from the ticked box (first choice)."
+
+- id: exam-2022-q6
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  also_lectures: ["03d"]
+  themes: [bias-variance, ridge]
+  priority: core
+  front: "*(LASSO/Ridge regression)* How does the bias-variance decomposition of a ridge regression estimator compare with that of the ordinary least-squares estimator in general?"
+  choices:
+    - "Ridge has a smaller bias, and smaller variance."
+    - "Ridge has a larger bias, and larger variance."
+    - "Ridge has a larger bias, and smaller variance."
+    - "Ridge has a smaller bias, and larger variance."
+  answer: [2]
+  explanation: |
+    No solution text; answer read from the ticked box. Ridge shrinks the weights towards 0: a simpler, less data-sensitive model ⇒ **larger
+    bias, smaller variance** than least squares ($\lambda = 0$). Bias and variance moving together in the same direction is the classic distractor.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 4, label: "Final 2022 Q6"}
+    - {kind: lecture, pdf: lectures/03/lecture03d_ridge_annotated.pdf, page: 5, label: "03d slide 4 (annotated)"}
+  added: 2026-10-02
+
+- id: exam-2022-q27
+  type: tf
+  origin: exam_official
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: "*(Bias-Variance)* A model which has a high bias necessarily has a low variance."
+  answer: false
+  explanation: |
+    Official solution: a model which outputs a totally random solution has both high bias and high variance. Simple models *tend* to
+    have high bias and low variance, but nothing forces it (dartboard: high bias + high variance, 04b p. 30).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 12, label: "Final 2022 Q27"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 30, label: "04b p. 30"}
+  added: 2026-10-02
+
+- id: exam-2021-q4
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    *(Bias-Variance Decomposition)* Consider a regression model where data $(x, y)$ is generated by input $x$ uniformly randomly sampled from $[0, 1]$
+    and $y(x) = x^2 + \varepsilon$, where $\varepsilon$ is random noise with mean 0 and variance 1. Two models are carried out for regression: model A is a
+    trained quadratic function $g(x; \mathbf{w}) = w_2x^2 + w_1x + w_0$ where $\mathbf{w} = (w_0, w_1, w_2)^\top \in \mathbb{R}^3$, and model B is a constant
+    function $h(x) = 1/2$. Then compared to model B, model A has
+  choices: ["higher bias, higher variance.", "lower bias, higher variance.", "higher bias, lower variance.", "lower bias, lower variance."]
+  answer: [1]
+  explanation: |
+    Official solution: model B has **zero variance** because it outputs the constant $1/2$, unrelated to the training data — so A cannot have lower
+    variance. A contains the true function $x^2$ (realizable, essentially zero bias) whereas the constant $1/2$ is biased.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 3, label: "Final 2021 Q4"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 22, label: "04b p. 22"}
+  added: 2026-10-02
+
+- id: exam-2021-q26
+  type: tf
+  origin: exam_official
+  lecture: "04b"
+  themes: [bias-variance, overfitting]
+  priority: core
+  front: |
+    *(Bias/Variance Decomposition)* Consider a linear regression model where the data is generated by input $\mathbf{x}$ and output
+    $y = \mathbf{w}^\top\mathbf{x} + \varepsilon$, where $\mathbf{w}$ is a fixed vector and $\varepsilon$ is a Gaussian noise with zero mean and $\sigma^2$ variance.
+    Then there is no machine learning algorithm that can achieve a training error lower than $\sigma^2$.
+  answer: false
+  explanation: |
+    Official solution: it is the **true** error that cannot be less than $\sigma^2$ (noise term), not the training error. Overfitting is always
+    an option: it is often possible to get a small (even zero) training error.
+  trap: "σ² lower-bounds the true error, not the training error."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 14, label: "Final 2021 Q26"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 23, label: "04b p. 23"}
+  added: 2026-10-02
+
+- id: exam-2016-q8
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  themes: [bias-variance]
+  priority: core
+  front: |
+    Consider a learning algorithm that has the property that it depends only very weakly on the input data. E.g., this could be SGD where we choose
+    a very small step size and only run for very few iterations. To go to the extreme, you can imagine a learning algorithm that always outputs the
+    same model irrespective of the training set. Presumably such a learning algorithm will not give us good results. Why is that?
+    *(More than one answer can be correct.)*
+  choices:
+    - "Such a learning algorithm typically has a much larger generalization error than training error."
+    - "Such a learning algorithm typically has a large bias."
+    - "Such a learning algorithm is prone to overfitting."
+  answer: [1]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: (b). The model barely depends on the training data, so it is unlikely to model it well: large bias (and near-zero variance).
+    It **under**fits — training and generalization errors are both high and similar, so (a) and (c) are wrong.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 3, label: "Final 2016 Q8"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 11, label: "04b p. 11"}
+  added: 2026-10-02
+
+- id: mock-2018-q5a
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  also_lectures: ["03b"]
+  themes: [bias-variance, overfitting]
+  priority: core
+  front: "In regression, \"complex\" models tend to *(more than one answer can be correct)*"
+  choices: ["overfit", "have large bias", "have large variance"]
+  answer: [0, 2]
+  multi: true
+  shuffle: false
+  explanation: "Official solution: 1 and 3. Complex models have small bias but large variance, i.e. they overfit."
+  sources:
+    - {kind: exam, pdf: exam/mock-midterm-exam/mock-exam-2018-solutions.pdf, page: 5, label: "Mock midterm 2018, MC item 5a"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 12, label: "04b p. 12"}
+  added: 2026-10-02
+  notes: "Identical item in mock 2017 (4a, indexed as duplicate)."
+
+- id: mock-2018-q5b
+  type: mcq
+  origin: exam_official
+  lecture: "04b"
+  also_lectures: ["03b"]
+  themes: [bias-variance, overfitting]
+  priority: core
+  front: "In regression, \"simple\" models tend to *(more than one answer can be correct)*"
+  choices: ["overfit", "have large bias", "have large variance"]
+  answer: [1]
+  multi: true
+  shuffle: false
+  explanation: "Official solution: 2 only. Simple models have large bias and small variance: they underfit."
+  sources:
+    - {kind: exam, pdf: exam/mock-midterm-exam/mock-exam-2018-solutions.pdf, page: 5, label: "Mock midterm 2018, MC item 5b"}
+    - {kind: lecture, pdf: lectures/04/lecture04b.pdf, page: 11, label: "04b p. 11"}
+  added: 2026-10-02
+  notes: "Identical item in mock 2017 (4b, indexed as duplicate)."
