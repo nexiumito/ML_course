@@ -1,0 +1,58 @@
+# Lecture 04a — Generalization, Model Selection, Validation (Flammarion deck: slide N = PDF page N).
+# Concept cards + unofficial exam-style cards. Sample set written in S1 (2026-10-02); full set in M6.
+
+- id: 04a-hoeffding-bound
+  type: cloze
+  origin: concept
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Hoeffding, one model)* For a model $f$ **not** trained on $S_\text{test}$ and a loss $\ell \in [a,b]$, with probability $\ge 1-\delta$:
+
+    $|L_\mathcal{D}(f) - L_{S_\text{test}}(f)| \le$ {{c1::$\sqrt{\frac{(b-a)^2 \ln(2/\delta)}{2|S_\text{test}|}}$}}
+
+    The deviation decreases as {{c2::$O(1/\sqrt{|S_\text{test}|})$::rate in the number of test points}}.
+  explanation: |
+    Hoeffding applied to the i.i.d. losses $\Theta_n = \ell(y_n, f(x_n)) \in [a,b]$: their mean is $L_{S_\text{test}}(f)$
+    and their expectation is $L_\mathcal{D}(f)$ (slides 12–13). $\delta$ only enters through a log: high-probability bound.
+  trap: "Requires f independent of S_test — never valid for the training error (Final 2023 Q30)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 10, label: "04a slide 10"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 13, label: "04a slide 13"}
+  added: 2026-10-02
+
+- id: 04a-training-error-not-reliable
+  type: basic
+  origin: concept
+  lecture: "04a"
+  themes: [generalization, overfitting]
+  priority: core
+  front: "*(Generalization)* Why is the training error $L_S(f_S)$ not a reliable estimate of the true risk $L_\\mathcal{D}(f_S)$?"
+  back: |
+    $f_S$ is itself a function of $S$ (it was fitted to minimize $L_S$), so the same data both trains and evaluates:
+    $L_S(f_S)$ can be far below $L_\mathcal{D}(f_S)$ — that gap is **overfitting**.
+  explanation: "Fix: evaluate on an independent test set, $L_{S_\\text{test}}(f_{S_\\text{train}}) \\approx L_\\mathcal{D}(f_{S_\\text{train}})$ (slide 9)."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 8, label: "04a slide 8"}
+  added: 2026-10-02
+
+- id: style-04a-k-models-cost
+  type: tf
+  origin: exam_style
+  lecture: "04a"
+  themes: [model-selection, generalization]
+  priority: core
+  front: |
+    *(Model selection)* When the same test set is used to evaluate $K$ candidate models $f_1, \dots, f_K$, the high-probability
+    bound on $\max_k |L_\mathcal{D}(f_k) - L_{S_\text{test}}(f_k)|$ grows proportionally to $\sqrt{K}$.
+  answer: false
+  explanation: |
+    The union bound over the $K$ models turns $\ln(2/\delta)$ into $\ln(2K/\delta)$:
+    $\sqrt{(b-a)^2 \ln(2K/\delta) / (2|S_\text{test}|)}$. The price of testing $K$ models is only $\ln K$ inside the root
+    (so $\sqrt{\ln K}$ overall), which is why many hyperparameter values can be tried cheaply.
+  trap: "K enters only through ln K inside the square root."
+  sources:
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 17, label: "04a slide 17"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 18, label: "04a slide 18"}
+  added: 2026-10-02

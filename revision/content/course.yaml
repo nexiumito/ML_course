@@ -1,0 +1,101 @@
+# CS-433 revision app — course registry (SPEC §4.1).
+# A lecture is listed here once the student has caught it up; its cards go in cards/<id>.yaml
+# (concept + unofficial exam-style) and exams/<id>.yaml (official past-exam questions).
+exam_date: null            # set when the January 2027 exam date is published
+timezone: Europe/Zurich
+day_rollover_hour: 4       # a "day" starts at 04:00 local time
+
+lectures:
+  - id: "01a"
+    week: 1
+    title: "Introduction"
+    date: 2026-09-08
+    pdf: lectures/01/lecture01a_intro.pdf
+    sheet: docs/lectures/01-intro-regression-loss.md
+  - id: "01b"
+    week: 1
+    title: "Linear Regression"
+    date: 2026-09-08
+    pdf: lectures/01/lecture01b_regression.pdf
+    annotated_pdf: lectures/01/lecture01b_regression_annotated.pdf
+    sheet: docs/lectures/01-intro-regression-loss.md
+  - id: "01c"
+    week: 1
+    title: "Loss Functions"
+    date: 2026-09-09
+    pdf: lectures/01/lecture01c_loss_functions.pdf
+    annotated_pdf: lectures/01/lecture01c_loss_functions_annotated.pdf
+    sheet: docs/lectures/01-intro-regression-loss.md
+  - id: "02a"
+    week: 2
+    title: "Optimization"
+    date: 2026-09-15
+    pdf: lectures/02/lecture02a_optimization.pdf
+    annotated_pdf: lectures/02/lecture02a_optimization_annotated.pdf
+    sheet: docs/lectures/02-optimization.md
+  - id: "03a"
+    week: 3
+    title: "Least Squares"
+    date: 2026-09-22
+    pdf: lectures/03/lecture03a_least_squares.pdf
+    annotated_pdf: lectures/03/lecture03a_least_squares_annotated.pdf
+    sheet: docs/lectures/03-least-squares-regularization.md
+  - id: "03b"
+    week: 3
+    title: "Underfitting and Overfitting"
+    date: 2026-09-22
+    pdf: lectures/03/lecture03b_overfitting.pdf
+    annotated_pdf: lectures/03/lecture03b_overfitting_annotated.pdf
+    sheet: docs/lectures/03-least-squares-regularization.md
+  - id: "03c"
+    week: 3
+    title: "Maximum Likelihood"
+    date: 2026-09-23
+    pdf: lectures/03/lecture03c_maximum_likelihood.pdf
+    annotated_pdf: lectures/03/lecture03c_maximum_likelihood_annotated.pdf
+    sheet: docs/lectures/03-least-squares-regularization.md
+  - id: "03d"
+    week: 3
+    title: "Regularization: Ridge Regression and Lasso"
+    date: 2026-09-23
+    pdf: lectures/03/lecture03d_ridge.pdf
+    annotated_pdf: lectures/03/lecture03d_ridge_annotated.pdf
+    sheet: docs/lectures/03-least-squares-regularization.md
+  - id: "04a"
+    week: 4
+    title: "Generalization, Model Selection, Validation"
+    date: 2026-09-29
+    pdf: lectures/04/lecture04a.pdf
+    annotated_pdf: null    # not yet published (as of 2026-10-02)
+    sheet: docs/lectures/04-generalization-bias-variance.md
+  - id: "04b"
+    week: 4
+    title: "Bias–Variance Decomposition"
+    date: 2026-09-30
+    pdf: lectures/04/lecture04b.pdf
+    annotated_pdf: null    # not yet published (as of 2026-10-02)
+    sheet: docs/lectures/04-generalization-bias-variance.md
+
+# Controlled theme vocabulary (SPEC §8.5). Extend when new lectures need it.
+themes:
+  - {id: ml-basics, label: "ML basics"}
+  - {id: linear-regression, label: "Linear regression"}
+  - {id: loss-functions, label: "Loss functions"}
+  - {id: convexity, label: "Convexity"}
+  - {id: optimization, label: "Optimization"}
+  - {id: gradient-descent, label: "Gradient descent"}
+  - {id: sgd, label: "Stochastic gradient descent"}
+  - {id: subgradients, label: "Subgradients & non-smooth optimization"}
+  - {id: constrained-optimization, label: "Constrained optimization"}
+  - {id: least-squares, label: "Least squares"}
+  - {id: overfitting, label: "Underfitting & overfitting"}
+  - {id: polynomial-features, label: "Polynomial / feature expansion"}
+  - {id: mle, label: "Maximum likelihood"}
+  - {id: probability, label: "Probability"}
+  - {id: regularization, label: "Regularization"}
+  - {id: ridge, label: "Ridge regression"}
+  - {id: lasso, label: "Lasso"}
+  - {id: generalization, label: "Generalization & risk"}
+  - {id: model-selection, label: "Model selection"}
+  - {id: cross-validation, label: "Cross-validation"}
+  - {id: bias-variance, label: "Bias–variance decomposition"}

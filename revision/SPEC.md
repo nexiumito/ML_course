@@ -72,6 +72,7 @@ Self-contained spec for building and feeding a personal spaced-repetition web ap
 | Content format | **YAML** files (one per lecture, cards as list), markdown + LaTeX inside block scalars (`|`), validated with **pydantic v2** | Human-diffable, comments allowed, easy for Claude to author; strict validation catches mistakes. |
 | PDF page rendering | **`pypdfium2`** (pip wheel, BSD/Apache) → PNG cached on disk | Works on iOS (Safari ignores `#page=N` in PDFs), no system dependency. |
 | CLI | **typer** (`uv run revision …`) | Content check, serve, backup, reports, export. |
+| Extra deps (S1) | **Pillow** (pypdfium2 `to_pil()` → PNG), **tzdata** (zoneinfo on any host) | |
 | Frontend | **React + TypeScript + Vite**, **Tailwind CSS**, **react-markdown + remark-math + rehype-katex** (KaTeX), **vite-plugin-pwa** | Mainstream, well-known stack; KaTeX renders course formulas properly; PWA = home-screen install. Node is installed on the Mac (v25, npm 11). |
 | Charts | Small hand-written SVG components (heatmap, bars, line) — no heavy chart lib | Few charts, keeps bundle small. |
 | Tests | **pytest** (backend: content loader/validator, scheduler wrapper, queue building, grading, API), **vitest** for non-trivial frontend logic; `ruff` + `tsc --noEmit` | |
@@ -101,6 +102,8 @@ revision/
       stats.py
       sources.py             # PDF page → PNG (pypdfium2) with cache; whitelisted paths
       reports.py
+      reviews.py             # apply review / undo / suspend / item JSON view (added S1)
+      settings.py            # Settings pydantic model + load/update (added S1)
       api.py                 # FastAPI routers
       app.py                 # app factory, static SPA serving
       cli.py                 # typer CLI
@@ -176,12 +179,13 @@ Each file is a YAML list of cards. Fields:
 | `explanation` | exam_* ✔ | Why the answer is right **and why the distractors are wrong**; for concept cards optional extra intuition. |
 | `trap` | | One-line "classic trap" shown highlighted (e.g. "Hoeffding does NOT apply to the training error"). |
 | `images` | | Paths relative to `content/` (e.g. `img/exam-2023-q12.png`); rendered under the question; each with `alt`. Format: `[{src: ..., alt: ...}]`. |
-| `sources` | ✔ | ≥ 1: `{kind: lecture\|exam\|lab\|doc, pdf: <repo-relative path>, page: <PDF page, 1-based>, label: "04a slide 17"}`; exam: label `"Final 2023 Q30"`, pdf = the **solutions** PDF, page = page of the question there. |
+| `sources` | ✔ | ≥ 1: `{kind: lecture\|exam\|lab\|doc, pdf: <repo-relative path>, page: <PDF page, 1-based>, label: "04a slide 17"}`; exam: label `"Final 2023 Q30"`, pdf = the **solutions** PDF, page = page of the question there. `kind: doc` uses `path: <repo-relative file>` instead of `pdf`/`page`. |
 | `added` | ✔ | ISO date. |
 | `notes` | | Internal authoring notes (not shown), e.g. "formula reconstructed from slide image; verified 2026-10-05". |
 
 Validation (`uv run revision content check`, also run at app startup, fatal on error):
-unique ids across all files; known lecture/theme ids; required fields per type/origin; mcq answer indices in range and ≥ 1; tf answer boolean; cloze has ≥ 1 well-formed `{{cN::…}}` and numbering starts at 1 without gaps; image files exist; source PDFs exist and `page` ≤ page count; no leftover `TODO` in shown fields; markdown/LaTeX sanity (balanced `$`); warn on very long fronts (> 400 chars) or backs (> 300 chars, excluding explanation).
+unique ids across all files; known lecture/theme ids; required fields per type/origin; mcq answer indices in range and ≥ 1; tf answer boolean; cloze has ≥ 1 well-formed `{{cN::…}}` and numbering starts at 1 without gaps; image files exist; source PDFs exist and `page` ≤ page count; no leftover `TODO` in shown fields; markdown/LaTeX sanity (balanced `$`); warn on very long fronts (> 400 chars; not for `exam_official`, whose stems are verbatim) or backs (> 300 chars, excluding explanation).
+*Implemented (S1) — also errors:* id conventions per origin (`<lecture>-…`, `style-<lecture>-…`, `exam-YYYY-qN` / `mock-YYYY-qN[sub]`); file placement (`cards/<lecture>.yaml` for concept + exam_style, `exams/<lecture>.yaml` for exam_official; `lecture` = file stem); unknown fields (typos) rejected; source PDFs must be in the viewer whitelist; official cards need an `exam` source; a cloze answer must not split a `$…$` span (wrap whole math spans: `{{c1::$…$}}`); lectures in `course.yaml` in week order.
 
 ### 4.3 Examples (illustrative — page numbers to be verified when writing real cards)
 ```yaml
@@ -218,7 +222,7 @@ unique ids across all files; known lecture/theme ids; required fields per type/o
     $L_\mathcal{D}$ is not their expectation.
   trap: "Hoeffding ⇒ test/validation error only."
   sources:
-    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 12, label: "Final 2023 Q30"}
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 11, label: "Final 2023 Q30"}
     - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 13, label: "04a slides 12–13"}
   added: 2026-10-02
 
@@ -267,6 +271,8 @@ A *review item* is the unit scheduled by FSRS: `basic`/`tf`/`mcq` card → 1 ite
 - Interleave new cards among due reviews (≈ 1 new per 4 reviews). Learning/relearning items due within the session are re-inserted when due (re-poll; if nothing else, show "next card in 3 min" with a wait/continue option).
 - Day boundary: `day_rollover_hour` in `timezone` (default 04:00 Europe/Zurich); store all datetimes in **UTC** (py-fsrs requirement).
 
+*Implemented (S1):* new cloze siblings are buried (at most one new cloze of a card per day, none once a sibling was reviewed that day); learn-ahead window 20 min (`learn_ahead_minutes`); interleaving is stateless (new item when session reviews ≥ `interleave_ratio` × (session new + 1)); the queue takes `exclude=<last item>` to avoid immediate repeats. py-fsrs 6.3 has **no New state** (a fresh `Card` is Learning step 0): "new" = `items.state = 'new'` / `introduced_utc IS NULL`, tracked by us. Interval previews use a no-fuzz copy of the scheduler.
+
 ### 5.3 Grading
 - **Self-graded** (`basic`, `cloze`): front → reveal (tap / Space) → back + explanation + trap → four buttons **Again / Hard / Good / Easy**, each showing its **next-interval preview** (computed by simulating `review_card` on a copy, e.g. "10m · 1d · 3d · 9d").
 - **Auto-graded** (`tf`, `mcq`): answer → **Check** → result (✓/✗, correct choice highlighted, explanation, trap, "Unofficial" badge for `exam_style`). Rating is derived: wrong ⇒ **Again**; correct ⇒ **Good**; correct + "I guessed" toggle ⇒ **Hard**; optional "Too easy" ⇒ **Easy**. `multi` mcq: exact set match required.
@@ -297,14 +303,15 @@ All modes respect `active` lectures and suspended items. Reviews done in any mod
 
 ```
 schema_version(version)
-items(item_id PK, card_id, cloze_index NULL, fsrs_card_json, state, due_utc, stability, difficulty,
-      reps, lapses, last_review_utc NULL, suspended INT DEFAULT 0, introduced_utc NULL)
-review_log(id PK, item_id, reviewed_utc, rating, auto_graded INT, correct INT NULL, guessed INT,
-           answer_json NULL, duration_ms, mode, card_hash, prev_fsrs_card_json, fsrs_review_log_json)
-reports(id PK, card_id, item_id NULL, reason, comment, created_utc, status, resolved_utc NULL, resolution_note NULL)
+items(item_id PK, card_id, cloze_index NULL, fsrs_card_json, state new|learning|review|relearning, due_utc NULL,
+      stability, difficulty, reps, lapses, last_review_utc NULL, suspended INT DEFAULT 0, introduced_utc NULL, created_utc)
+review_log(id PK, item_id FK, card_id, reviewed_utc, rating 1–4, auto_graded INT, correct INT NULL, guessed INT,
+           answer_json NULL, duration_ms, mode, session_id NULL, card_hash, prev_state, prev_item_json, fsrs_review_log_json)
+reports(id PK, card_id, item_id NULL, reason, comment, created_utc, status open|resolved, resolved_utc NULL, resolution_note NULL)
 settings(key PK, value_json)
 mock_exams(...)            # stretch
 ```
+- *As implemented (S1):* `prev_item_json` stores the **whole previous item row** (FSRS card + reps/lapses/state/introduced), so undo restores it exactly and deletes the log row. `session_id` (client-generated) drives drill/weak sessions, interleaving and the session summary. Datetimes are fixed-width UTC strings `YYYY-MM-DDTHH:MM:SS.ffffffZ` (lexicographic = chronological).
 - Content sync at startup/reload: create `items` rows for new card items (state New, not introduced); items whose card disappeared are kept but hidden (orphans; report them in `content check --db`).
 - The review log is the ground truth (FSRS state can be recomputed from it; also feeds the optional FSRS optimizer).
 - `revision backup` = SQLite online backup API → `backups/revision-YYYYMMDD-HHMM.db`, keep last 30. `revision export` = full JSON dump (download button in Settings too).
@@ -323,6 +330,7 @@ mock_exams(...)            # stretch
 - `GET /api/stats/overview|calendar|forecast|by-lecture|by-theme|exam`
 - `GET /api/source/page?pdf=&page=&scale=` → PNG (rendered with pypdfium2, cached in `DATA_DIR/cache/pages/`); `GET /files/{path}` → raw PDF. **Whitelist**: only `lectures/`, `exam/`, `labs/*/exercise*.pdf`, `revision/content/img/`; reject `..`.
 - `GET/PUT /api/settings` · `GET /api/export` · `GET /api/health`
+- *Added in S1:* `GET /api/session/{session_id}/summary`, `GET /api/stats/weakest`, `POST /api/admin/reload` (reload content + sync items; 422 with the error list if invalid, old content kept). Queue params: `mode=study|exam|weak|drill`, filters as comma lists (`weeks`, `lectures`, `themes`, `origins`, `types`) + `core`, `session_id`, `exclude`, `include_not_due`, `learn_ahead`, `ignore_limits`, `limit`. For tf/mcq the queue **withholds** `answer`, `explanation`, `trap`; they come back in the `POST /api/review` result. Cloze items arrive pre-rendered: `front` with the blank as `**[…]**` (or `**[hint]**`), `back` with the answer in bold.
 - `GET /content-img/{path}` → card images.
 
 ### 7.2 Pages
@@ -471,21 +479,21 @@ After a content session on the Mac: commit → `git push origin main` (ask the s
 ## 12. Milestones & progress checklist
 Estimated sessions: **S1** = M0–M2, **S2** = M3, **S3** = M4, **S4** = M5, **S5** = M6, **S6** = M7. M8 = optional later. Tick items as they are completed (with date).
 
-### M0 — Scaffold
-- [ ] `revision/` tree, `pyproject.toml` (uv, deps: fastapi, uvicorn[standard], pydantic, pyyaml, fsrs, pypdfium2, typer; dev: pytest, httpx, ruff), Vite React-TS app with Tailwind, KaTeX, PWA plugin
-- [ ] `.gitignore` entries; `revision/README.md` (the `CLAUDE.md` pointer line to this spec already exists since 2026-10-02)
+### M0 — Scaffold ✅ 2026-10-02
+- [x] `revision/` tree, `pyproject.toml` (uv, deps: fastapi, uvicorn[standard], pydantic, pyyaml, fsrs, pypdfium2, typer; dev: pytest, httpx, ruff), Vite React-TS app with Tailwind, KaTeX, PWA plugin
+- [x] `.gitignore` entries; `revision/README.md` (the `CLAUDE.md` pointer line to this spec already exists since 2026-10-02)
 - **Done when:** `uv run revision --help` and `npm run dev` both work.
 
-### M1 — Content model
-- [ ] pydantic models + YAML loader + `revision content check` implementing all §4.2 rules
-- [ ] `content/course.yaml` with weeks 1–4 lectures (active) and the §8.5 theme vocabulary
-- [ ] 3–5 sample cards (one per type) in `content/cards/04a.yaml` / `content/exams/04a.yaml`
-- [ ] tests with good/bad fixtures
+### M1 — Content model ✅ 2026-10-02
+- [x] pydantic models + YAML loader + `revision content check` implementing all §4.2 rules
+- [x] `content/course.yaml` with weeks 1–4 lectures (active) and the §8.5 theme vocabulary
+- [x] 3–5 sample cards (one per type) in `content/cards/04a.yaml` / `content/exams/04a.yaml`
+- [x] tests with good/bad fixtures
 - **Done when:** check passes on samples and fails with clear messages on each bad fixture.
 
-### M2 — Backend
-- [ ] SQLite schema + migrations; content→items sync; FSRS wrapper; queue building for all modes/filters; grading; undo; suspend; reports; stats; source page rendering with cache + whitelist; export/backup CLI; static SPA serving
-- [ ] pytest suite green
+### M2 — Backend ✅ 2026-10-02
+- [x] SQLite schema + migrations; content→items sync; FSRS wrapper; queue building for all modes/filters; grading; undo; suspend; reports; stats; source page rendering with cache + whitelist; export/backup CLI; static SPA serving
+- [x] pytest suite green
 - **Done when:** a full review session can be driven through the API (TestClient) for every card type and mode.
 
 ### M3 — Frontend
@@ -519,3 +527,4 @@ Estimated sessions: **S1** = M0–M2, **S2** = M3, **S3** = M4, **S4** = M5, **S
 
 ## 13. Session log
 - 2026-10-02 — Spec written (course week 4; lectures 01a–04b caught up, 03d slides 10–12 in broad strokes only). Next: S1 (M0–M2).
+- 2026-10-02 — **S1 done (M0–M2).** uv project (fastapi, fsrs 6.3.2, pypdfium2, pillow, tzdata…), Vite 8 + React 19 + Tailwind 4 + KaTeX + vite-plugin-pwa shell (placeholder page; `npm run build` OK), full backend (content validator, SQLite + migrations, FSRS wrapper, queue for study/filtered/exam/weak/drill, grading, undo, suspend, reports, stats, PDF page renderer + whitelist, backup/export CLI, SPA serving), 114 pytest tests green, ruff clean. 5 real sample cards for 04a (2 concept, 1 unofficial tf, official 2023 Q30 + 2025 Q24; pages verified — 2023 Q30 is p. 11 of the solutions PDF). Deviations documented inline (*Implemented (S1)* notes in §4.2, §5.2, §6, §7.1). `.claude/launch.json` has `revision-api` / `revision-ui`. Next: S2 = M3 (frontend); the bundle is 612 kB (KaTeX + markdown) → code-split in M3.

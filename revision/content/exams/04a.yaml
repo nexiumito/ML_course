@@ -1,0 +1,47 @@
+# Official past-exam questions whose primary lecture is 04a (stems and choices verbatim).
+
+- id: exam-2023-q30
+  type: tf
+  origin: exam_official
+  lecture: "04a"
+  themes: [generalization]
+  priority: core
+  front: |
+    *(Generalization)* When the loss function $\ell \in [a, b]$ is bounded, Hoeffding's Inequality allows us to bound the
+    difference between the true error $L_\mathcal{D}(f_{S_\text{train}})$ and the training error $L_{S_\text{train}}(f_{S_\text{train}})$, which leads to
+
+    $$\mathbb{P}_{S_\text{train}}\left[\,|L_\mathcal{D}(f_{S_\text{train}}) - L_{S_\text{train}}(f_{S_\text{train}})| \ge \sqrt{\frac{(b-a)^2 \ln(2/\delta)}{2|S_\text{train}|}}\,\right] \le \delta.$$
+  answer: false
+  explanation: |
+    Official solution: Hoeffding bounds the gap between the true error and the **validation/test** error
+    $L_{S_\text{test}}(f_{S_\text{train}})$, with $|S_\text{test}|$ in the bound. It does not apply to the training error for two reasons:
+    (1) the losses $\ell(f_{S_\text{train}}(x_i), y_i)$ are no longer independent, since $f_{S_\text{train}}$ depends on the whole
+    training set; (2) $L_\mathcal{D}(f_{S_\text{train}})$ is not the expectation of $L_{S_\text{train}}(f_{S_\text{train}})$.
+  trap: "Hoeffding ⇒ test/validation error of a model independent of that set, never the training error."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 11, label: "Final 2023 Q30"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 12, label: "04a slide 12"}
+  added: 2026-10-02
+
+- id: exam-2025-q24
+  type: mcq
+  origin: exam_official
+  lecture: "04a"
+  themes: [cross-validation, model-selection]
+  priority: core
+  front: |
+    *(Cross-Validation)* A student is trying to perform model selection for a ridge regression model. They want to choose
+    the best hyperparameter $\lambda$ from a set of $N = 5$ different candidate values $\{\lambda_1, \lambda_2, \lambda_3, \lambda_4, \lambda_5\}$.
+    To evaluate these candidates, they decide to use the K-fold cross-validation procedure, setting $K = 5$. To find the
+    best $\lambda$, what is the total number of times the learning algorithm must be trained?
+  choices: ["25", "1", "5", "10"]
+  answer: [0]
+  explanation: |
+    Official solution: a full 5-fold cross-validation is run **for each** of the 5 candidate values, and each 5-fold CV
+    trains the algorithm 5 times (each time holding out a fifth of the data): $5 \times 5 = 25$.
+    "5" counts the folds of a single CV run only; "1" and "10" do not correspond to any count in the procedure.
+  trap: "K-fold CV over L hyperparameter values = K·L trainings."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 12, label: "Final 2025 Q24"}
+    - {kind: lecture, pdf: lectures/04/lecture04a.pdf, page: 22, label: "04a slide 22"}
+  added: 2026-10-02

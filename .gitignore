@@ -105,3 +105,12 @@ ENV/
 *.cb2
 *.fdb_latexmk
 *.synctex.gz
+
+# Revision app (revision/)
+revision/data/
+revision/frontend/node_modules/
+revision/frontend/dist/
+revision/frontend/dev-dist/
+revision/.venv/
+revision/.ruff_cache/
+revision/.pytest_cache/
