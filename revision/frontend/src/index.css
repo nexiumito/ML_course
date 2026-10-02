@@ -1,16 +1,119 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
+/* manual theme: <html class="dark"> (set from Settings: system / light / dark) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --app-font-size: 17px;
+  -webkit-tap-highlight-color: transparent;
 }
+:root.dark {
+  color-scheme: dark;
+}
+html {
+  font-size: var(--app-font-size);
+}
+html[data-font="sm"] { --app-font-size: 15px; }
+html[data-font="md"] { --app-font-size: 17px; }
+html[data-font="lg"] { --app-font-size: 19px; }
+html[data-font="xl"] { --app-font-size: 21px; }
 
 body {
-  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
 }
 
-.katex-display {
+/* safe areas (iPhone notch / home indicator) */
+.pt-safe { padding-top: max(env(safe-area-inset-top), 0px); }
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
+.px-safe {
+  padding-left: max(env(safe-area-inset-left), 1rem);
+  padding-right: max(env(safe-area-inset-right), 1rem);
+}
+
+/* ---------- card content (markdown + KaTeX) ---------- */
+.md {
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md p { margin: 0.7em 0; }
+.md ul, .md ol { margin: 0.6em 0; padding-left: 1.4em; }
+.md ul { list-style: disc; }
+.md ol { list-style: decimal; }
+.md li { margin: 0.25em 0; }
+.md strong { font-weight: 650; }
+.md em { font-style: italic; }
+.md code {
+  @apply rounded bg-slate-100 px-1 py-0.5 text-[0.9em] dark:bg-slate-800;
+}
+.md table { @apply my-3 w-full border-collapse text-sm; display: block; overflow-x: auto; }
+.md th, .md td { @apply border border-slate-200 px-2 py-1 dark:border-slate-700; }
+.md blockquote { @apply border-l-4 border-slate-300 pl-3 text-slate-600 dark:border-slate-600 dark:text-slate-300; }
+
+/* KaTeX: slightly larger than the text, roomy display blocks that scroll instead of overflowing */
+.md .katex { font-size: 1.12em; }
+.md .katex-display {
+  margin: 0.9em 0;
+  padding: 0.35em 0.1em;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.md .katex-display > .katex { font-size: 1.2em; }
+/* too wide even at the minimum scale (see Markdown.tsx): wrap at KaTeX break points, else fade + scroll */
+.md .katex-display.katex-wrap > .katex { white-space: normal; }
+/* …but never inside one of KaTeX's breakable chunks */
+.md .katex-display.katex-wrap .base { white-space: nowrap; }
+.md .katex-display.katex-wrap > .katex > .katex-html { line-height: 2.2; }
+.md .katex-display.katex-overflow {
+  mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent);
+}
+/* inline math with fractions / sub-superscripts must not collide with the neighbouring lines */
+.md .katex .mfrac, .md .katex .msupsub { line-height: normal; }
+.md p .katex { padding: 0 0.05em; }
+/* never break an inline formula across lines (e.g. "[a," / "b]"); long formulas belong in $$ blocks */
+.md :not(.katex-display) > .katex { white-space: nowrap; }
+
+/* active cloze (blank or revealed answer): <mark class="cloze-mark"> from lib/rehypeCloze.ts */
+.md mark.cloze-mark {
+  @apply rounded-md bg-indigo-100 px-1.5 py-0.5 font-semibold text-indigo-900 dark:bg-indigo-500/25 dark:text-indigo-100;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { @apply outline-2 outline-offset-2 outline-indigo-500; }
+
+/* ---------- charts: one blue sequential ramp (dataviz reference palette, validated light+dark) ---------- */
+:root {
+  --viz-surface: #ffffff;
+  --viz-grid: #e2e8f0;
+  --viz-track: #e8eef6;
+  --viz-strong: #1c5cab; /* mature / main series */
+  --viz-soft: #86b6ef; /* seen, not mature */
+  --viz-heat-0: #eef2f7;
+  --viz-heat-1: #cde2fb;
+  --viz-heat-2: #86b6ef;
+  --viz-heat-3: #3987e5;
+  --viz-heat-4: #1c5cab;
+  --viz-heat-5: #0d366b;
+}
+:root.dark {
+  --viz-surface: #0f172a;
+  --viz-grid: #1e293b;
+  --viz-track: #1e293b;
+  --viz-strong: #86b6ef;
+  --viz-soft: #256abf;
+  --viz-heat-0: #1e293b;
+  --viz-heat-1: #104281;
+  --viz-heat-2: #1c5cab;
+  --viz-heat-3: #2a78d6;
+  --viz-heat-4: #5598e7;
+  --viz-heat-5: #9ec5f4;
 }

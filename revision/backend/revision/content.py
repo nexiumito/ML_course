@@ -184,9 +184,14 @@ def cloze_indices(text: str) -> list[int]:
     return sorted({s.index for s in parse_cloze(text)})
 
 
+# Private-use characters delimiting the active cloze in rendered markdown; the frontend turns the span
+# between them into a <mark> (works around math, unlike **bold**, which cards also use for emphasis).
+CLOZE_START, CLOZE_END = "\ue000", "\ue001"
+
+
 def render_cloze(text: str, index: int, reveal: bool) -> str:
-    """Markdown for the review of cloze `index`: that deletion blanked (or highlighted when revealed),
-    all other deletions shown in full."""
+    """Markdown for the review of cloze `index`: that deletion blanked (or its answer when revealed),
+    wrapped in CLOZE_START/CLOZE_END; all other deletions shown in full."""
     out: list[str] = []
     last = 0
     for s in parse_cloze(text):
@@ -194,9 +199,9 @@ def render_cloze(text: str, index: int, reveal: bool) -> str:
         if s.index != index:
             out.append(s.answer)
         elif reveal:
-            out.append(f"**{s.answer}**")
+            out.append(f"{CLOZE_START}{s.answer}{CLOZE_END}")
         else:
-            out.append(f"**[{s.hint}]**" if s.hint else "**[…]**")
+            out.append(f"{CLOZE_START}[{s.hint}]{CLOZE_END}" if s.hint else f"{CLOZE_START}[…]{CLOZE_END}")
         last = s.end
     out.append(text[last:])
     return "".join(out)
@@ -262,6 +267,7 @@ class Content:
     course: Course
     cards: list[LoadedCard]
     warnings: list[str] = field(default_factory=list)
+    pdf_pages: dict[str, int] = field(default_factory=dict)  # repo-relative PDF -> page count
 
     def __post_init__(self) -> None:
         self.by_id: dict[str, LoadedCard] = {c.card.id: c for c in self.cards}
@@ -325,6 +331,7 @@ class _Validator:
         self.content_dir = content_dir
         self.errors: list[str] = []
         self.warnings: list[str] = []
+        self.pdf_pages: dict[str, int] = {}
 
     # -- files
     def check_repo_file(self, where: str, rel: str, *, pdf: bool) -> int | None:
@@ -344,7 +351,9 @@ class _Validator:
         if not is_allowed_path(rel):
             self.errors.append(f"{where}: '{rel}' is outside the source-viewer whitelist")
         try:
-            return pdf_page_count(full)
+            n = pdf_page_count(full)
+            self.pdf_pages[rel] = n
+            return n
         except Exception as e:  # pdfium raises its own error types
             self.errors.append(f"{where}: cannot open PDF '{rel}': {e}")
             return None
@@ -588,4 +597,4 @@ def load_content(content_dir: Path, repo_root: Path) -> Content:
     cards = v.load_cards(course)
     if v.errors:
         raise ContentError(v.errors, v.warnings)
-    return Content(course=course, cards=cards, warnings=v.warnings)
+    return Content(course=course, cards=cards, warnings=v.warnings, pdf_pages=v.pdf_pages)

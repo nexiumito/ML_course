@@ -97,8 +97,8 @@ def test_cloze_item_rendering(client):
     q = client.get("/api/queue", params={"types": "cloze"}).json()
     item = q["item"]
     assert item["item_id"] == "04a-cloze::c1"
-    assert "**[…]**" in item["front"] and "$O(1/\\sqrt{N})$" in item["front"]
-    assert "**$\\sqrt{" in item["back"]
+    assert "\ue000[…]\ue001" in item["front"] and "$O(1/\\sqrt{N})$" in item["front"]
+    assert "\ue000$\\sqrt{" in item["back"]
     assert set(item["previews"]) == {"1", "2", "3", "4"}
 
 
@@ -157,6 +157,10 @@ def test_undo_restores_previous_state(client, conn):
     assert conn.execute("SELECT state FROM items WHERE item_id = '04a-basic'").fetchone()[0] == "review"
     u = client.post("/api/undo", json={"session_id": "u"}).json()
     assert u["item_id"] == "04a-basic"
+    view = client.get("/api/items/04a-basic").json()
+    assert view["item_id"] == "04a-basic" and view["state"] == "new"
+    assert client.get("/api/items/exam-2023-q30").json()["answer"] is None
+    assert client.get("/api/items/nope").status_code == 404
     after = dict(conn.execute("SELECT * FROM items WHERE item_id = '04a-basic'").fetchone())
     assert after == before
     assert conn.execute("SELECT COUNT(*) FROM review_log").fetchone()[0] == 0
@@ -209,6 +213,7 @@ def test_browse_and_card_detail(client):
     d = client.get("/api/cards/exam-2025-q24").json()
     assert d["exam_label"] == "Final 2025 Q24" and d["items"][0]["view"]["answer"] == [0]
     assert d["card"]["sources"][0]["page_url"].startswith("/api/source/page?pdf=exam/")
+    assert d["card"]["sources"][0]["page_count"] == 3
     assert client.get("/api/cards/nope").status_code == 404
 
 

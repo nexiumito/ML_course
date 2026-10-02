@@ -3,8 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8fafc" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CS-433" />
+    <meta name="description" content="Spaced-repetition revision for EPFL CS-433 Machine Learning" />
     <title>CS-433 Review</title>
+    <script>
+      // apply the last-known theme/font size before first paint (no light flash in dark mode)
+      try {
+        var ui = JSON.parse(localStorage.getItem('cs433-ui') || '{}')
+        var dark = ui.theme === 'dark' || ((!ui.theme || ui.theme === 'system') && matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) document.documentElement.classList.add('dark')
+        document.documentElement.dataset.font = ui.font_size || 'md'
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

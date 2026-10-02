@@ -10,7 +10,7 @@
     *(Generalization)* When the loss function $\ell \in [a, b]$ is bounded, Hoeffding's Inequality allows us to bound the
     difference between the true error $L_\mathcal{D}(f_{S_\text{train}})$ and the training error $L_{S_\text{train}}(f_{S_\text{train}})$, which leads to
 
-    $$\mathbb{P}_{S_\text{train}}\left[\,|L_\mathcal{D}(f_{S_\text{train}}) - L_{S_\text{train}}(f_{S_\text{train}})| \ge \sqrt{\frac{(b-a)^2 \ln(2/\delta)}{2|S_\text{train}|}}\,\right] \le \delta.$$
+    $$\mathbb{P}_{S_\text{train}}\Bigg[\,|L_\mathcal{D}(f_{S_\text{train}}) - L_{S_\text{train}}(f_{S_\text{train}})| \ge \sqrt{\frac{(b-a)^2 \ln(2/\delta)}{2|S_\text{train}|}}\,\Bigg] \le \delta.$$
   answer: false
   explanation: |
     Official solution: Hoeffding bounds the gap between the true error and the **validation/test** error

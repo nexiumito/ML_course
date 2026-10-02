@@ -13,7 +13,8 @@ uv run revision serve --reload           # API on http://127.0.0.1:8433 (docs: /
 cd frontend && npm install && npm run dev   # UI on http://localhost:5173 (proxies /api, /files, /content-img)
 ```
 Production-like: `npm run build` in `frontend/`, then `uv run revision serve` serves the built UI at http://127.0.0.1:8433/.
-In the Claude desktop app, `.claude/launch.json` (repo root) has `revision-api` and `revision-ui` launchers.
+In the Claude desktop app, `.claude/launch.json` (repo root) has `revision-api` and `revision-ui` launchers
+(and `revision-api-test`, which keeps its data in `revision/data/test/` — use it for UI tests so real progress is untouched).
 
 Data (SQLite db, rendered-page cache, backups) goes to `revision/data/` (gitignored); override with `REVISION_DATA_DIR`.
 
@@ -26,7 +27,7 @@ uv run revision backup                   # online SQLite backup → data/backups
 uv run revision export -o dump.json      # full JSON dump
 uv run pytest                            # backend tests
 uv run ruff check backend && uv run ruff format --check backend
-cd frontend && npm run typecheck && npm run lint
+cd frontend && npm run typecheck && npm run lint && npm test   # vitest
 ```
 
 ## Add content
@@ -35,14 +36,19 @@ cd frontend && npm run typecheck && npm run lint
 2. The lecture must be listed in `content/course.yaml`; themes come from its controlled vocabulary.
 3. `uv run revision content check` must pass; with `serve --reload` the app reloads on YAML changes
    (or `POST /api/admin/reload`).
-4. Check every new card in the app (rendering, KaTeX, source page), then commit (title-only message).
+4. Check every new card in the app at desktop **and 375 px** width (rendering, KaTeX, source page) — see the math-layout
+   rule in `SPEC.md` §8.2 (10b) — then commit (title-only message).
 
 ## Layout
 ```
 backend/revision/   config, content (models+validator), db, scheduler (py-fsrs), queue, grading, reviews,
                     stats, sources (PDF→PNG), reports, settings, api, app, cli
 backend/tests/      pytest suite (fake repo with generated PDFs in tmp_path)
-frontend/           React + TS + Vite + Tailwind + KaTeX + PWA (M3)
+frontend/src/       React + TS + Vite + Tailwind + KaTeX + PWA
+  api/              typed client + backend JSON types
+  lib/              pure logic (math pre-processing, cloze marks, keys, shuffle, session spec) + vitest tests
+  components/       Markdown (KaTeX), card parts, SourceViewer, ReportDialog, charts, UI kit, Layout
+  pages/            Home, Review, Browse, CardPage, Stats, Reports, Settings
 content/            course.yaml, cards/, exams/, img/
 deploy/             VPS files (M7)
 ```

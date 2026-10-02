@@ -111,6 +111,7 @@ revision/data/
 revision/frontend/node_modules/
 revision/frontend/dist/
 revision/frontend/dev-dist/
+!revision/frontend/src/lib/
 revision/.venv/
 revision/.ruff_cache/
 revision/.pytest_cache/

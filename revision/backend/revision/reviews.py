@@ -171,9 +171,10 @@ def session_summary(conn: sqlite3.Connection, session_id: str) -> dict:
 # --------------------------------------------------------------------------- views
 
 
-def source_view(s) -> dict:
+def source_view(s, content: Content) -> dict:
     d = s.model_dump()
     if s.pdf:
+        d["page_count"] = content.pdf_pages.get(s.pdf)
         d["page_url"] = f"/api/source/page?pdf={quote(s.pdf)}&page={s.page}"
         d["file_url"] = f"/files/{quote(s.pdf)}#page={s.page}"
     return d
@@ -225,7 +226,7 @@ def item_view(
         "explanation": c.explanation,
         "trap": c.trap,
         "images": [{"url": f"/content-img/{quote(im.src)}", "alt": im.alt} for im in c.images],
-        "sources": [source_view(s) for s in c.sources],
+        "sources": [source_view(s, content) for s in c.sources],
         "state": row["state"],
         "is_new": row["state"] == "new",
         "previews": {str(k): v for k, v in sched.previews(row["fsrs_card_json"], now).items()},

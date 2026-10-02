@@ -303,7 +303,7 @@ def card_detail(card_id: str, conn: Conn, content: ContentDep, now: Now):
             }
         )
     card = lc.card.model_dump(mode="json")
-    card["sources"] = [source_view(s) for s in lc.card.sources]
+    card["sources"] = [source_view(s, content) for s in lc.card.sources]
     return {
         "card": card,
         "file": lc.file,
@@ -313,6 +313,15 @@ def card_detail(card_id: str, conn: Conn, content: ContentDep, now: Now):
         "exam_label": exam_label(card_id),
         "items": items,
     }
+
+
+@router.get("/items/{item_id}")
+def get_item(item_id: str, conn: Conn, content: ContentDep, now: Now):
+    """Review view of one item (answers withheld), e.g. to show it again after an undo."""
+    row = conn.execute("SELECT * FROM items WHERE item_id = ?", (item_id,)).fetchone()
+    if row is None or item_id not in content.items:
+        raise HTTPException(404, f"unknown item '{item_id}'")
+    return item_view(content, content.items[item_id][0], row, _sched(conn), now)
 
 
 @router.post("/items/{item_id}/suspend")

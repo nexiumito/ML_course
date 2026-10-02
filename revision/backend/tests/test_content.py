@@ -209,7 +209,7 @@ def test_cloze_hint_and_escaped_braces():
 def test_cloze_same_index_twice():
     spans = parse_cloze("{{c1::a}} and {{c1::b}}")
     assert [s.index for s in spans] == [1, 1]
-    assert render_cloze("{{c1::a}} and {{c1::b}}", 1, reveal=False) == "**[…]** and **[…]**"
+    assert render_cloze("{{c1::a}} and {{c1::b}}", 1, reveal=False) == "\ue000[…]\ue001 and \ue000[…]\ue001"
 
 
 @pytest.mark.parametrize("bad", ["{{c1::}}", "{{c1::a::}}", "{{c1::a {{c2::b}} }}", "{{c1::a}"])
@@ -220,9 +220,9 @@ def test_cloze_errors(bad):
 
 def test_render_cloze():
     text = "A {{c1::x::hint}} B {{c2::y}}"
-    assert render_cloze(text, 1, reveal=False) == "A **[hint]** B y"
-    assert render_cloze(text, 1, reveal=True) == "A **x** B y"
-    assert render_cloze(text, 2, reveal=False) == "A x B **[…]**"
+    assert render_cloze(text, 1, reveal=False) == "A \ue000[hint]\ue001 B y"
+    assert render_cloze(text, 1, reveal=True) == "A \ue000x\ue001 B y"
+    assert render_cloze(text, 2, reveal=False) == "A x B \ue000[…]\ue001"
 
 
 def test_exam_label():
