@@ -73,7 +73,7 @@ const choiceStyles: Record<ChoiceState, string> = {
   neutral: 'ring-slate-200 bg-white opacity-70 dark:bg-slate-900 dark:ring-slate-700',
 }
 
-const LETTERS = 'ABCDEFGHIJ'
+const LETTERS = 'ABCDEFGHIJKL'
 
 /** MCQ choices in display `order` (original indices). After grading, shows ✓ / ✗ with text, never color alone. */
 export function ChoiceList({

@@ -1,0 +1,336 @@
+# Official past-exam questions whose primary lecture is 05b (stems and choices verbatim). Answers read from the ticked boxes
+# (2019+) or from the solution text (2016). Exponential-family / GLM questions are excluded (off-syllabus). Written in S7 (2026-10-09).
+
+- id: exam-2025-q2
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression, mle]
+  priority: core
+  front: |
+    Consider the following one-dimensional logistic model on the data:
+    $$\mathbb{P}(y = 1 \mid x; w) = \sigma(w \cdot x) = \frac{1}{1 + e^{-wx}}.$$
+    Assuming that the data is independent of the choice of $w$, what is the maximum likelihood estimate for $w$ given observations
+    $(x_1, y_1) = (1, 1)$ and $(x_2, y_2) = (-1, 1)$?
+  choices: ["$w = 0.5$", "$w = 1$", "$w = 0$", "$w = -1$", "$w = -0.5$"]
+  answer: [2]
+  explanation: |
+    $\mathcal{L}(w) \propto \mathbb{P}(y=1\mid x=1; w)\,\mathbb{P}(y=1\mid x=-1; w) = \sigma(w)\,\sigma(-w)$. With $p = \sigma(w)$, $\sigma(-w) = 1 - p$,
+    so $\mathcal{L} \propto p(1-p)$, maximized at $p = \frac12$, i.e. $w = 0$. Intuition: the same label at $x = 1$ and $x = -1$ — any $w \ne 0$
+    favours one point and penalizes the other.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 2, label: "Final 2025 Q2"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 15, label: "05b p. 15"}
+  added: 2026-10-09
+  notes: "The official solution writes P(y = -1 | x = 1; w) for the second factor — same value σ(-w) by symmetry; the answer w = 0 is unaffected."
+
+- id: exam-2024-q8
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  also_lectures: ["05a"]
+  themes: [logistic-regression, classification]
+  priority: core
+  front: "Which of the following statements is TRUE regarding the application of logistic regression and linear regression on binary classification tasks?"
+  choices:
+    - "Logistic regression models the probability of an instance belonging to a particular class, while linear regression predicts class labels directly."
+    - "Logistic regression is able to generate non-linear decision boundaries with respect to original input features when the data are not linearly separable."
+    - "Both logistic regression and linear regression have a closed-form solution for the optimal parameters."
+    - "For linearly separable data, logistic regression via gradient descent converges in a finite number of steps."
+  answer: [0]
+  explanation: |
+    Official answer: the first statement. Logistic regression models $\mathbb{P}(Y=1\mid x)$. Its decision boundary is linear in the input
+    features (nonlinear only with feature augmentation); it has no closed form (only least squares does); on separable data the weights
+    diverge ($\|w\| \to \infty$), so gradient descent does not converge in finitely many steps.
+  trap: "Strictly, linear regression outputs real values that are then thresholded — the official answer reads \"predicts labels directly\" loosely."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 5, label: "Final 2024 Q8"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09
+  notes: "Official correct statement is imprecise (linear regression predicts real numbers); kept, flagged in trap."
+
+- id: exam-2024-q9
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    Suppose we are using a logistic regression model to predict the classes of $y$ with a single feature $x$. Let $\theta_0$ be the bias and
+    $\theta_1$ be the coefficient for $x$. The predicted probability that $y = 1$ given $x = x_0$ is:
+    $$\hat p(y = 1 \mid x = x_0) = \sigma(\theta_0 + \theta_1 x_0) = \frac{1}{1 + e^{-(\theta_0 + \theta_1 x_0)}}.$$
+    Suppose we increase $x_0$ by one unit, resulting in:
+    $$\hat p(y = 1 \mid x = x_0 + 1) = \sigma(\theta_0 + \theta_1(x_0 + 1)).$$
+    Which of the following statements best describes how the predicted probability for $y = 1$ changes?
+  choices:
+    - "The predicted probability is multiplied by a fixed amount of $\\sigma(\\theta_1)$."
+    - "The predicted probability is multiplied by a fixed amount equal to $\\theta_1$."
+    - "The amount by which the predicted probability changes depends on its current value of $x_0$."
+    - "The predicted probability is multiplied by a fixed amount of $e^{\\theta_1}$."
+  answer: [2]
+  explanation: |
+    Official solution: $\sigma$ is nonlinear, so the change in probability depends on $x_0$; at extreme values the sigmoid saturates and the
+    probability barely moves. What changes by a fixed amount is the log-odds ($+\theta_1$): the **odds** are multiplied by $e^{\theta_1}$, not the probability.
+  trap: "e^θ₁ multiplies the odds, not the probability."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 5, label: "Final 2024 Q9"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 4, label: "05b p. 4"}
+  added: 2026-10-09
+
+- id: exam-2023-q5
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: "*(Logistic Regression)* Which of the following statements is **true** about the logistic regression model?"
+  choices:
+    - "Logistic regression gives a max-margin classifier"
+    - "By minimizing negative log-likelihood, we can obtain a closed-form solution for logistic regression"
+    - "In logistic regression, we calculate the weights $\\hat\\theta = (\\mathbf{X}^\\top\\mathbf{X})^{-1}\\mathbf{X}^\\top\\mathbf{y}$, and then fit responses as $\\hat y = \\sigma(\\mathbf{X}\\hat\\theta)$"
+    - "If we run Gradient Descent to solve a logistic regression task on linearly separable data, the weights will not converge"
+  answer: [3]
+  explanation: |
+    Official solution: on separable data, increasing $\|\theta\|$ always increases the likelihood, so the weights go to $\infty$.
+    There is no closed form (GD or Newton are needed); $(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$ is the least-squares solution;
+    logistic regression finds *a* separating solution, not the max-margin one (that is the SVM).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 3, label: "Final 2023 Q5"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09
+
+- id: exam-2023-q19
+  type: tf
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression, sgd]
+  priority: core
+  front: "*(Logistic regression)* One step of SGD for Logistic Regression will result in a change to the parameters only if the current example is incorrectly classified."
+  answer: false
+  explanation: |
+    Official solution: the gradient is $(\sigma(\mathbf{x}^\top\mathbf{w}) - y)\,\mathbf{x}$, which is non-zero as long as $\sigma(\mathbf{x}^\top\mathbf{w}) \ne y \in \{0,1\}$ —
+    always, since $\sigma \in\, ]0,1[$. Even correctly classified points move $\mathbf{w}$ (a little).
+  trap: "Unlike the perceptron/hinge, the logistic loss is never exactly flat."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 9, label: "Final 2023 Q19"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 23, label: "05b p. 23"}
+  added: 2026-10-09
+
+- id: exam-2022-q3
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression, optimization]
+  priority: core
+  front: |
+    *(Optimization)* Consider the logistic regression loss $L : \mathbb{R}^d \to \mathbb{R}$ for a binary classification task with data
+    $(\mathbf{x}_i, y_i) \in \mathbb{R}^d \times \{0, 1\}$ for $i \in \{1, \dots N\}$:
+    $$L(\mathbf{w}) = \frac1N \sum_{i=1}^N \Big(\log\big(1 + e^{\mathbf{x}_i^\top\mathbf{w}}\big) - y_i \mathbf{x}_i^\top\mathbf{w}\Big).$$
+    Which of the following is a gradient of the loss $L$?
+  choices:
+    - "$\\nabla L(\\mathbf{w}) = \\dfrac1N \\sum_{i=1}^N \\Big(\\mathbf{x}_i \\dfrac{e^{\\mathbf{x}_i^\\top\\mathbf{w}}}{1 + e^{\\mathbf{x}_i^\\top\\mathbf{w}}} - y_i \\mathbf{x}_i^\\top\\mathbf{w}\\Big)$"
+    - "$\\nabla L(\\mathbf{w}) = \\dfrac1N \\sum_{i=1}^N \\mathbf{x}_i \\Big(y_i - \\dfrac{e^{\\mathbf{x}_i^\\top\\mathbf{w}}}{1 + e^{\\mathbf{x}_i^\\top\\mathbf{w}}}\\Big)$"
+    - "$\\nabla L(\\mathbf{w}) = \\dfrac1N \\sum_{i=1}^N \\Big(\\dfrac{e^{\\mathbf{x}_i^\\top\\mathbf{w}}}{1 + e^{\\mathbf{x}_i^\\top\\mathbf{w}}} - y_i \\mathbf{x}_i\\Big)$"
+    - "$\\nabla L(\\mathbf{w}) = \\dfrac1N \\sum_{i=1}^N \\mathbf{x}_i \\Big(\\dfrac{1}{1 + e^{-\\mathbf{x}_i^\\top\\mathbf{w}}} - y_i\\Big)$"
+  answer: [3]
+  explanation: |
+    Official solution: $\nabla L = \frac1N\sum_i \Big(\frac{e^{\mathbf{x}_i^\top\mathbf{w}}}{1+e^{\mathbf{x}_i^\top\mathbf{w}}}\mathbf{x}_i - y_i\mathbf{x}_i\Big) = \frac1N\sum_i \mathbf{x}_i\big(\sigma(\mathbf{x}_i^\top\mathbf{w}) - y_i\big)$,
+    using $\frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$. The other choices keep $\mathbf{x}_i^\top\mathbf{w}$ (not differentiated), flip the sign, or drop $\mathbf{x}_i$ from the first term.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 3, label: "Final 2022 Q3"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 18, label: "05b p. 18"}
+  added: 2026-10-09
+
+- id: exam-2022-q7
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  shuffle: false
+  front: |
+    *(Logistic Regression)* Our task is to classify whether an animal is a dog (class 0) or a cat (class 1) based on the following features:
+    $x_1$: height, $x_2$: length of whiskers, $x_3$: thickness of fur.
+    We perform standard normal scaling on the training features so that they have a mean of zero and standard deviation of 1. We have trained
+    a Logistic Regression model to determine the probability that the animal is a cat, $p(1\mid\mathbf{x}, \mathbf{w})$.
+
+    Our classifier learns that cats have a lower height and longer whiskers than dogs, while the thickness of fur is not relevant to the
+    classification outcome. Which of the following is true about the weights $\mathbf{w}$ learned by the classifier?
+  choices: ["$w_1 < w_2 < w_3$", "$w_2 < w_3 < w_1$", "$w_3 < w_2 < w_1$", "$w_1 < w_3 < w_2$", "$w_2 < w_1 < w_3$", "$w_3 < w_1 < w_2$"]
+  answer: [3]
+  explanation: |
+    Official solution: after standardization, a below-average height is negative and makes "cat" more likely ⇒ $w_1 < 0$; longer whiskers
+    make "cat" more likely ⇒ $w_2 > 0$; fur is irrelevant ⇒ $w_3 \approx 0$. Hence $w_1 < w_3 < w_2$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 4, label: "Final 2022 Q7"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 6, label: "05b p. 6"}
+  added: 2026-10-09
+
+- id: exam-2022-q8
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [optimization, gradient-descent]
+  priority: core
+  front: |
+    *(Logistic Regression: dog (class 0) vs cat (class 1) classifier)* Let's imagine that every pet owner in Europe sends us their dog and cat data
+    to train our model, so we have lots of training data. Which of the following is true about the possible optimizers used to train our model?
+    We assume that the optimal hyperparameters are used for each optimizer.
+  choices:
+    - "Gradient descent takes fewer steps to converge, while Newton steps are more computationally efficient."
+    - "Overall, gradient descent and Newton's method are equal in terms of computational complexity."
+    - "Gradient descent steps are more computationally efficient, while Newton's method takes fewer steps to converge."
+    - "Gradient descent and Newton's method take similar number of iterations to converge."
+  answer: [2]
+  explanation: |
+    Official solution: Newton's method is second order — it needs the Hessian of the loss, which makes each step expensive (very large with
+    lots of data), but the extra curvature information makes it converge in fewer iterations. GD steps are cheap but more numerous.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 5, label: "Final 2022 Q8"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 24, label: "05b p. 24"}
+  added: 2026-10-09
+  notes: "Context line added in italics (the stem refers to the dog/cat model of Q7)."
+
+- id: exam-2022-q26
+  type: tf
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression, loss-functions]
+  priority: core
+  front: "*(Logistic Regression)* The loss function used in logistic regression equally penalizes positive and negative deviations from the correct class label."
+  answer: false
+  explanation: |
+    Official solution: the mean squared error penalizes deviations in the "correct" and "wrong" directions equally; through the sigmoid the
+    logistic loss penalizes the wrong direction much more heavily, and confident correct predictions almost not at all.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 12, label: "Final 2022 Q26"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 29, label: "05a p. 29"}
+  added: 2026-10-09
+
+- id: exam-2021-q17
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  also_lectures: ["03d"]
+  themes: [logistic-regression, regularization]
+  priority: core
+  front: |
+    *(Logistic regression)* Consider a binary classification task as in Figure 1, which consists of 14 two-dimensional linearly separable samples
+    (circles corresponds to label $y = 1$ and pluses corresponds to label $y = 0$). We would like to predict the label $y = 1$ of a sample
+    $(x_1, x_2)$ when the following holds true
+    $$\Pr(y = 1 \mid x_1, x_2, w_1, w_2) = \frac{1}{1 + \exp(-w_1 x_1 - w_2 x_2)} > 0.5$$
+    where $w_1$ and $w_2$ are parameters of the model. If we obtain the $(w_1, w_2)$ by optimizing the following objective
+    $$-\sum_{n=1}^N \log \Pr(y_n \mid x_{n1}, x_{n2}, w_1, w_2) + \frac{C}{2} w_2^2$$
+    where $C$ is very large, then the decision boundary will be close to which of the following lines?
+  images:
+    - {src: img/exam-2021-q17.png, alt: "Figure 1: seven circles (y = 1) mostly above the x1 axis, seven pluses (y = 0) below it; the origin (0,0) is marked at the axes' crossing."}
+  choices: ["$x_1 + x_2 = 0$", "$x_1 = 0$", "$x_2 = 0$", "$x_1 - x_2 = 0$"]
+  answer: [1]
+  explanation: |
+    Official solution: with $C$ very large, the penalty dominates and forces $w_2 \approx 0$. Then $\Pr(y=1\mid x) \approx \frac{1}{1 + \exp(-w_1 x_1)}$
+    depends only on the sign of $x_1$, so the boundary is $x_1 = 0$ (even though $x_2 = 0$ would separate the data better).
+  trap: "The penalty acts on w₂ only: the feature x₂ is switched off, not the boundary x₂ = 0 selected."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 10, label: "Final 2021 Q17"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09
+  notes: "Context paragraph and Figure 1 are on p. 9 of the solutions PDF."
+
+- id: exam-2021-q27
+  type: tf
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Logistic regression)* Consider a binary classification task $L(\mathbf{w}) = \sum_{n=1}^N -y_n \mathbf{x}_n^\top\mathbf{w} + \log\big(1 + e^{\mathbf{x}_n^\top\mathbf{w}}\big)$
+    with linearly separable samples and $y \in \{0, 1\}$. Then there exists an optimal $\mathbf{w}$ with exact 0 loss and 100% training accuracy.
+  answer: false
+  explanation: |
+    Official solution: a $\mathbf{w}$ with 100% training accuracy exists, but a loss of exactly 0 is not attainable: every term is $> 0$ for finite
+    $\mathbf{w}$; the infimum 0 is only approached as $\|\mathbf{w}\| \to \infty$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 14, label: "Final 2021 Q27"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09
+
+- id: exam-2020-q3
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: "*(Logistic Regression Assumptions)* Binary logistic regression assumes a:"
+  choices:
+    - "Linear relationship between the input variables."
+    - "Linear relationship between the observations."
+    - "Linear relationship between the input variables and the logit (inverse of sigmoid) of the probability of the event that the outcome $Y = 1$."
+    - "Linear relationship between the input variables and the probability of the event that the outcome $Y = 1$."
+  answer: [2]
+  explanation: |
+    Official solution: $\mathbf{x}^\top\mathbf{w} = \sigma^{-1}(\mathbb{P}(y=1\mid\mathbf{x})) = \operatorname{logit}(\mathbb{P}(y=1\mid\mathbf{x}))$: the log-odds is linear in the inputs.
+    The probability itself is $\sigma$ of a linear function, hence not linear.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 3, label: "Final 2020 Q3"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 4, label: "05b p. 4"}
+  added: 2026-10-09
+
+- id: exam-2020-q27
+  type: tf
+  origin: exam_official
+  lecture: "05b"
+  also_lectures: ["05a"]
+  themes: [logistic-regression, classification]
+  priority: core
+  front: |
+    *(Linear or Logistic Regression)* Suppose you are given a dataset of tissue images from patients with and without a certain disease. You are
+    supposed to train a model that predicts the probability that a patient has the disease. It is preferable to use logistic regression *over*
+    linear regression.
+  answer: true
+  explanation: "Official solution: linear-regression predictions are not bounded in $[0,1]$, whereas logistic regression outputs the probability of a label (disease) given the input."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 14, label: "Final 2020 Q27"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 3, label: "05b p. 3"}
+  added: 2026-10-09
+
+- id: exam-2019-q6
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Houston we have an Overflow Problem)* Assume that you want to implement the sigmoid function: $\sigma(x) = e^x/(e^x + 1)$. You know that your
+    computer can handle numbers with very small absolute value but might overflow when dealing with numbers that have a very large absolute value.
+    Let $f_1(x) = e^x/(e^x + 1)$ and $f_2(x) = 1/(e^{-x} + 1)$. Which of the following implementations is best?
+  choices: ["$f_1(x)$", "$f_2(x)$", "$f_1(x)$ if $x > 0$ and $f_2(x)$ otherwise", "$f_2(x)$ if $x > 0$ and $f_1(x)$ otherwise"]
+  answer: [3]
+  explanation: |
+    Official solution: use $f_2$ for $x > 0$ (then $e^{-x} \le 1$) and $f_1$ otherwise (then $e^x \le 1$): no exponential of a large positive number
+    is ever computed. $f_1$ alone overflows for large positive $x$, $f_2$ alone for very negative $x$; the third choice does both wrong.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 4, label: "Final 2019 Q6"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 5, label: "05b p. 5"}
+  added: 2026-10-09
+
+- id: exam-2016-q12
+  type: mcq
+  origin: exam_official
+  lecture: "05b"
+  also_lectures: ["03d"]
+  themes: [logistic-regression, loss-functions, regularization]
+  priority: core
+  front: "Mark the true statements."
+  choices:
+    - "Logistic loss is typically preferred over $L_2$ loss (least squares loss) in classification tasks."
+    - "In terms of feature selection, $L_2$ regularization is often preferred since it comes up with sparse solutions."
+  answer: [0]
+  multi: true
+  shuffle: false
+  explanation: |
+    Official solution: only the first. With the logistic loss, correctly classified points far from the decision boundary have much less impact
+    on the boundary. Sparse solutions (feature selection) come from $L_1$ regularization (lasso), not $L_2$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 4, label: "Final 2016 Q12"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 29, label: "05a p. 29"}
+  added: 2026-10-09

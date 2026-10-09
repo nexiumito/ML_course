@@ -30,8 +30,8 @@ labs/exNN/
 | ex01 | 2026-09-10 | NumPy / vectorization (standardize, pairwise distances, Gaussian likelihood) | ⏳ student not started (solutions available in `labs/ex01/solution/`) | |
 | ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ⏳ student not started; template (2026-09-15) **and solution (2026-09-21)** in repo | Sheet identical to 2025. Details below. Solution includes `solutions-theory-questions.pdf`. |
 | ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ template pulled 2026-09-24; **solution published 2026-10-01** (`solution/`, incl. theory-question PDF); deferred by the student (lectures + P1 first) | **P1 function** `least_squares`, `ridge_regression` |
-| ex04 | 2026-10-01 | 4-fold CV for ridge (degree 7, RMSE vs λ), best-degree selection (2–10), bias–variance visualization (degrees 1/3/6, many seeds) | ⏳ template published early, 2026-09-25; no theory questions in the sheet | reuses ex03 `ridge_regression`, `least_squares`, `build_poly` |
-| ex05 | 2026-10-08 | Logistic regression (+ regularized, Newton) | ⏳ | **P1 functions** `logistic_regression`, `reg_logistic_regression` |
+| ex04 | 2026-10-01 | 4-fold CV for ridge (degree 7, RMSE vs λ), best-degree selection (2–10), bias–variance visualization (degrees 1/3/6, many seeds) | ⏳ template published early, 2026-09-25; **solution published 2026-10-02**; no theory questions in the sheet | reuses ex03 `ridge_regression`, `least_squares`, `build_poly` |
+| ex05 | 2026-10-08 | Logistic regression: least-squares classification, GD, Newton, penalized | ⏳ template published 2026-10-02 (sheet dated Oct 7); no theory questions; deferred | **P1 functions** `logistic_regression`, `reg_logistic_regression`. Details below. |
 | ex06 | 2026-10-15 | SVM via SGD and coordinate descent | ⏳ | |
 | ex07 | 2026-10-29 | Kernels & NN intro | ⏳ | |
 | ex08 | 2026-11-05 | NN training & CNNs (PyTorch) | ⏳ | |
@@ -62,6 +62,14 @@ Sheet: `labs/ex02/exercise02.pdf` (identical to 2025 except dates). Work in `lab
 - **Ex 5:** reload with `sub_sample=True` then `add_outlier=True`; MSE fit is dragged by the 2 outliers.
 - **Ex 6 `compute_subgradient_mae(y, tx, w)`:** `−(1/N) tx.T @ sign(e)` (any value in [−1,1] at eₙ = 0); `subgradient_descent` and `stochastic_subgradient_descent` mirror Ex 3/4. Questions: MAE fit better with outliers? did you hit a non-differentiable point? (practically never with float data).
 - Theory questions: rewrite MSE with e (Ex 1a); chain rule for subgradient (Ex 6a). Theory solutions: `labs/ex02/solution/solutions-theory-questions.pdf`.
+
+## ex05 — Logistic regression (details)
+Sheet: `labs/ex05/exercise05.pdf` (Problem Set 5, Oct 7, 2026). Work in `labs/ex05/template/ex05.ipynb`; copy `least_squares` from ex03 into `least_squares.py`. Data: `height_weight_genders.csv` (200 random points), predict gender from height/weight. Lecture: `docs/lectures/05-classification-logistic-regression.md` §B.
+- **Ex 1:** classify with least squares (threshold the regression output), `visualization()` plots the boundary.
+- **Ex 2:** `sigmoid`, `calculate_loss` (NLL, y ∈ {0,1}, 1/N factor), `calculate_gradient` = (1/N) Xᵀ(σ(Xw) − y), `learning_by_gradient_descent` (one step, returns loss and new w).
+- **Ex 3:** `calculate_hessian` = (1/N) XᵀSX, `logistic_regression` returns (loss, gradient, Hessian) without updating w, `learning_by_newton_method` (one damped step; use `np.linalg.solve`, never invert).
+- **Ex 4:** `penalized_logistic_regression` adds λ‖w‖² (gradient + 2λw); **the reported loss excludes the penalty** (same convention as Project 1). Check that ‖w‖ shrinks as λ grows and that tiny λ reproduces Ex 2.
+- Pitfalls: y must be (N,) in {0,1} (not ±1); stable sigmoid / log(1 + eᶻ) (`np.logaddexp(0, z)`) to avoid overflow; doctests compare exact shapes.
 
 ## Gotchas / lessons learned (append as the semester goes)
 - `np.std` uses population std (ddof=0) — matches the doctest in Task A.

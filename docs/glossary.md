@@ -60,6 +60,12 @@ Extend this file whenever a lecture introduces new notation. Conventions follow 
 | M-fold CV | = K-fold cross-validation (lecture 04 uses M because K = # hyperparameter values). |
 | Bias² / variance / noise | (f(x₀) − 𝔼_S f_S(x₀))² / 𝔼_S(f_S(x₀) − 𝔼_S f_S(x₀))² / Var ε; sum = expected true error at x₀ (square loss, y = f(x) + ε). |
 | Double descent | test risk decreases again past the interpolation threshold (over-parameterized regime). |
+| 0-1 loss, Bayes classifier f* | 𝟙_{y≠y'}; f*(x) = argmax_y ℙ(Y = y \| X = x), minimizes the true 0-1 risk (lecture 05a). |
+| Functional margin, surrogate ϕ | y·g(x) for a score g with prediction sign(g(x)); ϕ convex surrogate of 𝟙_{yg(x)≤0} (logistic, hinge, square). |
+| Margin | distance from the separating hyperplane to the closest point; max-margin → SVM. |
+| σ(η) | logistic/sigmoid 1/(1 + e^{−η}); 1 − σ(η) = σ(−η); σ' = σ(1 − σ). logit = σ⁻¹ = log(p/(1 − p)) (log-odds). |
+| Logistic regression | p(1\|x) = σ(xᵀw); NLL L(w) = (1/N) Σ [−yₙxₙᵀw + log(1 + e^{xₙᵀw})] (y ∈ {0,1}); ∇L = (1/N)Xᵀ(σ(Xw) − y); ∇²L = (1/N)XᵀSX. |
+| Newton's method | w_{t+1} = w_t − γ_t ∇²L(w_t)⁻¹∇L(w_t) (damped). |
 | O(·) | big-O complexity. Matrix–vector O(ND); matrix–matrix (N×D)(D×K) O(NDK). |
 
 ## General ML terms (from the syllabus; details added as lectures happen)

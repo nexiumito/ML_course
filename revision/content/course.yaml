@@ -66,15 +66,29 @@ lectures:
     title: "Generalization, Model Selection, Validation"
     date: 2026-09-29
     pdf: lectures/04/lecture04a.pdf
-    annotated_pdf: null    # not yet published (as of 2026-10-02)
+    annotated_pdf: null    # none: Flammarion does not publish annotated slides
     sheet: docs/lectures/04-generalization-bias-variance.md
   - id: "04b"
     week: 4
     title: "Bias–Variance Decomposition"
     date: 2026-09-30
     pdf: lectures/04/lecture04b.pdf
-    annotated_pdf: null    # not yet published (as of 2026-10-02)
+    annotated_pdf: null    # none: Flammarion does not publish annotated slides
     sheet: docs/lectures/04-generalization-bias-variance.md
+  - id: "05a"
+    week: 5
+    title: "Classification"
+    date: 2026-10-06
+    pdf: lectures/05/lecture05a.pdf
+    annotated_pdf: null    # none: Flammarion does not publish annotated slides
+    sheet: docs/lectures/05-classification-logistic-regression.md
+  - id: "05b"
+    week: 5
+    title: "Logistic Regression"
+    date: 2026-10-07
+    pdf: lectures/05/lecture05b.pdf
+    annotated_pdf: null    # none: Flammarion does not publish annotated slides
+    sheet: docs/lectures/05-classification-logistic-regression.md
 
 # Controlled theme vocabulary (SPEC §8.5). Extend when new lectures need it.
 themes:
@@ -99,3 +113,6 @@ themes:
   - {id: model-selection, label: "Model selection"}
   - {id: cross-validation, label: "Cross-validation"}
   - {id: bias-variance, label: "Bias–variance decomposition"}
+  - {id: classification, label: "Classification"}
+  - {id: knn, label: "k-nearest neighbors"}
+  - {id: logistic-regression, label: "Logistic regression"}

@@ -45,7 +45,7 @@ docs/                               agent-facing documentation (this system)
 - New `lectures/NN/` folder → create `docs/lectures/NN-<topic>.md` (use the existing sheets as the format), add a row to `docs/lectures/README.md`, mark the week in `docs/schedule.md`, add new notation to `docs/glossary.md`.
 - New or completed `labs/exNN/` → update the lab's row/section in `docs/labs.md` (status, gotchas, what was hard) and `docs/schedule.md`.
 - Project starts → fill `docs/projects.md` from the official description PDF and create `projects/projectN/CLAUDE.md` (team, deadlines, structure, how to run).
-- Lecture caught up by the student → write its cards (`revision/SPEC.md` §8), run `uv run revision content check`, commit, push, deploy (`ssh elie@ml-vps '~/ML_course/revision/deploy/update.sh'`, ask first). Start every content session by processing open card reports (`revision/README.md` § Production).
+- **Both lectures of the week** caught up by the student → write that week's cards (never before, never lecture by lecture) (`revision/SPEC.md` §8), run `uv run revision content check`, commit, push, deploy (`ssh elie@ml-vps '~/ML_course/revision/deploy/update.sh'`, ask first). Start every content session by processing open card reports (`revision/README.md` § Production).
 - Always keep the ✅/⏳ status column in `docs/schedule.md` current.
 - Keep this file under 80 lines. Details go in `docs/`, not here.
 - Write dates as absolute (e.g. `2026-10-29`), never "next week".
@@ -55,7 +55,7 @@ docs/                               agent-facing documentation (this system)
 
 ## Working with the student
 - He does **not attend lectures**: he catches up each lecture at home from the slide PDF + mediaspace video (the prof annotates slides live). Basic slides go fast; on technical slides he stops and asks questions. Help him understand deeply and tell him what is essential / exam-relevant to note.
-- Annotated slides (`lectureNNx_*_annotated.pdf`) arrive upstream 1–2 days after each lecture: suggest `git pull upstream main` and use them.
+- Annotated slides (`lectureNNx_*_annotated.pdf`) arrive upstream 1–2 days after each **Jaggi** lecture: suggest `git pull upstream main` and use them. **Flammarion (lectures 04+) publishes none** — don't wait; the 2025 annotated decks in git history can serve as a proxy when the slides are the same.
 - **"Page N" = the slide number printed bottom-right** (= PDF page N+1 because of the title page). Use `pdftoppm -f N+1 -l N+1` to render slide N. **Exception — lecture 04+ (Flammarion decks): slide N = PDF page N** (04b has almost no printed numbers → use PDF page).
 - Weekly goal: the two lectures of the week + the Thursday lab. Status of what he has actually caught up: `docs/schedule.md` and `docs/labs.md` — update after each session.
 - Project team (P1 & P2): Elie, Gabin, Antoine.

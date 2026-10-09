@@ -26,9 +26,9 @@ Mock midterms (`exam/mock-midterm-exam/`, short derivation problems, mid-Novembe
 
 ## Question index (revision app)
 Every question of finals 2016–2025 and of the mock midterms is classified in `revision/content/exam-index.yaml` (S3, 2026-10-02):
-type (mcq / tf / open), topic, course areas, lectures (once caught up), status (pending / added / open-excluded / excluded = Bayes nets & factor graphs, not in the 2026 syllabus / duplicate), page in the solutions PDF.
-431 entries: 107 open questions, 9 out of syllabus, 8 duplicates (mock 2017 MC items repeated in mock 2018). Official questions become cards in the revision app as their lectures are caught up (`revision/SPEC.md` §8.3).
-Known slips in official solutions: 2025 Q5 solution text says "(b)" but the ticked box (correct) is −(1/N)Xᵀ(y−Xw); 2021 Q6 solution discusses an "f5" absent from the question; 2017 P8 solution places the row loosely (row i of the derivative = j-th row of W).
+type (mcq / tf / open), topic, course areas, lectures (once caught up), status (pending / added / open-excluded / excluded = not in the 2026 syllabus: Bayes nets & factor graphs, exponential family / GLM / duplicate), page in the solutions PDF.
+431 entries: 105 open-excluded, 17 out of syllabus (9 Bayes nets + 8 exponential family/GLM, excluded 2026-10-09: not in lecture 05), 10 duplicates (mock 2017 MC items repeated in mock 2018; mock 2018 5i = Final 2017 P1). Status 2026-10-09: 108 added (through week 5), 191 pending. Official questions become cards in the revision app as their lectures are caught up (`revision/SPEC.md` §8.3).
+Known slips in official solutions: 2025 Q5 solution text says "(b)" but the ticked box (correct) is −(1/N)Xᵀ(y−Xw); 2021 Q6 solution discusses an "f5" absent from the question; 2017 P8 solution places the row loosely (row i of the derivative = j-th row of W); 2025 Q2 solution writes P(y = −1 | x = 1) for the second factor (same value σ(−w)); 2024 Q23 solution's "D = 2C + B" argument is muddled (XOR labels are the real reason); 2024 Q8 official statement "linear regression predicts class labels directly" is loose; 2023 Q20 was not counted (ambiguous).
 
 ## Current format (2019–2025, expected for Jan 2027)
 - **180 min**, closed book, **one double-sided A4 cheat sheet** (hand-written or ≥ 11 pt in 2020 rules), no electronics. Held at SwissTech (STCC). Each student gets a different (shuffled) version. Booklet of 20 pages; answers only in the booklet; last 2 pages scrap.

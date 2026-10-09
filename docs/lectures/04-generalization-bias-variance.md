@@ -1,6 +1,6 @@
 # Lecture 04 — Generalization, Model Selection & Validation; Bias–Variance Decomposition
 
-Sources (lecturer: Nicolas Flammarion; pulled 2026-10-01; annotated versions: TODO — not yet published (as of 2026-10-01)):
+Sources (lecturer: Nicolas Flammarion; pulled 2026-10-01; no annotated version — Flammarion does not annotate his slides (confirmed 2026-10-08)):
 - §A `lectures/04/lecture04a.pdf` (27 p., 2026-09-29) — Generalization, model selection, validation
 - §B `lectures/04/lecture04b.pdf` (34 p., 2026-09-30) — Bias–variance decomposition
 
@@ -76,7 +76,7 @@ Formulas below were checked against rendered slides (2026-10-01); most formulas 
 - Be able to redo the bias–variance derivation (add/subtract 𝔼_{S'}[f_{S'}(x₀)], kill the cross terms). 2025 had a 2-pt bias–variance open question.
 
 ## Not exam material
-- Hoeffding proof (04a sl. 23–27) was presented as bonus ("Do we still have some time?"). No final exam 2016–2025 asks for it (checked 2026-10-01); exams only use the inequality (2023 Q30–31). Knowing the statement and how it's applied is essential; the proof is low priority. TODO — check the annotated slides / video for whether it was actually covered in class.
+- Hoeffding proof (04a sl. 23–27) was presented as bonus ("Do we still have some time?"). No final exam 2016–2025 asks for it (checked 2026-10-01); exams only use the inequality (2023 Q30–31). Knowing the statement and how it's applied is essential; the proof is low priority. No annotated version will come; check the video if needed.
 
 ## Exercises mentioned
 - Lab 4 (`labs/ex04/`, 2026-10-01): 4-fold cross-validation for ridge on polynomial degree 7 (train/test RMSE vs λ), best-degree selection over degrees 2–10, bias–variance visualization (degrees 1, 3, 6 over many random training sets; bonus: fixed degree, vary λ).

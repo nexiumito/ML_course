@@ -1,0 +1,601 @@
+# Lecture 05a — Classification (Flammarion deck, no printed slide numbers → labels use the PDF page, "05a p. N").
+# No annotated version (Flammarion does not annotate). Written in S7 (2026-10-09), after the student caught up 05a + 05b.
+# Student confusions from the catch-up (SPEC §8.4 "Week 5") are covered by: 05a-ls-threshold, 05a-ls-hoped-probability,
+# 05a-extreme-values, 05a-knn-k-vs-distance, 05a-nonparametric, 05a-max-margin-figure, 05a-feature-augmentation,
+# 05a-bayes-proof, 05a-bayes-toy, 05a-convex-relaxation.
+
+# ---------------------------------------------------------------- definitions
+
+- id: 05a-classification-def
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: |
+    *(Classification)* Classification relates an input $x \in \mathcal{X}$ to a label $y$ in a {{c1::discrete (categorical) set}} $\mathcal{Y}$.
+    Binary: $y \in \{c_1, c_2\}$, often encoded {{c2::$\{0,1\}$ or $\{-1,1\}$}}; multi-class: $y \in \{c_1, \dots, c_K\}$ with
+    {{c3::no ordering between the classes}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 2, label: "05a p. 2"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 3, label: "05a p. 3"}
+  added: 2026-10-09
+
+- id: 05a-decision-boundary
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: "*(Classifier)* What does a classifier $f : \\mathcal{X} \\to \\mathcal{Y}$ do to the input space, and what is a **decision boundary**?"
+  back: |
+    It divides the input space into **regions, one per class**. The decision boundary is where the predicted class changes,
+    i.e. the frontier between regions. It can be linear (hyperplane) or nonlinear (curve).
+  explanation: "\"Linear\" / \"nonlinear\" is only an adjective: p. 7 and p. 8 show the same figure, labelled \"decision boundary\" then \"linear decision boundary\"."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 7, label: "05a p. 7"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 9, label: "05a p. 9"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- classification by least squares
+
+- id: 05a-ls-threshold
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, least-squares]
+  priority: core
+  front: |
+    *(Classification by regression)* We encode $C_1 \to 0$, $C_2 \to 1$, fit least squares, and predict $C_2$ iff $f_{S_\text{train}}(x) \ge 0.5$.
+    What does the threshold $0.5$ represent?
+  back: |
+    The **midpoint between the two codes** 0 and 1: we predict the class whose code is closest to the real-valued output.
+    It is **not** a probability threshold — the linear output can be $-0.3$ or $1.4$.
+  explanation: "With codes $-1/+1$ the same idea gives the threshold $0$, i.e. $\\operatorname{sign}(f(x))$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 10, label: "05a p. 10"}
+  added: 2026-10-09
+
+- id: 05a-ls-hoped-probability
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, least-squares, probability]
+  priority: detail
+  front: "*(Classification by regression)* Why is it tempting to read the least-squares output on 0/1 labels as $\\mathbb{P}(Y=1 \\mid X=x)$, and why does it fail?"
+  back: |
+    The square-loss minimizer is $\mathbb{E}[Y \mid X=x]$, which for $Y \in \{0,1\}$ **equals** $\mathbb{P}(Y=1 \mid X=x)$.
+    But a **linear** fit is unbounded: it leaves $[0,1]$, so its values are not probabilities.
+  explanation: |
+    p. 11 labels the axis "probability of default" only *for the sake of interpretation*; p. 12 (point A) shows the line going below 0
+    and above 1. $\mathbb{E}[Y\mid X=x]$ as the square-loss minimizer appears on the bonus slide p. 31.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 11, label: "05a p. 11"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 12, label: "05a p. 12"}
+  added: 2026-10-09
+
+- id: 05a-ls-failures
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, least-squares, loss-functions]
+  priority: core
+  front: |
+    *(Classification ≠ regression)* Least squares on 0/1 labels fails because (A) {{c1::the predicted values are not probabilities (not in $[0,1]$)}},
+    (B) {{c2::it is sensitive to unbalanced classes}}, (C) {{c3::it is sensitive to extreme values}}.
+    Common cause: {{c4::the square loss is not suitable for classification}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 12, label: "05a p. 12"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 13, label: "05a p. 13"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 14, label: "05a p. 14"}
+  added: 2026-10-09
+
+- id: 05a-unbalanced
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, least-squares]
+  priority: core
+  front: "*(Least-squares classification)* What happens to the fitted line and the decision boundary when one class has 15× more points (1:15) than the other?"
+  back: |
+    The line is **flattened towards the majority code** (the sum of squared errors is dominated by the majority), so it crosses $0.5$
+    much further away: the boundary moves (≈ 1300 → ≈ 2900 in the credit-default example) and most minority points are misclassified.
+  explanation: "The boundary should depend on **where** the classes are, not on **how many** points each has."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 13, label: "05a p. 13"}
+  added: 2026-10-09
+
+- id: 05a-extreme-values
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, least-squares, loss-functions]
+  priority: core
+  front: "*(Least-squares classification)* Adding 3% of extreme points (very large balance with $y=1$, very negative with $y=0$) wrecks the boundary — yet these points are **correctly** classified. Why?"
+  back: |
+    The square loss penalizes deviations **in both directions**: a prediction far above 1 for a $y=1$ point (a "too correct", confident
+    prediction) gets a huge error, so the fit flattens to avoid it and the 0.5 crossing moves far away.
+  trap: "The extreme points are not mislabeled outliers: they are on the right side, and still pull the line."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 14, label: "05a p. 14"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- k-NN
+
+- id: 05a-knn-rule
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, knn]
+  priority: core
+  front: |
+    *(k-NN)* Assumption: {{c1::nearby points are likely to have similar labels}}.
+    A new point $x$ is classified by {{c2::the majority vote of its $k$ nearest neighbors}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 16, label: "05a p. 16"}
+  added: 2026-10-09
+
+- id: 05a-knn-pros-cons
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, knn]
+  priority: core
+  front: |
+    *(k-NN)* Pros: {{c1::no optimization / training}}, easy to implement, works well in {{c2::low dimensions}} (very complex boundaries).
+    Cons: {{c3::slow at query time}}, not suitable for high-dimensional data, and {{c4::the choice of the local distance is crucial}}.
+  explanation: "Query cost: distances to all $N$ training points, $O(ND)$ per prediction."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 17, label: "05a p. 17"}
+  added: 2026-10-09
+
+- id: 05a-knn-k-vs-distance
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [knn]
+  priority: core
+  front: "*(k-NN)* Is \"the right local distance\" the same thing as $k$?"
+  back: |
+    No. $k$ = **how many** neighbors vote (a hyperparameter). The distance = **how closeness is measured** (Euclidean, Manhattan, cosine, …):
+    it decides who the neighbors are. E.g. unscaled features let the largest-range feature dominate the Euclidean distance → standardize.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 17, label: "05a p. 17"}
+  added: 2026-10-09
+
+- id: 05a-nonparametric
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, knn]
+  priority: core
+  front: "*(Two classes of algorithms)* k-NN is **non-parametric** although it has a $k$. What does non-parametric mean, and what is the parametric alternative?"
+  back: |
+    **Non-parametric**: no fixed functional form with a fixed number of learned parameters; $\mathbb{P}(Y=y\mid X=x)$ is approximated by
+    local averaging and the "model" is the training set itself (grows with $N$). $k$ is a hyperparameter, not a learned parameter.
+    **Parametric**: fit a model of fixed size (e.g. $w \in \mathbb{R}^D$) by empirical risk minimization (ERM).
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 26, label: "05a p. 26"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- linear boundaries, margin, nonlinear
+
+- id: 05a-linear-classifier
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: |
+    *(Linear classifier)* Prediction: $f(x) =$ {{c1::$\operatorname{sign}(x^\top w)$}}. The decision boundary is the hyperplane
+    {{c2::$\{x : x^\top w = 0\}$}}, and $w$ is {{c3::orthogonal (normal) to it}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 18, label: "05a p. 18"}
+  added: 2026-10-09
+
+- id: 05a-w-normal-why
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification]
+  priority: detail
+  front: "*(Linear classifier)* Why does the sign of $x^\\top w$ tell on which side of the boundary $x$ lies, and why is $w$ normal to the boundary?"
+  back: |
+    $x^\top w = \|x\|\,\|w\|\cos\theta$: only the angle $\theta$ between $x$ and $w$ decides the sign ($\theta < 90°$ ⇒ positive).
+    The boundary $x^\top w = 0$ is the set of points **orthogonal** to $w$.
+  explanation: "Without a bias term this boundary passes through the origin; a bias $w_0$ (or a constant-1 feature) shifts it."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 18, label: "05a p. 18"}
+  added: 2026-10-09
+
+- id: 05a-margin
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: |
+    *(Separating hyperplane)* Data are **linearly separable** if {{c1::some hyperplane classifies all training points correctly}}.
+    The **margin** of a hyperplane is {{c2::the distance from the hyperplane to the closest point}}; we pick the hyperplane that {{c3::maximizes the margin}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 19, label: "05a p. 19"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 20, label: "05a p. 20"}
+  added: 2026-10-09
+
+- id: 05a-max-margin-why
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: "*(Max-margin)* Why prefer the max-margin separating hyperplane among all separating ones? Which methods does this lead to?"
+  back: |
+    If the training set changes slightly (noise, new points), the number of misclassifications stays low: there is a safety zone on both sides.
+    It leads to **SVM** and **logistic regression**.
+  explanation: |
+    On p. 21 the two drawn lines are **two candidate separators being compared**: the vertical one separates the data but passes very close
+    to a point of each class (small margin); the diagonal one is the max-margin hyperplane. They are not margin boundaries.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 21, label: "05a p. 21"}
+  added: 2026-10-09
+
+- id: 05a-feature-augmentation
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, polynomial-features]
+  priority: core
+  front: "*(Nonlinear classifier)* When linear boundaries do not work (e.g. one class inside a circle of the other), how do feature augmentation and the kernel method help?"
+  back: |
+    They keep a **linear classifier, but in a transformed feature space** $\phi(x)$ (e.g. add $x_1^2 + x_2^2$): the boundary is linear in
+    $\phi(x)$ and **nonlinear in the original space** (a circle). The kernel method does the same implicitly.
+  trap: "A regularizer does not make non-separable data linearly separable (Final 2023 Q20)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 22, label: "05a p. 22"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- 0-1 loss, Bayes classifier
+
+- id: 05a-zero-one-risk
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: core
+  front: |
+    *(Binary classification, $\mathcal{Y} = \{-1,1\}$)* The 0-1 loss is $\ell(y, y') =$ {{c1::$1_{y \ne y'}$}}, and the true risk is
+    $L_\mathcal{D}(f) = \mathbb{E}_\mathcal{D}[1_{Y \ne f(X)}] =$ {{c2::$\mathbb{P}_\mathcal{D}[Y \ne f(X)]$}}, the {{c3::probability of making an error}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 23, label: "05a p. 23"}
+  added: 2026-10-09
+
+- id: 05a-bayes-classifier
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    *(Bayes classifier)* $f_\star \in \arg\min_f L_\mathcal{D}(f)$ (0-1 risk) is given by $f_\star(x) \in$ {{c1::$\arg\max_{y \in \{-1,1\}} \mathbb{P}(Y = y \mid X = x)$}}:
+    predict {{c2::the most probable label given $x$}}. In practice it is {{c3::unattainable, since $\mathcal{D}$ is unknown}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 24, label: "05a p. 24"}
+  added: 2026-10-09
+
+- id: 05a-bayes-proof
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: "*(Bayes classifier)* Prove that $g_\\star(x) \\in \\arg\\max_y \\mathbb{P}(Y=y \\mid X=x)$ minimizes the 0-1 risk (two steps)."
+  back: |
+    1. **Pointwise**: with $r_x(y) = \mathbb{P}(Y \ne y \mid X=x) = 1 - \mathbb{P}(Y=y\mid X=x)$, $g_\star$ picks the label of smallest
+    conditional error, so $r_x(f(x)) - r_x(g_\star(x)) \ge 0$ for every $f$ and $x$.
+    2. **Average** (tower rule): $L_\mathcal{D}(f) = \mathbb{E}_X[r_X(f(X))]$, so $L_\mathcal{D}(f) - L_\mathcal{D}(g_\star) = \mathbb{E}_X[r_X(f(X)) - r_X(g_\star(X))] \ge 0$.
+  explanation: |
+    $g_\star$ is just the candidate rule; once proved optimal it can be called $f_\star$. Step 2 says: the total error is the average of the
+    per-$x$ errors weighted by how often each $x$ occurs, and an average of non-negative numbers is non-negative. Final 2022 Q37–Q42 is an
+    open problem built on this proof.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 25, label: "05a p. 25"}
+  added: 2026-10-09
+
+- id: 05a-bayes-toy
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    *(Bayes classifier)* $X \in \{a, b\}$ with $\mathbb{P}(X=a) = 0.6$, $\mathbb{P}(X=b) = 0.4$, and $\mathbb{P}(Y=+1\mid a) = 0.8$, $\mathbb{P}(Y=+1\mid b) = 0.3$.
+    Give the Bayes classifier and its error, and the error of "always $+1$".
+  back: |
+    Bayes: $a \mapsto +1$, $b \mapsto -1$; error $0.6 \cdot 0.2 + 0.4 \cdot 0.3 = 0.24$.
+    Always $+1$: $0.6 \cdot 0.2 + 0.4 \cdot 0.7 = 0.40$.
+  explanation: |
+    At each $x$ the error is the probability of the label **not** chosen. The difference $0.16 = 0.6 \cdot 0 + 0.4 \cdot (0.7 - 0.3)$ is
+    exactly the weighted average of the pointwise differences of step 1 of the proof.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 25, label: "05a p. 25"}
+  added: 2026-10-09
+  notes: "Toy example used in the 2026-10-08 catch-up session; numbers checked."
+
+- id: 05a-bayes-risk
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    *(Bayes risk)* With $\eta(x) = \mathbb{P}(Y = 1 \mid X = x)$, the error of the Bayes classifier is
+
+    $L^\star =$ {{c1::$\mathbb{E}_X\big[\min(\eta(X),\, 1 - \eta(X))\big]$}}
+  explanation: |
+    Predicting the most probable label, you are wrong with the probability of the **less** probable one. Proof: tower rule + case split
+    $\eta(x) \ge 1/2$ / $< 1/2$ (Final 2022 Q39, 2 pts). Not written on the slides; follows from p. 25.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 15, label: "Final 2022 Q39"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 25, label: "05a p. 25"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- ERM and convex relaxation
+
+- id: 05a-erm-zero-one
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: core
+  front: |
+    *(ERM, $\mathcal{Y} = \{-1,1\}$)* $L_\text{train}(f) = \frac{1}{N}\sum_{n=1}^N 1_{f(x_n) \ne y_n} = \frac{1}{N}\sum_{n=1}^N$ {{c1::$1_{y_n f(x_n) \le 0}$}}.
+    This problem is not convex because {{c2::the set of classifiers is not convex ($\mathcal{Y}$ is discrete)}} and
+    {{c3::the indicator is not continuous (hence not convex)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 27, label: "05a p. 27"}
+  added: 2026-10-09
+
+- id: 05a-convex-relaxation
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, convexity, loss-functions]
+  priority: core
+  front: "*(Convex relaxation)* Which two changes turn 0-1 empirical risk minimization into a convex problem?"
+  back: |
+    1. Learn a **real-valued** $g : \mathcal{X} \to \mathbb{R}$ in a convex set $\mathcal{G}$ (e.g. $g(x) = x^\top w$) and predict $\operatorname{sign}(g(x))$.
+    2. Replace $1_{y_n g(x_n) \le 0}$ by a **convex surrogate** $\phi(y_n g(x_n))$ and minimize $\frac1N\sum_n \phi(y_n g(x_n))$.
+  explanation: |
+    For $g(x) = x^\top w$: $w \mapsto y_n x_n^\top w$ is linear, convex ∘ linear is convex, and a sum of convex functions is convex.
+    Under technical assumptions on $\phi$, the 0-1 risk is bounded by the $\phi$-risk, so we do not lose the goal.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 28, label: "05a p. 28"}
+  added: 2026-10-09
+
+- id: 05a-zero-one-gradient
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, optimization]
+  priority: core
+  front: "*(0-1 loss)* Besides non-convexity, why can't we train with the 0-1 loss using (stochastic) gradient descent?"
+  back: "It is piecewise constant: its gradient is **zero wherever it is defined**, so it gives no direction to move $w$."
+  explanation: "Final 2024 Q39 (True): the 0-1 loss is not suitable for training with SGD; use a surrogate (cross-entropy / logistic, hinge)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 27, label: "05a p. 27"}
+  added: 2026-10-09
+
+- id: 05a-functional-margin
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: core
+  front: "*(Surrogate losses)* What is the **functional margin** $\\eta = y\\,g(x)$ (with $y \\in \\{-1,1\\}$), and how do you read its sign and size?"
+  back: "$\\eta > 0$ ⇔ $\\operatorname{sign}(g(x)) = y$ (correctly classified); the larger $\\eta$, the more confident the correct prediction. Surrogates $\\phi$ are functions of $\\eta$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 28, label: "05a p. 28"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 29, label: "05a p. 29"}
+  added: 2026-10-09
+
+- id: 05a-surrogates
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: core
+  front: |
+    *(Losses vs functional margin $\eta = y\,g(x)$)* Logistic loss {{c1::$\log(1 + e^{-\eta})$}} → {{c2::logistic regression}};
+    hinge loss {{c3::$\max(0,\, 1 - \eta)$}} → {{c4::max-margin classification (SVM)}}.
+  explanation: |
+    p. 29 plots the zero-one, square, logistic and hinge losses against $\eta$. The logistic formula is given in 05b p. 17 (for $y \in \{-1,1\}$);
+    the hinge formula is read from the plot (0 for $\eta \ge 1$, slope $-1$ below) and is defined in the SVM lecture.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 29, label: "05a p. 29"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 17, label: "05b p. 17"}
+  added: 2026-10-09
+
+- id: 05a-square-loss-margin
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: core
+  front: "*(Losses vs functional margin)* On the plot of losses against $\\eta = y\\,g(x)$, what is wrong with the square loss $(1-\\eta)^2$ for classification?"
+  back: |
+    It **increases again for $\eta > 1$**: confidently correct points are penalized. Logistic and hinge losses are decreasing in $\eta$
+    (→ 0 or = 0 for large margins), so far, correctly classified points barely matter.
+  explanation: "Same phenomenon as the extreme-values slide (p. 14). Final 2016 Q12 and 2022 Q26 test it."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 29, label: "05a p. 29"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- bonus (skipped in 2025: detail only)
+
+- id: 05a-bonus-regressor
+  type: cloze
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: detail
+  front: |
+    *(Bonus)* For $\mathcal{Y} = \{-1,1\}$, a regressor $\eta$ induces the classifier $f_\eta(x) = \operatorname{sign}(\eta(x))$, and
+
+    $L^\text{classif}_\mathcal{D}(f_\eta) - L^\text{classif}_\mathcal{D}(f_\star) \le$ {{c1::$\sqrt{L^{\ell_2}_\mathcal{D}(\eta) - L^{\ell_2}_\mathcal{D}(\eta_\star)}$}}
+
+    so {{c2::a small excess regression risk implies a small excess classification risk}}.
+  explanation: "$\\eta_\\star(x) = \\mathbb{E}[Y \\mid X = x]$ minimizes the square risk and $f_\\star = f_{\\eta_\\star}$. Bonus slide (\"Do we still have time?\"), skipped in 2025."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 31, label: "05a p. 31"}
+  added: 2026-10-09
+
+- id: 05a-bonus-overparam
+  type: basic
+  origin: concept
+  lecture: "05a"
+  themes: [classification, loss-functions]
+  priority: detail
+  front: "*(Bonus)* In the over-parameterized regime ($n \\ll d$), does the choice between logistic and square loss matter for gradient-descent training?"
+  back: "No: with sufficient over-parameterization, gradient descent reaches the same solution for both losses (classification and regression methods become equivalent)."
+  explanation: "In the classical regime classification is not well solved by regression methods (p. 12–14). Bonus slide, skipped in 2025."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 32, label: "05a p. 32"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 33, label: "05a p. 33"}
+  added: 2026-10-09
+
+# ================================================================ unofficial exam-style
+
+- id: style-05a-ls-outputs
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, least-squares]
+  priority: core
+  front: "*(Classification by regression)* When least squares is fitted on labels $y \\in \\{0,1\\}$, its predictions always lie in $[0,1]$, so they can be read as probabilities."
+  answer: false
+  explanation: "A linear function is unbounded: the fitted line goes below 0 and above 1 (05a p. 12, point A). Logistic regression fixes this with $\\sigma$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 12, label: "05a p. 12"}
+  added: 2026-10-09
+
+- id: style-05a-extreme-correct
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, least-squares]
+  priority: core
+  front: "*(Classification by regression)* Adding training points that are far from the boundary and **correctly** classified cannot change the least-squares decision boundary."
+  answer: false
+  explanation: "The square loss penalizes \"too correct\" outputs (far above 1 or below 0), so such points pull the line and move the 0.5 crossing (05a p. 14)."
+  trap: "Square loss punishes confident correct predictions."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 14, label: "05a p. 14"}
+  added: 2026-10-09
+
+- id: style-05a-unbalanced
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, least-squares]
+  priority: core
+  front: "*(Classification by regression)* With least squares on 0/1 labels, the decision boundary depends only on where the two classes lie, not on how many points each class has."
+  answer: false
+  explanation: "With a 1:15 ratio the line is flattened towards 0 and the 0.5 crossing moves far away (05a p. 13): the position depends crucially on the class counts."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 13, label: "05a p. 13"}
+  added: 2026-10-09
+
+- id: style-05a-bayes-accuracy
+  type: mcq
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    *(Bayes classifier)* $X, Y \in \{0,1\}$ with $p(X=0,Y=0) = 0.3$, $p(X=0,Y=1) = 0.1$, $p(X=1,Y=0) = 0.2$, $p(X=1,Y=1) = 0.4$.
+    What is the best achievable accuracy of a classifier predicting $Y$ from $X$?
+  choices: ["0.7", "0.5", "0.4", "1"]
+  answer: [0]
+  explanation: |
+    Bayes: predict $Y=0$ when $X=0$ ($0.3 > 0.1$) and $Y=1$ when $X=1$ ($0.4 > 0.2$). Accuracy $= \sum_x \max_y p(x,y) = 0.3 + 0.4 = 0.7$.
+    0.5 is what a constant predictor gets (always 0: $0.3+0.2$; always 1: $0.1+0.4$); 0.4 forgets the $X=0$ term;
+    1 would require $Y$ to be a deterministic function of $X$.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 24, label: "05a p. 24"}
+  added: 2026-10-09
+
+- id: style-05a-bayes-finite-data
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: "*(Bayes classifier)* Given a large enough finite training set, the Bayes classifier can be computed exactly by empirical risk minimization."
+  answer: false
+  explanation: "The Bayes classifier depends on the true conditional $\\mathbb{P}(Y \\mid X)$ of the unknown $\\mathcal{D}$: it is an unattainable gold standard (05a p. 24). ERM only approximates it."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 24, label: "05a p. 24"}
+  added: 2026-10-09
+
+- id: style-05a-zero-one-convex
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, convexity]
+  priority: core
+  front: "*(ERM)* Minimizing the empirical 0-1 loss $\\frac1N\\sum_n 1_{y_n x_n^\\top w \\le 0}$ over $w \\in \\mathbb{R}^D$ is a convex problem."
+  answer: false
+  explanation: "The indicator is a step function (discontinuous, not convex): the 0-1 risk is not convex in $w$. Replacing it by a convex surrogate $\\phi$ makes the problem convex (05a p. 27–28)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 27, label: "05a p. 27"}
+  added: 2026-10-09
+
+- id: style-05a-margin-def
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  front: "*(Margin)* The margin of a separating hyperplane is the average distance of the training points to the hyperplane."
+  answer: false
+  explanation: "The margin is the distance from the hyperplane to the **closest** point (05a p. 20); the max-margin hyperplane maximizes this minimum distance."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 20, label: "05a p. 20"}
+  added: 2026-10-09
+
+- id: style-05a-augmented-boundary
+  type: tf
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, polynomial-features]
+  priority: core
+  front: "*(Feature augmentation)* A linear classifier trained on augmented features $(x_1, x_2, x_1^2 + x_2^2)$ can only produce a linear decision boundary in the original $(x_1, x_2)$ space."
+  answer: false
+  explanation: "The boundary is linear in the augmented space, e.g. $x_1^2 + x_2^2 = c$, which is a **circle** in the original space (05a p. 22)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 22, label: "05a p. 22"}
+  added: 2026-10-09
+
+- id: style-05a-imbalanced-accuracy
+  type: mcq
+  origin: exam_style
+  lecture: "05a"
+  themes: [classification, generalization]
+  priority: core
+  front: |
+    *(Imbalanced data)* 90% of the labeled data have label 0. You split randomly into two halves, train on one and test on the other, and get
+    85% test accuracy. What is the right reaction?
+  choices:
+    - "The classifier is worse than the trivial rule \"always predict 0\", which gets about 90%."
+    - "85% is a good result: well above the 50% of random guessing."
+    - "The model overfits: the test accuracy should be compared with the training accuracy only."
+    - "Nothing can be concluded without knowing the number of features."
+  answer: [0]
+  explanation: |
+    Always compare with the constant baseline: predicting the majority class gives ≈ 90% accuracy, so 85% means the model is doing worse
+    than nothing. Random guessing (50%) is the wrong reference on imbalanced data. Adapted from Final 2017 P25 (open question).
+  trap: "On imbalanced data the reference is the majority-class rate, not 50%."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 18, label: "Final 2017 P25"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 13, label: "05a p. 13"}
+  added: 2026-10-09

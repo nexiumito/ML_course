@@ -1,0 +1,245 @@
+# Official past-exam questions whose primary lecture is 05a (stems and choices verbatim). Answers read from the ticked boxes
+# (2019+) or from the solution text (2016–2018, no ticked boxes). Written in S7 (2026-10-09).
+
+- id: exam-2025-q1
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification, knn]
+  priority: core
+  front: "Which of the following classification methods is non-parametric?"
+  choices:
+    - "Logistic Regression"
+    - "Linear decision boundaries"
+    - "Support Vector Machines"
+    - "Neural Networks"
+    - "K-Nearest Neighbors"
+  answer: [4]
+  explanation: |
+    Official solution: every other method assumes a particular functional form for the model (a fixed set of parameters), hence is parametric.
+    K-Nearest Neighbors assumes no specific form: it approximates $\mathbb{P}(Y=y\mid X=x)$ by local averaging over the training set.
+  trap: "k is a hyperparameter, not a learned parameter."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 2, label: "Final 2025 Q1"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 26, label: "05a p. 26"}
+  added: 2026-10-09
+
+- id: exam-2025-q3
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    Consider a binary classification problem where the observed feature $X \in \{0, 1, 2\}$ is generated from a latent variable $Z \in \{A, B\}$.
+    The label is $Y \in \{0, 1\}$. The generative process is as follows:
+
+    (a) The latent variable $Z$ is drawn according to $\mathbb{P}(Z = A) = 0.5$, $\mathbb{P}(Z = B) = 0.5$.
+
+    (b) Conditional on $Z$, the label $Y$ is drawn as $\mathbb{P}(Y = 1 \mid Z = A) = 0.75$, $\mathbb{P}(Y = 1 \mid Z = B) = 0.25$.
+
+    (c) Conditional on $(Y, Z)$, the observed feature $X$ is drawn according to $\mathbb{P}(X = x \mid Y = y, Z = z) = \theta_{x,y,z}$,
+    where the parameters are given in the table below:
+
+    $$\begin{array}{c|ccc} (y, z) & X=0 & X=1 & X=2 \\ \hline (0, A) & 0.5 & 0.25 & 0.25 \\ (1, A) & 0.25 & 0.5 & 0.25 \\ (0, B) & 0.5 & 0.25 & 0.25 \\ (1, B) & 0.25 & 0.25 & 0.5 \end{array}$$
+
+    Let $f_\star(x)$ be the Bayes classifier given the observation $X$ and $g_\star(x, z)$ be the Bayes classifier given the observation $X$ and the latent $Z$.
+    Which of the following statement is **FALSE**?
+  choices:
+    - "$\\mathbb{P}(Y = 1 \\mid X = 1) = \\frac{7}{11}$"
+    - "For any $x \\in \\{0, 1, 2\\}$ and $z \\in \\{A, B\\}$, $f_\\star(x) = g_\\star(x, z)$."
+    - "$\\mathbb{P}(Y = 0 \\mid X = 0) = \\frac{2}{3}$"
+    - "$f_\\star(2) = 1$"
+  answer: [1]
+  explanation: |
+    Official solution: $\mathbb{P}(Y=y\mid X=x) \propto \sum_z \mathbb{P}(Z=z)\mathbb{P}(Y=y\mid Z=z)\theta_{x,y,z}$ gives
+    $\mathbb{P}(Y=0\mid X=0) = 2/3$, $\mathbb{P}(Y=1\mid X=1) = 7/11$, $\mathbb{P}(Y=1\mid X=2) = 5/9$ (so $f_\star(2) = 1$): those three are true.
+    Knowing $Z$ changes the decision: e.g. at $x = 1$, $z = B$: $\mathbb{P}(Y=1, X=1\mid Z=B) = 0.25\cdot 0.25 = 0.0625 < \mathbb{P}(Y=0, X=1\mid Z=B) = 0.75\cdot 0.25 = 0.1875$,
+    so $g_\star(1, B) = 0 \ne f_\star(1) = 1$.
+  trap: "The Bayes classifier depends on what is observed: more information (Z) can change the optimal decision."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 3, label: "Final 2025 Q3"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 24, label: "05a p. 24"}
+  added: 2026-10-09
+  notes: "All four probabilities recomputed by hand (2026-10-09)."
+
+- id: exam-2024-q23
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification]
+  priority: core
+  shuffle: false
+  front: |
+    Consider four points $A = (-1, 0)$, $B = (-1, 1)$, $C = (1, 0)$, $D = (1, 1)$ in $\mathbb{R}^2$. Each point can be assigned a label of $-1$ or $1$.
+    Which of the following statements are TRUE?
+
+    P) For any assignment of labels to the points $A, B, C, D$, there always exists a linear classifier that perfectly separates them.
+
+    Q) Consider the cases where $A, C$ are labelled $-1, 1$, respectively, and $B$ and $D$ have aribtrary labels. In such cases, no linear
+    classifier can achieve a margin of 1.25 over these points.
+  choices: ["P", "Both P and Q", "Q", "Neither P nor Q"]
+  answer: [2]
+  explanation: |
+    P is false: labels $A, B, C, D = -1, 1, 1, -1$ form an XOR pattern (each diagonal pair has the same label), which no line separates.
+    Q is true: $A$ and $C$ are at distance 2 with opposite labels, so any separating line passes between them and is at distance $\le 1$
+    from one of them — the margin (distance to the closest point) cannot be $1.25$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 12, label: "Final 2024 Q23"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 20, label: "05a p. 20"}
+  added: 2026-10-09
+  notes: "Index had multi: true, but it is a single-answer MCQ (one box among P / Both / Q / Neither) — fixed. The official solution's 'D = 2C + B' argument is replaced by the XOR picture."
+
+- id: exam-2024-q39
+  type: tf
+  origin: exam_official
+  lecture: "05a"
+  also_lectures: ["02a"]
+  themes: [classification, optimization]
+  priority: core
+  front: "*(Optimization)* The 0−1 loss is **not** a suitable loss function for training a neural network classifier with stochastic gradient descent."
+  answer: true
+  explanation: |
+    Official solution: the 0−1 loss is piecewise constant (neither continuous nor differentiable), so its gradients are zero everywhere
+    they are defined and gradient descent cannot minimize it. In practice a proxy such as cross-entropy (logistic loss) is used.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 16, label: "Final 2024 Q39"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 27, label: "05a p. 27"}
+  added: 2026-10-09
+
+- id: exam-2023-q20
+  type: tf
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification]
+  priority: detail
+  front: |
+    *(Classification)* There are many classification problems that are not linearly separable. Tricks like kernel methods or adding a
+    regularizer allow us to still separate the classes with a linear classifier.
+  answer: false
+  explanation: |
+    Official solution: "slightly ambiguous question, not counted", generally **False**. The kernel method (or feature augmentation) is a valid
+    trick — a linear classifier in a transformed space — but a regularizer is not: it fights overfitting and does not make data separable.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 9, label: "Final 2023 Q20"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 22, label: "05a p. 22"}
+  added: 2026-10-09
+  notes: "Not counted in 2023 (ambiguous); kept with the ticked answer False and priority detail."
+
+- id: exam-2022-q1
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  also_lectures: ["01c", "02a"]
+  themes: [classification, loss-functions, convexity]
+  priority: core
+  shuffle: false
+  front: |
+    *(Cost functions)* Assume we have $N$ training samples $(\mathbf{x}_1, y_1), \dots, (\mathbf{x}_N, y_N)$ where for each sample $i \in \{1, \dots, N\}$
+    we have that $\mathbf{x}_i \in \mathbb{R}^d$ and $y_i \in \{-1, 1\}$. We want to classify the dataset using the exponential loss
+    $L(\mathbf{w}) = \frac1N \sum_{i=1}^N \exp(-y_i \mathbf{x}_i^\top \mathbf{w})$ for $\mathbf{w} \in \mathbb{R}^d$. Which of the following statements is **true**:
+  choices:
+    - "The loss function $L$ is non-convex in $\\mathbf{w}$."
+    - "There exists a vector $\\mathbf{w}^\\star$ such that $L(\\mathbf{w}^\\star) = 0$."
+    - "If I find a vector $\\mathbf{w}^\\star$ such that $L(\\mathbf{w}^\\star) < 1/N$, then $\\mathbf{w}^\\star$ linearly separates my dataset."
+    - "None of the statements are true."
+    - "This corresponds to doing logistic regression as seen in class."
+  answer: [2]
+  explanation: |
+    Official solution: $L(\mathbf{w}^\star) < 1/N$ means every term $\exp(-y_i\mathbf{x}_i^\top\mathbf{w}^\star) < 1$, i.e. $y_i\mathbf{x}_i^\top\mathbf{w}^\star > 0$ for all $i$.
+    Distractors: $\exp$ ∘ linear is convex; $\exp > 0$ so $L$ never reaches 0; logistic regression uses $\log(1 + e^{-y\,\mathbf{x}^\top\mathbf{w}})$, not $e^{-y\,\mathbf{x}^\top\mathbf{w}}$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 2, label: "Final 2022 Q1"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 28, label: "05a p. 28"}
+  added: 2026-10-09
+
+- id: exam-2018-q3
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    Consider the following joint distribution on $X$ and $Y$, where $X \in \{-1, 0, 1\}$ and $Y \in \{0, 1\}$:
+    $$\begin{array}{c|cc} p(X, Y) & Y = 0 & Y = 1 \\ \hline X = -1 & 0.05 & 0.05 \\ X = 0 & 0.1 & 0.1 \\ X = 1 & 0.3 & 0.4 \end{array}$$
+    You learn that $X \ge 0$. What is the largest probability of being correct you can achieve when predicting $Y$ in this case?
+  choices: ["$\\frac{5}{9}$", "$1$", "$\\frac{2}{3}$", "$\\frac{1}{4}$", "$\\frac{1}{2}$", "$\\frac{1}{7}$", "$\\frac{1}{3}$", "$\\frac{6}{7}$", "$0$", "$\\frac{4}{7}$", "$\\frac{3}{7}$"]
+  answer: [0]
+  explanation: |
+    Official solution:
+    $$p(Y=1\mid X\ge 0) = \frac{p(X=0,Y=1) + p(X=1,Y=1)}{1 - p(X=-1)} = \frac{0.1 + 0.4}{1 - 0.1} = \frac59 > \frac12.$$
+    Predict $Y = 1$ (the Bayes decision given the information $X \ge 0$): correct with probability $5/9$, the best possible.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2018-solutions.pdf, page: 4, label: "Final 2018 P3"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 24, label: "05a p. 24"}
+  added: 2026-10-09
+  notes: "11 choices (MAX_CHOICES raised to 12 in S7). The six joint probabilities of the stem are shown as a table (same values) for phone readability."
+
+- id: exam-2017-q1
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification, polynomial-features]
+  priority: core
+  front: |
+    You have given the 2D data shown in Figure 1. You are allowed to add one component to your data (in addition to a constant component)
+    and then must use a linear classifier. What component should you pick?
+  images:
+    - {src: img/exam-2017-q1.png, alt: "Figure 1: 2D data on [-1.5, 1.5]². Large points fill an ellipse centred at the origin with semi-axes about 1 along x1 and 0.5 along x2; small points fill the rest of the square."}
+  choices: ["$x_1 + x_2$", "$x_1^2 + 4x_2^2$", "$1/|x_1 + x_2|$", "$x_1 + 4x_2$", "$4x_1 + x_2$", "$x_1^2 x_2^2$", "$4x_1^2 + x_2^2$"]
+  answer: [1]
+  explanation: |
+    Official solution: the decision region is the ellipse $x_1^2 + 4x_2^2 = 1$ (twice as wide along $x_1$ as along $x_2$). With this feature,
+    the rule "$x_1^2 + 4x_2^2 \le 1$" is linear in the augmented features. $4x_1^2 + x_2^2$ is the ellipse elongated along $x_2$ (wrong
+    orientation); the linear features give straight lines.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 2, label: "Final 2017 P1"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 22, label: "05a p. 22"}
+  added: 2026-10-09
+  notes: "Mock 2018 5i is the same question (duplicate in the index)."
+
+- id: exam-2017-q5
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification, probability]
+  priority: core
+  front: |
+    Consider the following joint distribution on $X$ and $Y$, where both random variables take on the values $\{0, 1\}$:
+    $$\begin{array}{c|cc} p(X, Y) & Y = 0 & Y = 1 \\ \hline X = 0 & 0.1 & 0.2 \\ X = 1 & 0.3 & 0.4 \end{array}$$
+    You receive $X = 1$. What is the largest probability of being
+    correct you can achieve when predicting $Y$ in this case?
+  choices: ["$\\frac{1}{3}$", "$\\frac{3}{4}$", "$\\frac{1}{7}$", "$0$", "$1$", "$\\frac{2}{3}$", "$\\frac{6}{7}$", "$\\frac{4}{7}$", "$\\frac{3}{7}$", "$\\frac{1}{4}$", "$\\frac{2}{4}$"]
+  answer: [7]
+  explanation: |
+    Official solution: $p(Y=1\mid X=1) = p(Y=1, X=1)/p(X=1) = 0.4/0.7 = 4/7 > 3/7$. Guess $Y = 1$: right a fraction $4/7$ of the time — the best possible.
+    $3/7$ is the probability of the other label.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 4, label: "Final 2017 P5"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 24, label: "05a p. 24"}
+  added: 2026-10-09
+  notes: "11 choices (MAX_CHOICES raised to 12 in S7). The six joint probabilities of the stem are shown as a table (same values) for phone readability."
+
+- id: exam-2016-q9
+  type: mcq
+  origin: exam_official
+  lecture: "05a"
+  themes: [classification, polynomial-features]
+  priority: core
+  front: |
+    You have given the 2D data shown in Figure 1. You are allowed to add one component to your data (in addition to a constant component)
+    and then must use a linear classifier. What component should you pick? [*HINT:* The axes are not labeled so you cannot check it
+    mathematically, but the shape of the data is very suggestive and exactly one answer is correct.]
+  images:
+    - {src: img/exam-2016-q9.png, alt: "Figure 1: square of 2D points; red points form a cross / star shape along both axes (centred at the origin), blue points fill the four corners."}
+  choices: ["$1/|x_1|$", "$1/|x_2|$", "$|x_1 x_2|$", "$\\log_2|x_1 + x_2|$", "$x_1^2 + x_2^2$", "$1/|x_1 + x_2|$"]
+  answer: [2]
+  explanation: |
+    Official solution: the figure suggests labels of the form $1_{\{|x_1 x_2| \le c\}}$ — the red cross is where the product is small (near
+    either axis), the blue corners where it is large. Then a threshold on the new feature $|x_1 x_2|$ is a linear rule.
+    $x_1^2 + x_2^2$ would give a disc, $1/|x_1|$ or $1/|x_2|$ only one arm of the cross.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 3, label: "Final 2016 Q9"}
+    - {kind: lecture, pdf: lectures/05/lecture05a.pdf, page: 22, label: "05a p. 22"}
+  added: 2026-10-09
+  notes: "Figure 1 is on p. 4 of the solutions PDF."

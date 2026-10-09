@@ -4,12 +4,13 @@
 # already in course.yaml), status, page (1-based page of the question in the *solutions* PDF).
 # status: pending = to add as a card once all its lectures are active · added = card exists (id exam-YYYY-qNN /
 #         mock-YYYY-qN[x]) · open-excluded = open/derivation question (out of scope for now) ·
-#         excluded = not in the 2026 syllabus (Bayes nets / factor graphs).
+#         excluded = not in the 2026 syllabus (Bayes nets / factor graphs; exponential family / GLM).
 # figure: true = the question needs a figure (crop it into content/img/). multi: true = "select all that apply".
 # Areas of later lectures (classification, svm, knn, kernels, neural-nets, cnn, transformers, …) get their lecture ids
 # when those lectures are caught up: then fill `lectures` and the questions become pending-unlockable.
 # Mock midterms 2014/2015 and the derivation parts of 2017/2018 are open (no auto-gradable part).
-# Exponential-family questions are filed under logistic-regression + mle (GLMs; check against lecture 05 when it arrives).
+# Exponential-family questions are filed under logistic-regression + mle (GLMs). Checked 2026-10-08: lecture 05 (2025 and 2026)
+# has NO exponential family / GLM content → exclude those questions when writing the week-5 cards (older-edition content).
 areas:
   math: prerequisite linear algebra / calculus / probability (→ 01a)
   ml-basics: 01a
@@ -22,8 +23,8 @@ areas:
   regularization: 03d (ridge, lasso)
   generalization: 04a (risk, Hoeffding, CV, model selection)
   bias-variance: 04b
-  classification: week 5
-  logistic-regression: week 5 (incl. exponential family / GLM)
+  classification: 05a (classification, k-NN intro, Bayes classifier, surrogate losses)
+  logistic-regression: 05b (exponential family / GLM questions are excluded, not in the 2025–2026 lecture)
   svm: week 6
   knn: week 6
   kernels: week 8
@@ -46,21 +47,25 @@ questions:
   type: mcq
   topic: non-parametric classification method
   areas: [knn, classification]
-  status: pending
+  lectures: [05a]
+  status: added
   page: 2
+  note: 'k-NN as non-parametric is covered in 05a p. 16-17, 26; no SVM/NN knowledge needed.'
 - exam: final-2025
   q: '2'
   type: mcq
   topic: 1-D logistic MLE on two points
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 2
 - exam: final-2025
   q: '3'
   type: mcq
   topic: Bayes classifier with a latent variable
   areas: [classification]
-  status: pending
+  lectures: [05a]
+  status: added
   page: 3
 - exam: final-2025
   q: '4'
@@ -468,14 +473,16 @@ questions:
   type: mcq
   topic: logistic vs linear regression for classification
   areas: [classification, logistic-regression]
-  status: pending
+  lectures: [05a, 05b]
+  status: added
   page: 5
 - exam: final-2024
   q: '9'
   type: mcq
   topic: logistic regression parameters
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 5
 - exam: final-2024
   q: '10'
@@ -576,8 +583,8 @@ questions:
   type: mcq
   topic: linear separability of four points
   areas: [classification]
-  status: pending
-  multi: true
+  lectures: [05a]
+  status: added
   page: 12
 - exam: final-2024
   q: '24'
@@ -692,7 +699,8 @@ questions:
   type: tf
   topic: 0-1 loss unsuitable for SGD
   areas: [optimization, classification]
-  status: pending
+  lectures: [02a, 05a]
+  status: added
   page: 16
 - exam: final-2024
   q: '40'
@@ -782,7 +790,8 @@ questions:
   type: mcq
   topic: logistic regression statements
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 3
 - exam: final-2023
   q: '6'
@@ -888,15 +897,18 @@ questions:
   type: tf
   topic: SGD step for logistic regression
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 9
 - exam: final-2023
   q: '20'
   type: tf
   topic: non-linearly separable problems and tricks
   areas: [classification, kernels]
-  status: pending
+  lectures: [05a]
+  status: added
   page: 9
+  note: 'Official solution: "slightly ambiguous, not counted", generally False; kernel trick mentioned in 05a p. 22 — added with answer False.'
 - exam: final-2023
   q: '21'
   type: tf
@@ -1058,7 +1070,8 @@ questions:
   type: mcq
   topic: exponential loss for classification
   areas: [loss-functions, optimization, classification]
-  status: pending
+  lectures: [01c, 02a, 05a]
+  status: added
   page: 2
 - exam: final-2022
   q: '2'
@@ -1073,7 +1086,8 @@ questions:
   type: mcq
   topic: logistic regression loss
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 3
 - exam: final-2022
   q: '4'
@@ -1104,14 +1118,16 @@ questions:
   type: mcq
   topic: logistic weights with standardized features
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 4
 - exam: final-2022
   q: '8'
   type: mcq
   topic: gradient descent vs Newton for big data
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 5
 - exam: final-2022
   q: '9'
@@ -1195,8 +1211,9 @@ questions:
   type: mcq
   topic: exponential family members
   areas: [logistic-regression, mle]
-  status: pending
+  status: excluded
   page: 10
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: final-2022
   q: '21'
   type: mcq
@@ -1239,7 +1256,8 @@ questions:
   type: tf
   topic: logistic loss symmetric?
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 12
 - exam: final-2022
   q: '27'
@@ -1569,7 +1587,9 @@ questions:
   type: mcq
   topic: regularized logistic regression weights
   areas: [logistic-regression, regularization]
-  status: pending
+  lectures: [03d, 05b]
+  status: added
+  figure: true
   page: 10
 - exam: final-2021
   q: '18'
@@ -1641,7 +1661,8 @@ questions:
   type: tf
   topic: logistic loss on separable data
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 14
 - exam: final-2021
   q: '28'
@@ -1818,7 +1839,8 @@ questions:
   type: mcq
   topic: assumptions of logistic regression
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 3
 - exam: final-2020
   q: '4'
@@ -1857,8 +1879,9 @@ questions:
   type: mcq
   topic: uniform vs Gaussian in the exponential family
   areas: [logistic-regression, mle]
-  status: pending
+  status: excluded
   page: 5
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: final-2020
   q: '9'
   type: mcq
@@ -1993,7 +2016,8 @@ questions:
   type: tf
   topic: linear or logistic regression for diagnosis
   areas: [classification, logistic-regression]
-  status: pending
+  lectures: [05a, 05b]
+  status: added
   page: 14
 - exam: final-2020
   q: '28'
@@ -2142,8 +2166,9 @@ questions:
   type: mcq
   topic: exponential family moment E[Y^3]
   areas: [logistic-regression, mle]
-  status: pending
+  status: excluded
   page: 2
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: final-2019
   q: '3'
   type: mcq
@@ -2170,7 +2195,8 @@ questions:
   type: mcq
   topic: numerically stable implementation
   areas: [logistic-regression]
-  status: pending
+  lectures: [05b]
+  status: added
   page: 4
 - exam: final-2019
   q: '7'
@@ -2368,7 +2394,8 @@ questions:
   type: mcq
   topic: best achievable accuracy from a joint distribution
   areas: [classification]
-  status: pending
+  lectures: [05a]
+  status: added
   page: 4
 - exam: final-2018
   q: '4'
@@ -2510,7 +2537,8 @@ questions:
   type: mcq
   topic: feature to add for a linear classifier
   areas: [classification]
-  status: pending
+  lectures: [05a]
+  status: added
   figure: true
   page: 2
 - exam: final-2017
@@ -2543,7 +2571,8 @@ questions:
   type: mcq
   topic: best achievable accuracy from a joint distribution
   areas: [classification]
-  status: pending
+  lectures: [05a]
+  status: added
   page: 4
 - exam: final-2017
   q: '6'
@@ -2683,8 +2712,9 @@ questions:
   type: open
   topic: Poisson in exponential-family form
   areas: [logistic-regression, mle]
-  status: open-excluded
+  status: excluded
   page: 14
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: final-2017
   q: '24'
   type: open
@@ -2694,11 +2724,12 @@ questions:
   page: 16
 - exam: final-2017
   q: '25'
-  type: mcq
+  type: open
   topic: 85% accuracy on 90/10 imbalanced data
   areas: [classification, generalization]
-  status: pending
+  status: open-excluded
   page: 18
+  note: 'Open "Explain" question (grader boxes), not an MCQ; used for an unofficial card (style-05a-imbalanced-accuracy).'
 - exam: final-2016
   q: '1'
   type: mcq
@@ -2758,9 +2789,10 @@ questions:
   type: mcq
   topic: Gaussian in exponential-family form
   areas: [logistic-regression, mle]
-  status: pending
+  status: excluded
   multi: true
   page: 3
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: final-2016
   q: '8'
   type: mcq
@@ -2775,10 +2807,11 @@ questions:
   type: mcq
   topic: feature to add for a linear classifier
   areas: [classification]
-  status: pending
+  lectures: [05a]
+  status: added
   figure: true
-  multi: true
   page: 3
+  note: '"exactly one answer is correct"; figure is on p. 4.'
 - exam: final-2016
   q: '10'
   type: mcq
@@ -2801,7 +2834,8 @@ questions:
   type: mcq
   topic: logistic vs L2 loss and other statements
   areas: [logistic-regression]
-  status: pending
+  lectures: [03d, 05b]
+  status: added
   multi: true
   page: 4
 - exam: final-2016
@@ -2978,8 +3012,9 @@ questions:
   type: open
   topic: Poisson in exponential-family form
   areas: [logistic-regression, mle]
-  status: open-excluded
+  status: excluded
   page: 4
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: mock-2018
   q: 5a
   type: mcq
@@ -3028,9 +3063,10 @@ questions:
   type: mcq
   topic: Gaussian in the exponential family
   areas: [logistic-regression, mle]
-  status: pending
+  status: excluded
   multi: true
   page: 5
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: mock-2018
   q: 5g
   type: mcq
@@ -3052,9 +3088,11 @@ questions:
   type: mcq
   topic: feature to add for a linear classifier
   areas: [classification]
-  status: pending
+  status: duplicate
+  same_as: exam-2017-q1
   figure: true
   page: 6
+  note: 'Same figure and question as Final 2017 P1 (choices reordered).'
 - exam: mock-2018
   q: 5j
   type: mcq
@@ -3247,8 +3285,9 @@ questions:
   type: open
   topic: 'Poisson regression: likelihood, normal equations, Hessian, Newton'
   areas: [logistic-regression, mle]
-  status: open-excluded
+  status: excluded
   page: 3
+  note: 'Exponential family / GLM: not in lecture 05 (2025 nor 2026) — off-syllabus (checked 2026-10-09).'
 - exam: mock-2014
   q: '4'
   type: open

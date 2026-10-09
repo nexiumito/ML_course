@@ -30,7 +30,7 @@ Priority = Literal["core", "detail"]
 SourceKind = Literal["lecture", "exam", "lab", "doc"]
 
 FRONT_WARN_CHARS = 400
-MAX_CHOICES = 10  # past exams have up to 9 choices
+MAX_CHOICES = 12  # past exams have up to 11 choices (Final 2017 P5, 2018 P3)
 BACK_WARN_CHARS = 300
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*[a-z0-9]$")

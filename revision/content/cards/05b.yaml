@@ -1,0 +1,683 @@
+# Lecture 05b — Logistic Regression (Flammarion deck, no printed slide numbers → labels use the PDF page, "05b p. N").
+# No annotated version. Labels are y ∈ {0,1} in this lecture (NLL form); the y ∈ {-1,1} form appears only in 05b-logistic-loss-pm1.
+# Written in S7 (2026-10-09). Student confusions (SPEC §8.4 "Week 5"): 05b-linear-model-not-prob, 05b-odds, 05b-sigmoid-algebra,
+# 05b-sigmoid-derivative, 05b-decision-rule, 05b-transition-surface, 05b-scaling-w, 05b-w0, 05b-nll-minus-sign, 05b-gradient-matrix,
+# 05b-no-closed-form, 05b-convexity-rules, 05b-psd, 05b-hessian-derivation, 05b-newton-intuition, 05b-separable.
+
+# ---------------------------------------------------------------- motivation, odds, sigmoid
+
+- id: 05b-model-probability
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, classification]
+  priority: core
+  front: "*(Logistic regression)* What does logistic regression model, and what was wrong with modelling it as $x^\\top w + w_0$?"
+  back: |
+    It models the **probability** $\mathbb{P}(Y=1 \mid X=x)$ instead of $Y$ itself. The linear model is not in $[0,1]$, and very large
+    positive/negative values still contribute to the error even when they mean a confident (correct) classification.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 3, label: "05b p. 3"}
+  added: 2026-10-09
+
+- id: 05b-linear-model-not-prob
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, probability]
+  priority: detail
+  front: "*(Logistic regression)* A probability $\\mathbb{P}(Y=1\\mid X=x)$ is always in $[0,1]$. So what exactly is \"not in $[0,1]$\" on the motivation slide?"
+  back: |
+    The **model** used to approximate it: writing $\mathbb{P}(Y=1\mid x) = x^\top w + w_0$ is a modelling assumption, and a linear function
+    of $x$ is unbounded (e.g. $-0.2$ or $1.3$). The fix keeps the linear score but passes it through $\sigma$.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 3, label: "05b p. 3"}
+  added: 2026-10-09
+
+- id: 05b-odds
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, probability]
+  priority: core
+  front: |
+    *(Log-odds)* For a probability $p \in [0,1]$: odds $=$ {{c1::$\dfrac{p}{1-p}$}} $\in [0, \infty[$, and log-odds $= \log\dfrac{p}{1-p} \in$ {{c2::$]-\infty, \infty[$}}.
+    Logistic regression models {{c3::the log-odds as a linear function: $\log\frac{p}{1-p} = x^\top w + w_0$}}.
+  explanation: "Odds = \"$k$ to 1\": $p = 0.8$ ⇒ odds 4, log-odds ≈ 1.39; $p = 0.5$ ⇒ odds 1, log-odds 0. The log-odds is also called the **logit** ($= \\sigma^{-1}$)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 4, label: "05b p. 4"}
+  added: 2026-10-09
+
+- id: 05b-sigmoid-def
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Logistic function)* $\sigma(\eta) = \dfrac{e^\eta}{1+e^\eta} =$ {{c1::$\dfrac{1}{1+e^{-\eta}}$}}. Its input ranges over {{c2::all of $\mathbb{R}$}},
+    its output over {{c3::$]0, 1[$}}, and $\sigma(0) =$ {{c4::$1/2$}}.
+  explanation: "Solving $\\log\\frac{p}{1-p} = z$ for $p$ gives $p = \\sigma(z)$: $\\sigma$ is the inverse of the logit."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 4, label: "05b p. 4"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 5, label: "05b p. 5"}
+  added: 2026-10-09
+
+- id: 05b-sigmoid-algebra
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: detail
+  front: "*(Logistic function)* Show that $\\dfrac{e^z}{1+e^z} = \\dfrac{1}{1+e^{-z}}$."
+  back: |
+    Divide numerator and denominator by $e^z$: numerator $\to 1$, denominator $\to \frac{1}{e^z} + 1 = e^{-z} + 1$.
+  explanation: |
+    You cannot apply $e^a/e^b = e^{a-b}$ directly: $1 + e^z$ is a sum. Numerically, $1/(1+e^{-z})$ is safe for $z > 0$ and
+    $e^z/(1+e^z)$ for $z \le 0$ (no overflow) — Final 2019 Q6.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 4, label: "05b p. 4"}
+  added: 2026-10-09
+
+- id: 05b-sigmoid-props
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Logistic function)* $1 - \sigma(\eta) =$ {{c1::$\dfrac{1}{1+e^\eta} = \sigma(-\eta)$}} and
+    $\sigma'(\eta) =$ {{c2::$\sigma(\eta)\,(1 - \sigma(\eta))$}}.
+  explanation: "Derivative: $\\sigma'(\\eta) = \\dfrac{e^\\eta}{(1+e^\\eta)^2} = \\dfrac{e^\\eta}{1+e^\\eta}\\cdot\\dfrac{1}{1+e^\\eta}$. Used for the gradient and the Hessian of the loss."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 5, label: "05b p. 5"}
+  added: 2026-10-09
+
+- id: 05b-sigmoid-derivative
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: detail
+  front: "*(Logistic function)* Where is $\\sigma'(\\eta)$ largest, what is its maximum, and what happens for large $|\\eta|$?"
+  back: "Maximum at $\\eta = 0$: $\\sigma'(0) = \\frac12 \\cdot \\frac12 = \\frac14$. For large $|\\eta|$, $\\sigma' \\to 0$: the sigmoid **saturates** (flat near 0 and 1)."
+  explanation: "Saturation is why the effect of $x_0 \\to x_0 + 1$ on the predicted probability depends on $x_0$ (Final 2024 Q9)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 5, label: "05b p. 5"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- model, decision rule, geometry
+
+- id: 05b-model
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Logistic regression, $y \in \{0,1\}$)* $p(1 \mid x) = \mathbb{P}(Y=1 \mid X=x) =$ {{c1::$\sigma(x^\top w + w_0)$}} and
+    $p(0 \mid x) =$ {{c2::$1 - \sigma(x^\top w + w_0)$}}. Predict class 1 iff {{c3::$p(1\mid x) \ge 1/2$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 6, label: "05b p. 6"}
+  added: 2026-10-09
+
+- id: 05b-decision-rule
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, classification]
+  priority: core
+  front: "*(Logistic regression)* Why does \"only the sign of $x^\\top w + w_0$ matter for class prediction\", and what does it imply for the decision boundary?"
+  back: |
+    $\sigma(0) = \frac12$ and $\sigma$ is strictly increasing, so $\sigma(z) \ge \frac12 \iff z \ge 0$. The boundary is
+    $\{x : x^\top w + w_0 = 0\}$: a **hyperplane** — logistic regression is a **linear** classifier despite the nonlinear $\sigma$.
+  trap: "Logistic regression does not produce nonlinear boundaries on the raw features (Final 2024 Q8)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 6, label: "05b p. 6"}
+  added: 2026-10-09
+
+- id: 05b-confidence
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Logistic regression)* A very large $|x^\top w + w_0|$ means $p(1\mid x)$ {{c1::very close to 0 or 1 (high confidence)}};
+    a small $|x^\top w + w_0|$ means $p(1\mid x)$ {{c2::close to 0.5 (low confidence)}}.
+  explanation: "The sign gives the class, the magnitude gives the confidence."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 6, label: "05b p. 6"}
+  added: 2026-10-09
+
+- id: 05b-vs-linear
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, least-squares, classification]
+  priority: core
+  front: "*(Logistic vs linear regression)* On the credit-default data, how do the two compare on balanced, unbalanced, and extreme-value data?"
+  back: |
+    Similar boundaries on balanced data. With **unbalanced** classes or **extreme values**, logistic regression keeps a sensible boundary
+    while the linear-regression boundary moves a lot: logistic regression is robust to both.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 7, label: "05b p. 7"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 8, label: "05b p. 8"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 9, label: "05b p. 9"}
+  added: 2026-10-09
+
+- id: 05b-transition-surface
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: |
+    *(Geometry of $\sigma(w^\top x)$)* The transition between the two levels (≈ 0 and ≈ 1) happens on {{c1::the hyperplane $w^\perp = \{v : v^\top w = 0\}$}},
+    i.e. where $\sigma = $ {{c2::$1/2$}}; the vector $w$ is {{c3::orthogonal to this transition surface}}.
+  explanation: "Moving along the surface does not change $w^\\top x$ (height constant); moving along $w$ changes it fastest (steepest climb)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 10, label: "05b p. 10"}
+  added: 2026-10-09
+
+- id: 05b-scaling-w
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: "*(Geometry)* What does replacing $w$ by $t\\,w$ ($t > 0$) do to $\\sigma(w^\\top x)$ and to the predicted classes?"
+  back: |
+    Only the **steepness** changes: large $t$ ⇒ sharp, step-like transition (confident everywhere); small $t$ ⇒ almost flat at $0.5$.
+    The boundary $t\,w^\top x = 0 \iff w^\top x = 0$ is unchanged, so the **predicted classes are identical**.
+  explanation: "Direction of $w$ = where the boundary is; norm $\\|w\\|$ = how confident. On separable data the optimizer pushes $\\|w\\| \\to \\infty$ (p. 25)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 11, label: "05b p. 11"}
+  added: 2026-10-09
+
+- id: 05b-w0
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: "*(Bias term)* What does $w_0$ do in $\\sigma(w^\\top x + w_0)$, and how is it handled in practice?"
+  back: |
+    It **shifts** the transition along $w$ (boundary $w^\top x + w_0 = 0$ no longer through the origin) without changing its orientation or
+    steepness. In practice append a constant 1 to $x$: $\tilde x = (x, 1)$, so $w_0$ is **learned** like any other weight (not a hyperparameter).
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 12, label: "05b p. 12"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 13, label: "05b p. 13"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- MLE → NLL
+
+- id: 05b-mle-principle
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [mle]
+  priority: core
+  front: |
+    *(MLE)* For i.i.d. observations, $w_\star = \arg\max_w \mathcal{L}(w)$ with $\mathcal{L}(w) = p(z_1, \dots, z_N \mid w) =$ {{c1::$\prod_{n=1}^N p(z_n \mid w)$}},
+    equivalently $w_\star = \arg\min_w$ {{c2::$\sum_{n=1}^N -\log p(z_n \mid w)$}}.
+  explanation: "The likelihood is the probability of **all** the data under $w$. Consistent: if the data follow the model, the MLE converges to the true parameter."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 14, label: "05b p. 14"}
+  added: 2026-10-09
+
+- id: 05b-nll-minus-sign
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [mle]
+  priority: detail
+  front: "*(MLE)* Why take the log, and why the **negative** log-likelihood?"
+  back: |
+    Log: turns the product into a sum (no underflow, easy to differentiate) and is increasing, so the argmax is unchanged.
+    Minus: pure convention — $\arg\max f = \arg\min(-f)$ — so the NLL is a loss to **minimize** (GD, convexity results apply).
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 14, label: "05b p. 14"}
+  added: 2026-10-09
+
+- id: 05b-x-indep-w
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, mle]
+  priority: detail
+  front: "*(MLE for logistic regression)* Why do we only need $p(\\mathbf{y} \\mid \\mathbf{X}, w)$ and not the full $p(\\mathbf{y}, \\mathbf{X} \\mid w)$?"
+  back: "Assumption: the inputs do not depend on $w$. Then $p(\\mathbf{y}, \\mathbf{X}\\mid w) = p(\\mathbf{X})\\,p(\\mathbf{y}\\mid\\mathbf{X}, w)$ and $p(\\mathbf{X})$ is a constant in $w$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 15, label: "05b p. 15"}
+  added: 2026-10-09
+
+- id: 05b-likelihood
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, mle]
+  priority: core
+  front: |
+    *(MLE for logistic regression, $y_n \in \{0,1\}$)* One formula for both labels: $p(y_n \mid x_n, w) =$ {{c1::$\sigma(x_n^\top w)^{y_n}\,[1 - \sigma(x_n^\top w)]^{1 - y_n}$}},
+    so $\mathcal{L}(w) \propto \prod_{n=1}^N \sigma(x_n^\top w)^{y_n}[1 - \sigma(x_n^\top w)]^{1-y_n}$.
+  explanation: "Exponent trick: $y_n = 1$ keeps $\\sigma(x_n^\\top w)$, $y_n = 0$ keeps $1 - \\sigma(x_n^\\top w)$ — a Bernoulli with a different $p_n$ for each point."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 15, label: "05b p. 15"}
+  added: 2026-10-09
+
+- id: 05b-nll
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, loss-functions]
+  priority: core
+  front: |
+    *(Logistic regression cost, $y_n \in \{0,1\}$)*
+
+    $L(w) = \dfrac1N \sum_{n=1}^N$ {{c1::$\Big[-y_n x_n^\top w + \log\big(1 + e^{x_n^\top w}\big)\Big]$}}
+  explanation: "Minimizing $L$ is exactly maximizing the likelihood $\\mathcal{L}$ (since $p(\\mathbf{X})$ does not depend on $w$)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 16, label: "05b p. 16"}
+  added: 2026-10-09
+
+- id: 05b-nll-derivation
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, mle]
+  priority: core
+  front: "*(Logistic regression)* Derive the cost $\\sum_n [-y_n x_n^\\top w + \\log(1 + e^{x_n^\\top w})]$ from the likelihood (key steps, $y_n \\in \\{0,1\\}$)."
+  back: |
+    1. $-\log \prod_n \sigma_n^{y_n}(1-\sigma_n)^{1-y_n} = -\sum_n [y_n \log\sigma_n + (1-y_n)\log(1-\sigma_n)]$, with $\sigma_n = \sigma(x_n^\top w)$.
+    2. Regroup: $\sum_n [\,y_n \log\frac{1-\sigma_n}{\sigma_n} - \log(1-\sigma_n)\,]$.
+    3. Use $\frac{1-\sigma(\eta)}{\sigma(\eta)} = e^{-\eta}$ and $1 - \sigma(\eta) = \frac{1}{1+e^\eta}$.
+  explanation: "Step 1 is the cross-entropy; step 3 gives $-y_n x_n^\\top w + \\log(1+e^{x_n^\\top w})$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 16, label: "05b p. 16"}
+  added: 2026-10-09
+
+- id: 05b-nll-is-erm
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, loss-functions]
+  priority: core
+  front: "*(Logistic loss)* How do the MLE view of logistic regression and the \"convex surrogate of the 0-1 loss\" view of 05a relate?"
+  back: "They coincide: the negative log-likelihood is ERM with the **logistic loss**, a convex surrogate of the 0-1 loss. $g(x)$ can even be a neural network's output (cross-entropy)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 17, label: "05b p. 17"}
+  added: 2026-10-09
+
+- id: 05b-logistic-loss-01
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, loss-functions]
+  priority: core
+  front: |
+    *(Logistic loss, labels $y \in \{0,1\}$)* $\ell(y, g(x)) =$ {{c1::$-y\,g(x) + \log\big(1 + \exp(g(x))\big)$}}
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 17, label: "05b p. 17"}
+  added: 2026-10-09
+
+- id: 05b-logistic-loss-pm1
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, loss-functions]
+  priority: core
+  front: |
+    *(Logistic loss, labels $y \in \{-1,1\}$)* $\ell(y, g(x)) =$ {{c1::$\log\big(1 + \exp(-y\,g(x))\big)$}}, a function of the functional margin $y\,g(x)$.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 17, label: "05b p. 17"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- gradient, convexity, Hessian
+
+- id: 05b-gradient
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, optimization]
+  priority: core
+  front: |
+    *(Logistic regression, $y \in \{0,1\}$)* Gradient of the cost, as a sum and in matrix form:
+
+    $\nabla L(w) = \dfrac1N \sum_{n=1}^N$ {{c1::$\big(\sigma(x_n^\top w) - y_n\big)\,x_n$}}
+
+    $\nabla L(w) =$ {{c2::$\dfrac1N \mathbf{X}^\top\big(\sigma(\mathbf{X}w) - \mathbf{y}\big)$}}
+  explanation: "Same structure as least squares, $\\frac1N\\mathbf{X}^\\top(\\mathbf{X}w - \\mathbf{y})$, with $\\sigma$ applied to the predictions."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 18, label: "05b p. 18"}
+  added: 2026-10-09
+
+- id: 05b-gradient-matrix
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, linear-regression]
+  priority: detail
+  front: "*(Gradient)* Why is $\\sum_n a_n x_n = \\mathbf{X}^\\top \\mathbf{a}$ (with $x_n^\\top$ the rows of $\\mathbf{X}$)?"
+  back: "The columns of $\\mathbf{X}^\\top$ are the $x_n$; multiplying by $\\mathbf{a}$ takes the combination of these columns weighted by the $a_n$. Here $a_n = \\sigma(x_n^\\top w) - y_n$."
+  explanation: "In NumPy: `X.T @ (sigmoid(X @ w) - y) / N` — no loop (lab 5, Project 1)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 18, label: "05b p. 18"}
+  added: 2026-10-09
+
+- id: 05b-no-closed-form
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, least-squares]
+  priority: core
+  front: "*(Logistic regression)* What does \"no closed-form solution to $\\nabla L(w) = 0$\" mean, and why is there one for least squares but not here?"
+  back: |
+    No explicit formula for $w_\star$. Least squares: $\nabla L = 0$ is linear in $w$ ⇒ $w_\star = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$.
+    Logistic: $\mathbf{X}^\top(\sigma(\mathbf{X}w) - \mathbf{y}) = 0$ has $w$ **inside** the nonlinear $\sigma$ ⇒ solve iteratively (GD, SGD, Newton).
+  explanation: "Good news: $L$ is convex, so these methods reach the global minimum."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 18, label: "05b p. 18"}
+  added: 2026-10-09
+
+- id: 05b-convexity-rules
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, convexity]
+  priority: core
+  front: "*(Convexity, proof 1)* Show that $L(w) = \\frac1N\\sum_n[-y_n x_n^\\top w + \\log(1 + e^{x_n^\\top w})]$ is convex using convexity-preserving operations."
+  back: |
+    1. $h(\eta) = \log(1+e^\eta)$ is convex, and convex ∘ linear ($w \mapsto x_n^\top w$) is convex ⇒ $\log(1 + e^{x_n^\top w})$ convex in $w$.
+    2. $-y_n x_n^\top w$ is linear, hence convex.
+    3. A positive combination of convex functions is convex ⇒ $L$ convex.
+  explanation: "The slide applies the rules in construction order (2 + 4, then 3, then 1): from the building blocks up to $L$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 19, label: "05b p. 19"}
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 21, label: "05b p. 21"}
+  added: 2026-10-09
+
+- id: 05b-log1pexp-convex
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, convexity]
+  priority: core
+  front: |
+    *(Convexity)* $h(\eta) = \log(1 + e^\eta)$ is convex because $h'(\eta) =$ {{c1::$\sigma(\eta)$}} and
+    $h''(\eta) = \sigma'(\eta) =$ {{c2::$\dfrac{e^\eta}{(1+e^\eta)^2} \ge 0$}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 20, label: "05b p. 20"}
+  added: 2026-10-09
+
+- id: 05b-psd
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [convexity]
+  priority: core
+  front: "*(Convexity)* What does it mean that a symmetric matrix $M$ is PSD ($M \\succeq 0$), and why does $\\nabla^2 L(w) \\succeq 0$ for all $w$ imply convexity?"
+  back: |
+    $v^\top M v \ge 0$ for all $v$ (⇔ all eigenvalues $\ge 0$). $v^\top \nabla^2 L(w)\, v$ is the second derivative of $L$ in direction $v$:
+    PSD everywhere is the multi-dimensional analogue of $f'' \ge 0$ — $L$ curves upward in every direction.
+  explanation: "Strictly positive ($v^\\top M v > 0$ for $v \\ne 0$) = positive definite ⇒ strictly convex."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 22, label: "05b p. 22"}
+  added: 2026-10-09
+
+- id: 05b-hessian
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, convexity, optimization]
+  priority: core
+  front: |
+    *(Hessian of the logistic loss)*
+
+    $\nabla^2 L(w) = \dfrac1N \sum_{n=1}^N$ {{c1::$\sigma(x_n^\top w)\big(1 - \sigma(x_n^\top w)\big)\,x_n x_n^\top$}}
+
+    In matrix form $\nabla^2 L(w) = \dfrac1N \mathbf{X}^\top S \mathbf{X}$, with
+
+    $S =$ {{c2::$\operatorname{diag}\big[\sigma(x_n^\top w)(1 - \sigma(x_n^\top w))\big]$}}
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 22, label: "05b p. 22"}
+  added: 2026-10-09
+
+- id: 05b-hessian-derivation
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, convexity]
+  priority: core
+  front: "*(Convexity, proof 2)* From $\\nabla L(w) = \\frac1N\\sum_n x_n(\\sigma(x_n^\\top w) - y_n)$, derive the Hessian and show it is PSD."
+  back: |
+    1. Chain rule: $\nabla_w \sigma(x_n^\top w) = \sigma'(x_n^\top w)\,x_n = s_n x_n$ with $s_n = \sigma(1-\sigma)$; $y_n$, $x_n$ constant ⇒ $\nabla^2 L = \frac1N\sum_n s_n x_n x_n^\top = \frac1N \mathbf{X}^\top S \mathbf{X}$.
+    2. $v^\top \mathbf{X}^\top S \mathbf{X} v = \sum_n s_n (x_n^\top v)^2 \ge 0$ since $s_n \in\, ]0, \frac14]$.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 22, label: "05b p. 22"}
+  added: 2026-10-09
+  notes: "Step 2 is the handwritten line of the 2025 annotated slide (git history), not printed on the 2026 slide."
+
+# ---------------------------------------------------------------- optimization
+
+- id: 05b-gd-sgd
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, gradient-descent, sgd]
+  priority: core
+  front: |
+    *(Minimizing $L$)* Gradient descent:
+    $$w_{t+1} = w_t - \frac{\gamma_t}{N}\sum_{n=1}^N \big(\sigma(x_n^\top w_t) - y_n\big)x_n$$
+    {{c1::cost $O(ND)$ per step: slow to compute}}.
+
+    SGD, with $\mathbb{P}[n_t = n] = 1/N$:
+
+    $w_{t+1} = w_t -$ {{c2::$\gamma_t\big(\sigma(x_{n_t}^\top w_t) - y_{n_t}\big)x_{n_t}$}}
+
+    {{c3::cheap ($O(D)$ per step) but converges more slowly}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 23, label: "05b p. 23"}
+  added: 2026-10-09
+
+- id: 05b-newton
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [optimization]
+  priority: core
+  front: |
+    *(Newton's method)* Minimize the quadratic approximation $L(w_t) + \nabla L(w_t)^\top(w - w_t) + \tfrac12 (w - w_t)^\top \nabla^2 L(w_t)(w - w_t)$, which gives
+
+    $w_{t+1} = w_t -$ {{c1::$\gamma_t\, \nabla^2 L(w_t)^{-1}\, \nabla L(w_t)$}}
+
+    The step size $\gamma_t$ is needed {{c2::to ensure convergence (damped Newton)}}.
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 24, label: "05b p. 24"}
+  added: 2026-10-09
+
+- id: 05b-newton-intuition
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [optimization]
+  priority: core
+  front: "*(Newton's method)* Give the 1-D intuition of a Newton step, and how many steps (with $\\gamma = 1$) it needs on a strictly convex quadratic."
+  back: |
+    Fit a parabola at $w_t$ (slope $L'$, curvature $L''$) and jump to its minimum: $w_{t+1} = w_t - L'(w_t)/L''(w_t)$ — big step where the
+    curvature is small, small step where it is large. On a quadratic the parabola **is** the function ⇒ **one step**.
+  explanation: "Example: $L(w) = (w-3)^2$ from $w = 10$: $10 - 14/2 = 3$."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 24, label: "05b p. 24"}
+  added: 2026-10-09
+
+- id: 05b-newton-tradeoff
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [optimization, gradient-descent]
+  priority: core
+  front: "*(GD vs Newton)* Compare gradient descent and Newton's method in iterations and cost per iteration."
+  back: |
+    Newton converges in **fewer iterations** (second-order information) but **each iteration is more expensive**: compute the $D\times D$
+    Hessian ($O(ND^2)$) and solve a linear system ($O(D^3)$). GD steps are cheap.
+  explanation: "Implement the step with `np.linalg.solve(H, grad)`, never by inverting $H$ (lab 5). Final 2022 Q8."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 24, label: "05b p. 24"}
+  added: 2026-10-09
+
+# ---------------------------------------------------------------- separable data, regularization
+
+- id: 05b-separable
+  type: basic
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, optimization]
+  priority: core
+  front: "*(Logistic regression)* What goes wrong when the training data are linearly separable (by some $\\bar w$)?"
+  back: |
+    $\inf_w L(w) = 0 = \lim_{\alpha\to\infty} L(\alpha \bar w)$: scaling up a separating $\bar w$ always lowers the loss, but every term is
+    $> 0$ for finite $w$, so the infimum is **not attained**. The optimizer drives $\|w\| \to \infty$ (the sigmoid becomes a step).
+  trap: "100% training accuracy is reachable, a loss of exactly 0 is not (Final 2021 Q27)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09
+
+- id: 05b-ridge-logistic
+  type: cloze
+  origin: concept
+  lecture: "05b"
+  themes: [logistic-regression, regularization]
+  priority: core
+  front: |
+    *(Ridge logistic regression)* Fix for separable data: minimize $\dfrac1N\sum_{n=1}^N\Big[-y_n x_n^\top w + \log\big(1 + e^{x_n^\top w}\big)\Big] +$ {{c1::$\dfrac\lambda2\|w\|_2^2$}}.
+    Optimization view: {{c2::it stabilizes the optimization (finite minimizer)}}; statistical view: {{c3::it avoids overfitting}}.
+  explanation: "Growing $\\|w\\|$ now costs $\\frac\\lambda2\\|w\\|^2$, so the minimum is at finite distance. In lab 5 / Project 1 the reported loss excludes the penalty."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09
+
+# ================================================================ unofficial exam-style
+
+- id: style-05b-nonlinear-boundary
+  type: tf
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression, classification]
+  priority: core
+  front: "*(Logistic regression)* Because the sigmoid is a nonlinear function, logistic regression on the raw features $x$ produces a nonlinear decision boundary."
+  answer: false
+  explanation: "$\\sigma(x^\\top w + w_0) \\ge \\frac12 \\iff x^\\top w + w_0 \\ge 0$: the boundary is a hyperplane (05b p. 6). Nonlinear boundaries need feature augmentation or kernels."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 6, label: "05b p. 6"}
+  added: 2026-10-09
+
+- id: style-05b-scale-w-predictions
+  type: tf
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: core
+  front: "*(Logistic regression, no bias)* Replacing $w$ by $10\\,w$ changes the predicted class of some inputs."
+  answer: false
+  explanation: "$\\operatorname{sign}(10\\,w^\\top x) = \\operatorname{sign}(w^\\top x)$: the boundary is unchanged; only the confidence (steepness of $\\sigma$) changes (05b p. 11)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 11, label: "05b p. 11"}
+  added: 2026-10-09
+
+- id: style-05b-odds-ratio
+  type: mcq
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression, probability]
+  priority: core
+  front: "*(Logistic regression)* With $p(1\\mid x) = \\sigma(\\theta_0 + \\theta_1 x)$, increasing $x$ by one unit multiplies the **odds** $p/(1-p)$ by:"
+  choices: ["$e^{\\theta_1}$", "$\\theta_1$", "$\\sigma(\\theta_1)$", "an amount that depends on $x$"]
+  answer: [0]
+  explanation: |
+    The log-odds is linear: $\log\frac{p}{1-p} = \theta_0 + \theta_1 x$ increases by $\theta_1$, so the odds are multiplied by $e^{\theta_1}$.
+    It is the **probability** whose change depends on $x$ (saturation of $\sigma$) — Final 2024 Q9.
+  trap: "Odds: fixed factor e^θ₁. Probability: change depends on x."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 4, label: "05b p. 4"}
+  added: 2026-10-09
+
+- id: style-05b-sigma-prime-zero
+  type: mcq
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression]
+  priority: detail
+  front: "*(Logistic function)* What is $\\sigma'(0)$ for $\\sigma(\\eta) = 1/(1+e^{-\\eta})$?"
+  choices: ["$1/4$", "$1/2$", "$1$", "$0$"]
+  answer: [0]
+  explanation: "$\\sigma'(\\eta) = \\sigma(\\eta)(1-\\sigma(\\eta))$ and $\\sigma(0) = \\frac12$, so $\\sigma'(0) = \\frac14$ — the maximum slope. $\\frac12$ is $\\sigma(0)$ itself."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 5, label: "05b p. 5"}
+  added: 2026-10-09
+
+- id: style-05b-normal-equations
+  type: tf
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression, least-squares]
+  priority: core
+  front: "*(Logistic regression)* Setting $\\nabla L(w) = 0$ for the logistic loss gives linear equations in $w$, solvable in closed form like the normal equations $\\mathbf{X}^\\top\\mathbf{X}w = \\mathbf{X}^\\top\\mathbf{y}$."
+  answer: false
+  explanation: "$\\mathbf{X}^\\top(\\sigma(\\mathbf{X}w) - \\mathbf{y}) = 0$ is nonlinear in $w$ (inside $\\sigma$): no closed form, iterative methods are needed (05b p. 18)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 18, label: "05b p. 18"}
+  added: 2026-10-09
+
+- id: style-05b-hessian-negative
+  type: tf
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression, convexity]
+  priority: core
+  front: "*(Logistic regression)* For some $w$, the Hessian of the logistic NLL has a negative eigenvalue."
+  answer: false
+  explanation: "$\\nabla^2 L(w) = \\frac1N\\mathbf{X}^\\top S\\mathbf{X}$ with $S \\succeq 0$, so $v^\\top\\nabla^2 L\\,v = \\frac1N\\sum_n s_n(x_n^\\top v)^2 \\ge 0$ for every $w$: always PSD (05b p. 22)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 22, label: "05b p. 22"}
+  added: 2026-10-09
+
+- id: style-05b-newton-quadratic
+  type: tf
+  origin: exam_style
+  lecture: "05b"
+  themes: [optimization]
+  priority: core
+  front: "*(Newton's method)* With step size $\\gamma = 1$, Newton's method reaches the minimizer of a strictly convex quadratic function in a single step, from any starting point."
+  answer: true
+  explanation: "Newton minimizes the local quadratic model exactly; for a quadratic the model equals the function, so one step lands on the minimizer (05b p. 24)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 24, label: "05b p. 24"}
+  added: 2026-10-09
+
+- id: style-05b-sgd-cost
+  type: mcq
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression, sgd]
+  priority: core
+  front: "*(SGD)* With $N$ samples in dimension $D$, what is the cost of one SGD step for logistic regression?"
+  choices: ["$O(D)$", "$O(ND)$", "$O(ND^2)$", "$O(D^3)$"]
+  answer: [0]
+  explanation: "One sample: one inner product $x_n^\\top w$ and one vector update, $O(D)$, independent of $N$. $O(ND)$ = a full GD step; $O(ND^2)$ = building the Hessian; $O(D^3)$ = solving the Newton system."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 23, label: "05b p. 23"}
+  added: 2026-10-09
+
+- id: style-05b-ridge-finite
+  type: tf
+  origin: exam_style
+  lecture: "05b"
+  themes: [logistic-regression, regularization]
+  priority: core
+  front: "*(Ridge logistic regression)* On linearly separable data, adding $\\frac\\lambda2\\|w\\|_2^2$ with $\\lambda > 0$ to the logistic loss guarantees that a minimizer exists at a finite $w$."
+  answer: true
+  explanation: "The penalty grows to $\\infty$ with $\\|w\\|$ while the loss term stays $\\ge 0$, so the objective is coercive (and strictly convex): a unique finite minimizer exists (05b p. 25)."
+  sources:
+    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 25, label: "05b p. 25"}
+  added: 2026-10-09

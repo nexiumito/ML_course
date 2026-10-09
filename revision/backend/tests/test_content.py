@@ -68,7 +68,7 @@ BAD_CASES = [
     ("tf missing answer", lambda t: card(t, "cards/04a.yaml", 2).pop("answer"), "requires 'answer: true|false'"),
     ("mcq index out of range", lambda t: card(t, "exams/04a.yaml", 1).update(answer=[4]), "out of range"),
     ("mcq empty answer", lambda t: card(t, "exams/04a.yaml", 1).update(answer=[]), "non-empty list"),
-    ("mcq one choice", lambda t: card(t, "exams/04a.yaml", 1).update(choices=["a"], answer=[0]), "2–10 choices"),
+    ("mcq one choice", lambda t: card(t, "exams/04a.yaml", 1).update(choices=["a"], answer=[0]), "2–12 choices"),
     ("mcq 2 answers not multi", lambda t: card(t, "exams/04a.yaml", 1).update(answer=[0, 1]), "exactly one answer"),
     ("mcq scalar answer", lambda t: card(t, "exams/04a.yaml", 1).update(answer=0), "field 'answer'"),
     (
