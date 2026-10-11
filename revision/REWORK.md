@@ -162,7 +162,24 @@ install poppler-utils if possible, otherwise use pypdfium2 (`page.get_textpage()
 
 ## 6. Lessons from the pilot (fill in during step 1)
 
-- TODO — not yet written (as of 2026-10-11).
+Pilot done 2026-10-11 (05a: 38 → 19 own cards, 05b: 46 → 16; items 71 → 29 and 81 → 31 including officials).
+- **List the officials' claims first.** Weeks with many officials (05b has 15) leave little to add: own cards must not
+  restate them. Dropped for that reason: style-05b-nonlinear-boundary / style-05b-normal-equations (= 2024 Q8, 2023 Q5),
+  style-05a-bayes-accuracy (same Σₓ maxᵧ p(x, y) computation as 2017 P5 / 2018 P3). A light lecture can end at ~15.
+- **Conversion patterns that work:** a "why / what does X represent" basic or cloze → mcq whose distractors are the
+  student's actual misconceptions (0.5 threshold = probability? = class fraction? = tuned?); a "what goes wrong" basic → tf of
+  the claim, phrased true or false; a derivation → one mcq on the *key argument* with plausible wrong arguments (σ convex?
+  log convex? any f(xᵀw) convex?).
+- **Mini-computations**: choose tiny numbers, then build each distractor from a named mistake (accuracy instead of error,
+  forgetting one term of the average, σ(0) confused with e⁰, sum instead of product) and say so in the explanation.
+- **Pure formula recall is dropped** (σ definition, NLL formula, Hessian formula): it goes on the cheat sheet. A formula
+  survives only when recognizing it is the trap (label convention {0,1} vs {−1,1}, posterior vs likelihood, min vs max).
+- **True/false balance:** the 66 old exam_style cards were mostly *False* claims. When a kept false claim has a natural true
+  twin, write the true version as a new card (new id) — aim for roughly 40–50 % True among tf.
+- Bonus slides (05a p. 30–32) and "intuition" cards never asked in exams: dropped, no `detail` card needed.
+- **Browser check works in the cloud**: Chromium + global Playwright (`NODE_PATH=$(npm root -g)`), build the UI, serve with
+  `REVISION_DATA_DIR=revision/data/test`, open `/sheet?lecture=<id>&check=1` at 375 px (deviceScaleFactor 1, light + dark),
+  read `[data-testid=layout-issues]`, tile full-page screenshots (2000 px slices side by side) to look at the cards.
 
 ## 7. Status and hand-off
 
