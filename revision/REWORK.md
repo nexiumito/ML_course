@@ -135,15 +135,15 @@ untouched except if a theme becomes unused (keep it, harmless); `exam-index.yaml
 
 ## 4. Done when
 
-- [ ] No `type: cloze` left in `content/cards/`; ≤ 20 `concept` + `exam_style` cards per lecture; officials unchanged
+- [x] No `type: cloze` left in `content/cards/`; ≤ 20 `concept` + `exam_style` cards per lecture; officials unchanged
       (except proven errors, listed in the log).
-- [ ] `uv run revision content check` OK; `cd frontend && npm run check-math` 0 errors.
-- [ ] `uv run pytest` green, ruff clean, frontend typecheck/lint/vitest green.
-- [ ] Visual check at 375 px: run `.claude/launch.json` → `revision-api-test` (data in `revision/data/test/`, delete it
+- [x] `uv run revision content check` OK; `cd frontend && npm run check-math` 0 errors.
+- [x] `uv run pytest` green, ruff clean, frontend typecheck/lint/vitest green.
+- [x] Visual check at 375 px: run `.claude/launch.json` → `revision-api-test` (data in `revision/data/test/`, delete it
       afterwards) + build or dev UI, open `/sheet?lecture=<id>&check=1` (mobile preset) for **every** lecture, fix every
       overflow/KaTeX error it lists, and scroll through a sample of cards. **If no browser is available in the cloud
       session**, say so in the log (the student's local session will do it); the automatic checks above remain mandatory.
-- [ ] Before/after table in the SPEC §13 log; commits pushed to the session branch.
+- [x] Before/after table in the SPEC §13 log; commits pushed to the session branch.
 
 Rendering helpers (from earlier sessions, easy to recreate): render a slide `pdftoppm -f P -l P -r 70 -png file.pdf out`
 (or with **pypdfium2**, already a dependency: `pdfium.PdfDocument(path)[P-1].render(scale=1).to_pil()`), tile several
@@ -162,7 +162,7 @@ install poppler-utils if possible, otherwise use pypdfium2 (`page.get_textpage()
 
 ## 6. Lessons from the pilot (fill in during step 1)
 
-Pilot done 2026-10-11 (05a: 38 → 19 own cards, 05b: 46 → 16; items 71 → 29 and 81 → 31 including officials).
+Pilot done 2026-10-11 (05a: 38 → 19 own cards, 05b: 46 → 16, 15 after the global pass; items 71 → 29 and 81 → 30 including officials).
 - **List the officials' claims first.** Weeks with many officials (05b has 15) leave little to add: own cards must not
   restate them. Dropped for that reason: style-05b-nonlinear-boundary / style-05b-normal-equations (= 2024 Q8, 2023 Q5),
   style-05a-bayes-accuracy (same Σₓ maxᵧ p(x, y) computation as 2017 P5 / 2018 P3). A light lecture can end at ~15.
@@ -180,10 +180,21 @@ Pilot done 2026-10-11 (05a: 38 → 19 own cards, 05b: 46 → 16; items 71 → 29
 - **Browser check works in the cloud**: Chromium + global Playwright (`NODE_PATH=$(npm root -g)`), build the UI, serve with
   `REVISION_DATA_DIR=revision/data/test`, open `/sheet?lecture=<id>&check=1` at 375 px (deviceScaleFactor 1, light + dark),
   read `[data-testid=layout-issues]`, tile full-page screenshots (2000 px slices side by side) to look at the cards.
+- **Applied to 01a → 04b (step 2):** the officials decide the size. Lectures with many officials (02a: 23) end at ~10 own
+  cards; 01a ends at **0** (intro never asked, its math cards duplicated its officials) — an empty `cards/01a.yaml` (`[]`) is valid.
+  No `basic` card survived: every mini-computation fitted an mcq with distractors from named mistakes.
+- **Open questions are a good source of exam-style mcq**: their official solutions give a verified result to turn into a
+  mini-computation (2025 Q44 momentum variance, 2025 Q45 uniform MLE, 2025 Q43 ridge bias, 2022 Q39 Bayes risk).
+- **Global pass catches cross-lecture duplicates** (same claim in 02a and 05b; "more data helps overfitting" in 03b and 04b):
+  keep the card in the lecture where the concept is introduced or diagnosed, cross-reference it in the other file's header.
+- Write the "officials already cover" list as a comment at the top of each `cards/<lecture>.yaml`: the next session sees at
+  a glance what not to duplicate.
 
 ## 7. Status and hand-off
 
-Status: **not started** (2026-10-11).
+Status: **done** (2026-10-11, autonomous cloud session) — 0 cloze / 0 basic, 91 own exam-style cards (≤ 19 per lecture) + 108
+officials = 199 items (was 586); all §4 checks passed, including the 375 px check for every lecture (light + dark). Before/after
+table and decisions: `SPEC.md` §13. Not done in the cloud (no VPS access): reading the open card reports, deployment.
 
 When the session is done, the student (with a local Claude session on his Mac):
 1. reviews and merges the session branch into `main`, `git pull`, `git push origin main`;
