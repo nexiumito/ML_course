@@ -50,7 +50,8 @@ cd frontend && npm run check-math        # every card text through the app's KaT
 ```
 
 ## Add content
-1. Cards for lecture `<id>` go in `content/cards/<id>.yaml` (concept + unofficial `exam_style`), official past-exam
+1. Cards for lecture `<id>` go in `content/cards/<id>.yaml` (unofficial `exam_style` tf/mcq, ≤ 20 per lecture, no cloze —
+   rules of 2026-10-11, `SPEC.md` §8.2; one-off rework of older cards: `REWORK.md`), official past-exam
    questions in `content/exams/<id>.yaml`. Schema and writing rules: `SPEC.md` §4 and §8.
 2. The lecture must be listed in `content/course.yaml`; themes come from its controlled vocabulary.
 3. `uv run revision content check` must pass; with `serve --reload` the app reloads on YAML changes

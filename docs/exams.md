@@ -44,6 +44,7 @@ Linear regression & least squares (gradient of MSE, Hessian complexity, projecti
 ## Revision advice
 - The exam is **theory-heavy** (lab 1 sheet explicitly warns about this): do the theory questions in every lab sheet, derive gradients/updates by hand.
 - Work through 2023–2025 in exam conditions (they match the current syllabus best), then 2020–2022; older ones for extra derivation practice.
+- The cheat sheet makes rote formula recall low-value: the revision app trains recognition (MC/TF, traps, mini-computations), not fill-in-the-blank (decision 2026-10-11, `revision/SPEC.md` §8.2).
 - Build the A4 cheat sheet progressively from `docs/lectures/*.md` + `docs/glossary.md`.
 - No negative marking ⇒ answer every MC/TF question.
 - A sample exam for 2026 will be provided by the teaching team before the session (per info sheet) — add it here when it appears.

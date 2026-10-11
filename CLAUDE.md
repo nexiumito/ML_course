@@ -13,7 +13,7 @@ Owner: Elie Bsd, M1 student. Agents help with labs, theory, revision, and projec
 - `docs/exams.md` — exam inventory, format, recurring topics, revision advice.
 - `docs/glossary.md` — course notation (N, D, X, w, L(w), …) and acronyms.
 - `docs/history-2025.md` — **the whole 2025 edition is in git history** (`git show '48f3822^:<path>'`): look ahead at labs, lectures, solutions, project descriptions.
-- `revision/` — **revision app** (spaced-repetition cards for this course): spec + milestones + card rules `revision/SPEC.md`, run + VPS operations `revision/README.md` (full VPS runbook: local-only `revision/deploy/VPS.md`, gitignored). Live on the VPS `ml-vps` (tailnet only) since 2026-10-02.
+- `revision/` — **revision app** (spaced-repetition cards for this course): spec + milestones + card rules `revision/SPEC.md`, run + VPS operations `revision/README.md` (full VPS runbook: local-only `revision/deploy/VPS.md`, gitignored). Live on the VPS `ml-vps` (tailnet only) since 2026-10-02. Cards = exam-format tf/mcq only, ≤ 20 per lecture, no cloze (2026-10-11); card rework mission: `revision/REWORK.md`.
 
 ## Repository layout
 ```
