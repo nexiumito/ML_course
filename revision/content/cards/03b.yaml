@@ -1,6 +1,7 @@
 # Lecture 03b — Underfitting and Overfitting (Jaggi deck; annotated PDF: slide N = page N+1).
 # Written in S4 (2026-10-02); reworked 2026-10-11 (REWORK.md): exam-format tf/mcq only. Light lecture.
 # Officials in exams/03b.yaml: unnecessary polynomial expansion ⇒ underfitting? (2023 Q15), train/test gap remedies (2021 Q7).
+# "More data reduces overfitting" is style-04b-more-data-high-variance (learning curves).
 
 - id: style-03b-poly-not-least-squares
   type: tf
@@ -54,19 +55,3 @@
     - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 8, label: "03b slide 7"}
   added: 2026-10-02
   notes: "Vandermonde matrix with distinct nodes is invertible ⇒ exact interpolation (standard)."
-
-- id: style-03b-more-data-overfit
-  type: tf
-  origin: exam_style
-  lecture: "03b"
-  themes: [overfitting]
-  priority: core
-  front: "*(Overfitting)* Keeping the model fixed (polynomial of degree $M = 9$), increasing the number of training points $N$ reduces overfitting."
-  answer: true
-  explanation: |
-    03b slide 8: with $M = 9$, going from $N = 15$ to $N = 100$ points gives a fit close to the true function: with more data the model
-    can no longer chase the noise of each point. More data does **not** cure underfitting, though (a line stays a line).
-  trap: "More data helps overfitting (high variance), not underfitting (high bias)."
-  sources:
-    - {kind: lecture, pdf: lectures/03/lecture03b_overfitting_annotated.pdf, page: 9, label: "03b slide 8 (annotated)"}
-  added: 2026-10-11

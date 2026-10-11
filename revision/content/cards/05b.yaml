@@ -5,7 +5,7 @@
 # separable GD (2024 Q8, 2023 Q5), probability change depends on x (2024 Q9), SGD step on a correct point (2023 Q19),
 # gradient formula (2022 Q3), standardized weights (2022 Q7), GD vs Newton (2022 Q8), asymmetric loss (2022 Q26, 2016 Q12),
 # strong ℓ2 on one weight (2021 Q17), separable ⇒ no exact 0 loss (2021 Q27), logit linear (2020 Q3), medical probability
-# (2020 Q27), stable sigmoid (2019 Q6). Own cards: SPEC §8.4 "Week 5" confusions + mini-computations not covered above.
+# (2020 Q27), stable sigmoid (2019 Q6). SGD step cost: style-02a-sgd-step-cost. Own cards: SPEC §8.4 "Week 5" confusions + mini-computations not covered above.
 
 # ---------------------------------------------------------------- model, odds, sigmoid
 
@@ -250,20 +250,6 @@
   added: 2026-10-09
 
 # ---------------------------------------------------------------- optimization, separable data
-
-- id: style-05b-sgd-cost
-  type: mcq
-  origin: exam_style
-  lecture: "05b"
-  themes: [logistic-regression, sgd]
-  priority: core
-  front: "*(SGD)* With $N$ samples in dimension $D$, what is the cost of one SGD step for logistic regression?"
-  choices: ["$O(D)$", "$O(ND)$", "$O(ND^2)$", "$O(D^3)$"]
-  answer: [0]
-  explanation: "One sample: one inner product $x_n^\\top w$ and one vector update, $O(D)$, independent of $N$. $O(ND)$ = a full GD step; $O(ND^2)$ = building the Hessian; $O(D^3)$ = solving the Newton system."
-  sources:
-    - {kind: lecture, pdf: lectures/05/lecture05b.pdf, page: 23, label: "05b p. 23"}
-  added: 2026-10-09
 
 - id: style-05b-newton-quadratic
   type: tf
