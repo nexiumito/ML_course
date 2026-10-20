@@ -89,6 +89,20 @@ lectures:
     pdf: lectures/05/lecture05b.pdf
     annotated_pdf: null    # none: Flammarion does not publish annotated slides
     sheet: docs/lectures/05-classification-logistic-regression.md
+  - id: "06a"
+    week: 6
+    title: "Support Vector Machines"
+    date: 2026-10-13
+    pdf: lectures/06/lecture06a.pdf
+    annotated_pdf: null    # Jaggi lectured on Flammarion's slides; no annotated 06 published as of 2026-10-20
+    sheet: docs/lectures/06-svm-knn.md
+  - id: "06b"
+    week: 6
+    title: "Nearest Neighbors and the Curse of Dimensionality"
+    date: 2026-10-14
+    pdf: lectures/06/lecture06b.pdf
+    annotated_pdf: null    # no annotated 06 published as of 2026-10-20
+    sheet: docs/lectures/06-svm-knn.md
 
 # Controlled theme vocabulary (SPEC §8.5). Extend when new lectures need it.
 themes:
@@ -116,3 +130,6 @@ themes:
   - {id: classification, label: "Classification"}
   - {id: knn, label: "k-nearest neighbors"}
   - {id: logistic-regression, label: "Logistic regression"}
+  - {id: svm, label: "Support vector machines"}
+  - {id: duality, label: "Convex duality"}
+  - {id: curse-of-dimensionality, label: "Curse of dimensionality"}

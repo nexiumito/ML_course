@@ -73,10 +73,23 @@
     - "$W_{i,j}^2$"
   answer: [1]
   explanation: |
-    $(WW)_{kl} = \sum_m W_{km}W_{ml}$ is an $n\times n$ matrix, so its derivative w.r.t. one entry is an $n\times n$ matrix. $W_{ij}$ appears
-    (a) as $W_{km}$ with $k=i, m=j$: contributes $W_{jl}$ to entry $(i,l)$, i.e. **row $i$ receives the $j$-th row of $W$**; and
-    (b) as $W_{ml}$ with $m=i, l=j$: contributes $W_{ki}$ to entry $(k,j)$, i.e. **column $j$ receives the $i$-th column of $W$**.
-    The official solution describes the same two contributions (its wording of where the row is placed is loose).
+    The output $WW$ is an $n\times n$ matrix, so its derivative w.r.t. the single number $W_{ij}$ is also an $n\times n$ matrix:
+    entry $(k,l)$ is $\partial (WW)_{kl} / \partial W_{ij}$, with $(WW)_{kl} = \sum_m W_{km}W_{ml}$.
+
+    **Worked $2\times 2$ case, derivative w.r.t. $W_{12}$** ($i=1$, $j=2$). Write out $WW$:
+    $(WW)_{11} = W_{11}W_{11} + W_{12}W_{21}$, $(WW)_{12} = W_{11}W_{12} + W_{12}W_{22}$,
+    $(WW)_{21} = W_{21}W_{11} + W_{22}W_{21}$, $(WW)_{22} = W_{21}W_{12} + W_{22}W_{22}$.
+    Differentiate each entry w.r.t. $W_{12}$ (treat the other entries as constants):
+    $$\frac{\partial (WW)}{\partial W_{12}} = \begin{pmatrix} W_{21} & W_{11} + W_{22} \\ 0 & W_{21} \end{pmatrix}$$
+
+    **Read it with the rule.** $W_{ij}$ appears in two places of $\sum_m W_{km}W_{ml}$:
+    (a) as the **left** factor ($k=i$, $m=j$): only row $i$ of the result is hit, and it receives **row $j$ of $W$** — here row 1 gets $(W_{21}, W_{22})$;
+    (b) as the **right** factor ($m=i$, $l=j$): only column $j$ is hit, and it receives **column $i$ of $W$** — here column 2 gets $(W_{11}, W_{21})^\top$.
+    Sum: start from the all-zero matrix, add row $j$ of $W$ into row $i$ and column $i$ of $W$ into column $j$ (the official wording of
+    "where" each one goes is loose; the worked case above is the unambiguous version).
+
+    Why the other options are wrong: $W_{ij}$ or $W_{ij}^2$ are scalars (wrong shape); "a vector of length $n$" is also the wrong shape;
+    $W + W^\top$ is a familiar formula from another question (the Hessian of $x^\top W x$ w.r.t. $x$), not the derivative of $WW$ w.r.t. one entry.
   sources:
     - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 5, label: "Final 2017 P8"}
   added: 2026-10-02

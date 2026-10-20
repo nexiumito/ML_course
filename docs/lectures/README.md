@@ -17,10 +17,12 @@ Formulas in the PDFs are embedded images: the formulas below were reconstructed 
 | 04b | 2026-09-30 | [04-generalization-bias-variance.md](04-generalization-bias-variance.md) §B | `lectures/04/lecture04b.pdf` | 34 | ✅ sheet written 2026-10-01; no annotated version (Flammarion) |
 | 05a | 2026-10-06 | [05-classification-logistic-regression.md](05-classification-logistic-regression.md) §A | `lectures/05/lecture05a.pdf` | 33 | ✅ sheet written 2026-10-08; **student caught up 2026-10-09**; **no annotated version** (Flammarion); 2025 annotated proxy in history |
 | 05b | 2026-10-07 | [05-classification-logistic-regression.md](05-classification-logistic-regression.md) §B | `lectures/05/lecture05b.pdf` | 26 | ✅ sheet written 2026-10-08; **student caught up 2026-10-09**; **no annotated version** (Flammarion); 2025 annotated proxy in history |
+| 06a | 2026-10-13 | [06-svm-knn.md](06-svm-knn.md) §A | `lectures/06/lecture06a.pdf` | 28 | ✅ sheet written 2026-10-13; **student caught up 2026-10-15**; no annotated 06 published (as of 2026-10-20); 2025 annotated proxy (same deck) integrated |
+| 06b | 2026-10-14 | [06-svm-knn.md](06-svm-knn.md) §B | `lectures/06/lecture06b.pdf` | 48 | ✅ sheet written 2026-10-13; **student caught up 2026-10-20**; 2025 annotated proxy integrated |
 
-Slide numbering: lectures 01–03 (Jaggi) print "slide N" = PDF page N+1; **lectures 04+ (Flammarion) slide N = PDF page N** (title = p. 1; 04b and 05a/b have no printed numbers).
+Slide numbering: lectures 01–03 (Jaggi) print "slide N" = PDF page N+1; **lectures 04+ slide N = PDF page N** (title = p. 1; 04b, 05a/b, 06a/b have no printed numbers).
 
-**Flammarion does not publish annotated slides** (04, 05, …): don't wait for them. For 05, the 2025 annotated decks (same slides) are in git history — see the sheet.
+**Flammarion does not publish annotated slides** (04, 05): don't wait for them. Lecture 06 is taught by **Jaggi** (Flammarion's slides) → annotated PDFs may come. For 05 and 06, the 2025 annotated decks (same slides) are in git history — see the sheets.
 
 Annotated PDFs (`*_annotated.pdf`) arrive upstream ~1 day after the lecture; the handwriting is image-only → `pdftoppm -r 45 -png in.pdf out` then view the PNGs (tile them 2×4 to save tokens). Integrate the annotations into the sheet and mark it here.
 

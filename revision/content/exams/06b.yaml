@@ -1,0 +1,422 @@
+# Official past-exam questions whose primary lecture is 06b (k-NN, curse of dimensionality) — stems and choices verbatim. Answers read
+# from the ticked boxes (2019+) or from the solution text (2016–2018 and mocks). Written 2026-10-20 (week-6 content session).
+# Mock 2018 5c is the same question as Final 2017 P3 (indexed as duplicate).
+
+- id: exam-2025-q33
+  type: tf
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["04b"]
+  themes: [knn, bias-variance]
+  priority: core
+  front: |
+    *(Bias-Variance Decomposition)* When tuning the parameter $K$ in the K-Nearest Neighbors model, if we observe that the model is underfitting
+    (i.e., it is in the 'High Bias' region of the complexity curve), the correct action to increase model complexity is to increase the hyperparameter $k$.
+  answer: false
+  explanation: |
+    Official solution: large $k$ (e.g. $k = N$) averages over many neighbors — stable, low variance, but too simple: high bias (underfitting).
+    Small $k$ (e.g. $k = 1$) is very flexible: low bias, high variance (overfitting). To increase complexity, **decrease** $k$ (06b p. 22–23).
+  trap: "Complexity increases as k decreases."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 16, label: "Final 2025 Q33"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 23, label: "06b p. 23"}
+  added: 2026-10-20
+
+- id: exam-2025-q38
+  type: tf
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn]
+  priority: core
+  front: "*(Nearest Neighbors)* The computational cost of KNN training increases with dataset size."
+  answer: false
+  explanation: |
+    Official solution: KNN has no training phase (it only stores the data); it is the cost of **prediction** that grows with the dataset size —
+    distances to all $N$ points, $\mathcal O(ND)$ per query (06b p. 9, p. 25).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 16, label: "Final 2025 Q38"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 25, label: "06b p. 25"}
+  added: 2026-10-20
+
+- id: exam-2024-q20
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["04a"]
+  themes: [knn, cross-validation]
+  priority: core
+  shuffle: false
+  front: |
+    We are given the following dataset as illustrated, and assume that "+" and "−" denotes the label of each data point:
+
+    The Leave-One-Out cross validation errors using 1-Nearest-Neighbor and 3-Nearest-Neighbor classifiers are:
+  images:
+    - {src: img/exam-2024-q20.png, alt: "Ten points on a grid. Left group: four '+' at the corners of a square and one '−' in its centre. Right group: four '−' at the corners of a square and one '−' in its centre."}
+  choices:
+    - "0, 5/10."
+    - "5/10, 1/10."
+    - "0, 1/10."
+    - "1/10, 5/10."
+  answer: [1]
+  explanation: |
+    Official solution: with 1-NN, all 5 points of the left group are wrong when left out (each "+" corner's nearest neighbor is the central
+    "−", and the central "−" has only "+" neighbors on the left) ⇒ 5/10. With 3-NN, only the left central "−" is wrong (its 3 nearest are "+");
+    each left "+" now sees two "+" and the "−" ⇒ correct ⇒ 1/10. The right group is all "−", always correct.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 11, label: "Final 2024 Q20"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 17, label: "06b p. 17"}
+  added: 2026-10-20
+
+- id: exam-2024-q25
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["04b"]
+  themes: [knn, bias-variance]
+  priority: core
+  front: "Which of the following statements about the $k$-nearest neighbors algorithm is TRUE? Here, $N$ denotes the number of data points."
+  choices:
+    - "The variance of the $k$-nearest neighbors method is 0 when $k = N$."
+    - "The bias of the $k$-nearest neighbors method is 0 when $k = N$."
+    - "The $k$-nearest neighbors method is sensitive to the choice of distance metric."
+    - "The $k$-nearest neighbors approach is only applicable to classification tasks."
+  answer: [2]
+  explanation: |
+    Official solution: different distance metrics lead to different nearest neighbors, hence different predictions. Regression is done by
+    averaging the neighbors' targets (06b p. 10). With $k = N$ the prediction is the global average/majority: variance low but **non-zero**
+    (it still depends on the sampled training set) and bias non-zero (a constant cannot fit a non-constant function).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 13, label: "Final 2024 Q25"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 22, label: "06b p. 22"}
+  added: 2026-10-20
+
+- id: exam-2024-q32
+  type: tf
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["06a"]
+  themes: [knn, svm]
+  priority: detail
+  front: |
+    *(Nearest Neighbours)* In a binary classification problem with a training set of size 2, where the points have different labels, the
+    decision boundary of the 1-nearest neighbor (1-NN) classifier with $\ell_1$-distance coincides with that of the maximum margin linear classifier.
+  answer: false
+  explanation: |
+    Official solution: consider $A = (0, 0)$, $B = (2, 1)$. The max-margin linear classifier is the perpendicular bisector of $AB$ (a straight
+    line). The 1-NN boundary is the set of points at equal **$\ell_1$** distance from $A$ and $B$, which is not that line (the $\ell_1$ bisector
+    is piecewise linear). With the Euclidean distance the two would coincide.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 15, label: "Final 2024 Q32"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 9, label: "06b p. 9"}
+  added: 2026-10-20
+  notes: "The official solution only gives the counterexample points; the geometric reading is ours (ℓ1 vs ℓ2 bisector)."
+
+- id: exam-2023-q6
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, curse-of-dimensionality, generalization]
+  priority: core
+  front: |
+    Recall the bound on the 1-NN generalization error for $(X, Y) \sim \mathcal D$ over $\mathcal X \times \mathcal Y = [0,1]^d \times \{0, 1\}$:
+    $$\mathbb E_{S_\text{train}}[L(f_{S_\text{train}})] \le 2L(f_\star) + 4c\sqrt d\,N^{-\frac{1}{d+1}},$$
+    where $f_{S_\text{train}}$ is the 1-NN classifier with the train dataset $S_\text{train}$, $f_\star(x) = \mathbb 1_{\eta(x) \ge \frac12}$ is the
+    Bayes optimal classifier and $\eta(x) = \mathbb P(Y = 1 \mid X = x)$ is a $c$-Lipschitz function.
+
+    Now, assume that the same setting is verified but $X$ is now distributed over $[0,1]^d \cap L$ where $L$ is a $p$-dimensional plane inside
+    $\mathbb R^d$ with $p < d$. How does the number of samples $N$ need to scale in terms of $p$ or $d$ to guarantee that the worst-case error does
+    not exceed a fixed $\varepsilon$ with 1-NN classifier?
+  choices:
+    - '$N \propto p$'
+    - '$N \propto d$'
+    - '$N \propto 2^p$'
+    - '$N \propto 2^d$'
+  answer: [2]
+  explanation: |
+    Official solution: this is a 1-NN on a lower-dimensional space, so $N$ must scale as $2^p$ for a fixed worst-case error. The data only fill
+    a $p$-dimensional set: what matters is the **intrinsic** dimension, and the requirement is exponential in it (06b p. 36: $N$ exponential in $d$).
+  trap: "Curse of dimensionality = exponential in the intrinsic dimension, not the ambient one."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 4, label: "Final 2023 Q6"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20
+
+- id: exam-2022-q21
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, curse-of-dimensionality]
+  priority: core
+  shuffle: false
+  front: "Which of the following statements is true about nearest neighbor classifiers:"
+  choices:
+    - "None of the other answers."
+    - "Nearest neighbors can be slow to find in high-dimensional spaces."
+    - "Nearest neighbor classifiers can only work with the Euclidean distance."
+    - "Nearest neighbor classifiers do not need to store the training data."
+  answer: [1]
+  explanation: |
+    Official solution: computing distances in high-dimensional spaces is expensive, so finding nearest neighbors can be slow. NN classifiers
+    must store the training data to find the neighbors and aggregate their labels, and other distances can be used (e.g. Manhattan) — 06b p. 9, p. 25.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 10, label: "Final 2022 Q21"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 25, label: "06b p. 25"}
+  added: 2026-10-20
+
+- id: exam-2022-q34
+  type: tf
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn]
+  priority: core
+  front: "*(kNN)* Nearest neighbor classifiers cannot be used for regression because they rely on majority voting, which is not suited for continuous labels."
+  answer: false
+  explanation: |
+    Official solution: for regression, k-NN averages the labels of the nearest neighbors instead of majority voting:
+    $f(x) = \frac1k\sum_{n : x_n \in \text{nbh}_k(x)} y_n$ (06b p. 10–13).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 13, label: "Final 2022 Q34"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 10, label: "06b p. 10"}
+  added: 2026-10-20
+
+- id: exam-2021-q14
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn]
+  priority: core
+  shuffle: false
+  front: |
+    *(KNN)* The KNN algorithm needs a notion of distance to assess which points are "nearest". Identify the distance measures that can be used in the KNN algorithm
+
+    (a) Euclidean Distance: distance associated to the $L_2$ norm $\|x\|_2 := \sqrt{x_1^2 + \cdots + x_D^2}$
+
+    (b) Manhattan Distance: distance associated to the $L_1$ norm $\|x\|_1 := |x_1| + \cdots + |x_D|$
+
+    (c) Distance associated to the $L_4$ norm $\|x\|_4 := \big(|x_1|^4 + \cdots + |x_D|^4\big)^{1/4}$
+  choices:
+    - "only a and c"
+    - "only b"
+    - "only c"
+    - "a, b and c"
+    - "only b and c"
+    - "only a and b"
+    - "only a"
+  answer: [3]
+  explanation: |
+    Official solution: the similarity measure is only an algorithmic choice to be made in the KNN algorithm — any distance can be used
+    (06b p. 9 "different metrics can be employed"); the choice changes the neighbors and hence the predictions.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 8, label: "Final 2021 Q14"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 9, label: "06b p. 9"}
+  added: 2026-10-20
+
+- id: exam-2020-q4
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["05b", "06a"]
+  themes: [knn, svm, logistic-regression, classification]
+  priority: core
+  shuffle: false
+  front: "*(Decision boundary)* Which of these classifiers could have generated this decision boundary?"
+  images:
+    - {src: img/exam-2020-q4.png, alt: "Scatter plot of two classes (filled triangles = Class 0 at the lower left, open circles = Class 1 at the upper right) separated by a single straight decision line; a few points of each class lie on the wrong side."}
+  choices:
+    - "1-nearest-neighbor with $L_2$ distance & SVM."
+    - "SVM & logistic regression."
+    - "logistic regression & 1-nearest-neighbor with $L_2$ distance."
+    - "None of the other options are correct."
+  answer: [1]
+  explanation: |
+    Official solution: SVM & logistic regression — the only combination of (possibly) purely linear classifiers. The boundary is a straight line
+    with misclassified training points; a 1-NN boundary would be piecewise and wiggly, and would classify every training point correctly
+    (zero training error).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 3, label: "Final 2020 Q4"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 22, label: "06b p. 22"}
+  added: 2026-10-20
+
+- id: exam-2020-q7
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["05b"]
+  themes: [knn, bias-variance, overfitting]
+  priority: core
+  front: |
+    *(Train/Test Errors)* The above figure was produced by changing a hyperparameter in a classifier on a non-linearly separable training dataset.
+    For which classifier could this picture be produced and how was its hyperparameter changed?
+  images:
+    - {src: img/exam-2020-q7.png, alt: "Train and test error versus an unlabeled hyperparameter axis: train error decreases slowly from 0.16 then drops to 0 at the right end; test error first decreases from 0.22 to about 0.15 then rises to 0.21."}
+  choices:
+    - "Logistic regression, increasing regularization parameter $\\lambda$."
+    - "Logistic regression, decreasing regularization parameter $\\lambda$."
+    - "K-nearest neighbor classifier, decreasing number of neighbors $k$."
+    - "K-nearest neighbor classifier, increasing number of neighbors $k$."
+  answer: [2]
+  explanation: |
+    Official solution: since the dataset is not linearly separable, zero training error is impossible for (linear) logistic regression; for k-NN
+    with $k = 1$ the training error is always zero. The training error reaching 0 on the right means $k$ decreases towards 1, and the U-shaped
+    test error is the k-NN bias–variance trade-off (06b p. 23).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 5, label: "Final 2020 Q7"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 23, label: "06b p. 23"}
+  added: 2026-10-20
+
+- id: exam-2019-q4
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, curse-of-dimensionality]
+  priority: core
+  front: |
+    *(KNN Classifier)* You are in $D$-dimensional space and use a KNN classifier with $k = 1$. You are given $N$ samples and by running experiments
+    you see that for most random inputs $x$ you find a nearest sample at distance roughly $\delta$.
+
+    You would like to decrease this distance to $\delta/2$. How many samples will you likely need? Give an educated guess.
+  choices: ["$2^D N$", "$N^D$", "$2D$", "$\\log(D) N$", "$N^2$", "$D^2$", "$2N$", "$DN$"]
+  answer: [0]
+  explanation: |
+    Official solution: assume the data really fill $\mathbb R^D$. Balls of radius $\delta$ around the samples roughly cover the space; to cover it
+    with balls of radius $\delta/2$ you need about $2^D$ times as many, since the volume of a ball of radius $r$ scales like $r^D$ ⇒ $2^D N$ samples.
+  trap: "Volume ∝ r^D: halving the radius costs a factor 2^D."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 3, label: "Final 2019 Q4"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 29, label: "06b p. 29"}
+  added: 2026-10-20
+
+- id: exam-2019-q13
+  type: tf
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, overfitting]
+  priority: core
+  front: "*(Nearest Neighbor)* The training error of the 1-nearest neighbor classifier is zero."
+  answer: true
+  explanation: |
+    Official answer: True — for each element of the training set, its nearest neighbor is itself, so 1-NN outputs its own label (assuming no two
+    identical inputs with different labels). Zero training error does not prevent generalization (06b p. 36).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 8, label: "Final 2019 Q13"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 22, label: "06b p. 22"}
+  added: 2026-10-20
+
+- id: exam-2018-q2
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, curse-of-dimensionality]
+  priority: core
+  front: |
+    You are performing classification in $d$ dimensions (where $d$ is very large) using a $k$-nearest neighbor classifier. You have $N$ training
+    samples and get an acceptable performance. Your boss hands you a similar classification task but in $2d$ dimensions. How many training samples
+    will you need to get a comparable performance? Make an educated guess.
+  choices: ["$2N$", "$e^N$", "$N^2$", "$\\sqrt d$", "$e^d$", "$\\sqrt N$", "$\\log(N)$", "$d^2$", "$2d$", "$\\log(d)$"]
+  answer: [2]
+  explanation: |
+    Official solution: the amount of data needed to "cover" the space grows roughly exponentially in the dimension. If $N \approx a^d$, then in
+    $2d$ dimensions we need $a^{2d} = (a^d)^2 = N^2$ samples.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2018-solutions.pdf, page: 3, label: "Final 2018 P2"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20
+
+- id: exam-2017-q3
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, curse-of-dimensionality]
+  priority: core
+  multi: true
+  shuffle: false
+  front: |
+    We are given a data set $S = \{(x_n, y_n)\}$ for a binary classification task where $x_n$ in $\mathbb R^D$. We want to use a nearest-neighbor
+    classifier. In which of the following situations do we have a reasonable chance of success with this approach? [Ignore the issue of complexity.]
+  choices:
+    - '$n \to \infty$, $D$ is fixed'
+    - '$n \to \infty$, $D \ll \ln(n)$'
+    - '$n = D^2$, $D \to \infty$'
+    - '$n$ is fixed, $D \to \infty$'
+  answer: [0, 1]
+  explanation: |
+    Official solution: if the number of data points is exponential in the dimension, a nearest-neighbor classifier has a chance to work. So when
+    $n \to \infty$ and $D$ is fixed or very small compared to $\ln(n)$ (i.e. $n \gg e^D$). $n = D^2$ is only polynomial in $D$, and fixed $n$ with
+    $D \to \infty$ is the worst case (06b p. 29–36).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 3, label: "Final 2017 P3"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20
+
+- id: exam-2017-q4
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn]
+  priority: core
+  multi: true
+  front: "Which of the following statements are true?"
+  choices:
+    - "The more training examples, the more accurate the prediction of a $k$-nearest-neighbor classifier."
+    - "$k$-nearest-neighbors cannot be used for regression."
+    - "A $k$-nearest-neighbor classifier is sensitive to outliers."
+    - "Training a $k$-nearest-neighbor classifier takes more computational time than applying it / using it for prediction."
+  answer: [0, 2]
+  explanation: |
+    Official solution: there is no traditional "training" for k-NN (prediction is the expensive part); the more data, the more accurate the
+    classifier (neighbors get closer, 06b p. 36); it can also be used for regression (average of the neighbors, p. 10); and it is sensitive to
+    outliers — around an outlier you will likely make the wrong prediction (especially with small $k$).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 3, label: "Final 2017 P4"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 25, label: "06b p. 25"}
+  added: 2026-10-20
+
+- id: exam-2016-q10
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  also_lectures: ["05a"]
+  themes: [knn, polynomial-features]
+  priority: core
+  multi: true
+  front: "Assume you run $k$-nearest neighbor given the data set of the previous problem (Figure 1). Mark the correct statements."
+  images:
+    - {src: img/exam-2016-q9.png, alt: "Figure 1: square of 2D points; red points form a cross / star shape along both axes (centred at the origin), blue points fill the four corners."}
+  choices:
+    - "$k$-nearest neighbors with $k = 1$ would work well."
+    - "$k$-nearest neighbors with $k = 1$ would work better if we use it on the \"extended\" data with one component added as discussed in the previous problem."
+    - "$k$-nearest neighbors with $k = 1$ only works on data that is linearly separable."
+  answer: [0]
+  explanation: |
+    Official solution: only the first is correct. There is a lot of data, the dimension is small and the decision boundaries are fairly simple, so
+    1-NN works well. Adding the extra component ($|x_1 x_2|$, which a **linear** classifier needed) does not help nearest neighbors at all and likely
+    hurts (higher dimension). Linear separability matters for linear classifiers, not for nearest neighbors.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2016-solutions.pdf, page: 3, label: "Final 2016 Q10"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 21, label: "06b p. 21"}
+  added: 2026-10-20
+
+- id: mock-2018-q5e
+  type: mcq
+  origin: exam_official
+  lecture: "06b"
+  themes: [knn, curse-of-dimensionality, generalization]
+  priority: core
+  multi: true
+  front: "The $k$-nearest neighbor classifier"
+  choices:
+    - "typically works the better the larger the dimension of the feature space"
+    - "can classify up to $k$ classes"
+    - "typically works the worse the larger the dimension of the feature space"
+    - "can only be applied if the data can be linearly separated"
+    - "has a misclassification rate of at most two times the one of the Bayes classifier if we have lots of data"
+    - "has a misclassification rate that is two times better than the one of the Bayes classifier"
+  answer: [2, 4]
+  explanation: |
+    Official solution: 3 and 5 are correct. Curse of dimensionality: neighbors become far and uninformative as the dimension grows (06b p. 26–30).
+    With lots of data (fixed dimension) the 1-NN error is at most $2L(f_\star)$ (p. 36) — never better than Bayes, which is optimal. The number of
+    classes is not limited by $k$, and linear separability is irrelevant for nearest neighbors.
+  sources:
+    - {kind: exam, pdf: exam/mock-midterm-exam/mock-exam-2018-solutions.pdf, page: 5, label: "Mock 2018 Q5e"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20

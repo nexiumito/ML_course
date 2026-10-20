@@ -31,8 +31,8 @@ labs/exNN/
 | ex02 | 2026-09-17 | Linear regression & GD: MSE cost, grid search, GD, SGD, outliers, MAE subgradient descent | ⏳ student not started; template (2026-09-15) **and solution (2026-09-21)** in repo | Sheet identical to 2025. Details below. Solution includes `solutions-theory-questions.pdf`. |
 | ex03 | 2026-09-24 | Least squares, polynomial basis, train/test split, ridge | ⏳ template pulled 2026-09-24; **solution published 2026-10-01** (`solution/`, incl. theory-question PDF); deferred by the student (lectures + P1 first) | **P1 function** `least_squares`, `ridge_regression` |
 | ex04 | 2026-10-01 | 4-fold CV for ridge (degree 7, RMSE vs λ), best-degree selection (2–10), bias–variance visualization (degrees 1/3/6, many seeds) | ⏳ template published early, 2026-09-25; **solution published 2026-10-02**; no theory questions in the sheet | reuses ex03 `ridge_regression`, `least_squares`, `build_poly` |
-| ex05 | 2026-10-08 | Logistic regression: least-squares classification, GD, Newton, penalized | ⏳ template published 2026-10-02 (sheet dated Oct 7); no theory questions; deferred | **P1 functions** `logistic_regression`, `reg_logistic_regression`. Details below. |
-| ex06 | 2026-10-15 | SVM via SGD and coordinate descent | ⏳ | |
+| ex05 | 2026-10-08 | Logistic regression: least-squares classification, GD, Newton, penalized | ⏳ template published 2026-10-02 (sheet dated Oct 7); **solution published 2026-10-13**; no theory questions; deferred | **P1 functions** `logistic_regression`, `reg_logistic_regression`. Details below. |
+| ex06 | 2026-10-15 | SVM: SGD on the primal (hinge + ridge), coordinate ascent on the dual; theory: convexity, softmax regression, mixture of linear regressions | ⏳ template pulled 2026-10-13 (sheet identical to 2025); solution not yet (2025 one in history) | Details below. Lecture: `docs/lectures/06-svm-knn.md` §A. |
 | ex07 | 2026-10-29 | Kernels & NN intro | ⏳ | |
 | ex08 | 2026-11-05 | NN training & CNNs (PyTorch) | ⏳ | |
 | ex09 | 2026-11-12 | Adversarial robustness | ⏳ | |
@@ -70,6 +70,13 @@ Sheet: `labs/ex05/exercise05.pdf` (Problem Set 5, Oct 7, 2026). Work in `labs/ex
 - **Ex 3:** `calculate_hessian` = (1/N) XᵀSX, `logistic_regression` returns (loss, gradient, Hessian) without updating w, `learning_by_newton_method` (one damped step; use `np.linalg.solve`, never invert).
 - **Ex 4:** `penalized_logistic_regression` adds λ‖w‖² (gradient + 2λw); **the reported loss excludes the penalty** (same convention as Project 1). Check that ‖w‖ shrinks as λ grows and that tiny λ reproduces Ex 2.
 - Pitfalls: y must be (N,) in {0,1} (not ±1); stable sigmoid / log(1 + eᶻ) (`np.logaddexp(0, z)`) to avoid overflow; doctests compare exact shapes.
+
+## ex06 — Support Vector Machines (details)
+Sheet: `labs/ex06/exercise06.pdf` (Problem Set 6, Oct 15, 2026; identical to 2025 apart from wording of 2.4). Work in `labs/ex06/template/ex06.ipynb`. Data: a scikit-learn toy dataset (no more height/weight), labels **y ∈ {−1, +1}**.
+- **Problem 1 (SGD, primal)** objective (1/N) Σ [1 − yₙxₙᵀw]₊ + (λ/2)‖w‖². Stubs: `calculate_primal_objective(y, X, w, lambda_)`, `calculate_accuracy(y, X, w)` (predict sign(Xw)), `calculate_stochastic_gradient(y, X, w, lambda_, n, num_examples)` = −yₙxₙ·𝟙[yₙxₙᵀw < 1] + λw; `sgd_for_svm_demo` given.
+- **Problem 2 (coordinate ascent, dual)** max_{α∈[0,1]ᴺ} αᵀ1/N − αᵀYXXᵀYα/(2λN²), w(α) = XᵀYα/(λN). Derive: f(α + γeₙ) is a concave quadratic in γ ⇒ γ* = λN(1 − yₙwᵀxₙ)/‖xₙ‖², then **clip** αₙ to [0, 1]; update w ← w + (αₙ_new − αₙ_old) yₙxₙ/(λN). Both O(D). Stubs: `calculate_coordinate_update(y, X, lambda_, alpha, w, n)` → (w, alpha), `calculate_dual_objective(y, X, w, alpha, lambda_)` = (1/N)Σα − (λ/2)‖w‖² (uses w(α), no N×N matrix). Then compare primal vs dual objectives: the duality gap should → 0.
+- **Theory (no lecture-06 content):** convexity proofs (affine, sums, g∘f with g increasing, f(wᵀx + b), uniqueness of the minimizer of a strictly convex f), multiclass logistic regression with softmax (log-likelihood, gradient, convexity via Hölder), mixture of linear regressions (likelihood with rₙₖ, marginal, convexity/identifiability). 2025 theory solutions: `git show '48f3822^:labs/ex06/solution/solutions-theory-questions.pdf'`.
+- Pitfalls: copy αₙ before updating (`old_alpha_n`); w is updated in place; doctests compare exact float output.
 
 ## Gotchas / lessons learned (append as the semester goes)
 - `np.std` uses population std (ddof=0) — matches the doctest in Task A.

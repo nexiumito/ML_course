@@ -1,0 +1,285 @@
+# Lecture 06a — Support Vector Machines (Jaggi lecturing on Flammarion's deck; no printed slide numbers → "06a p. N" = PDF page N).
+# No annotated 06 published (as of 2026-10-20); the 2025 annotated deck (identical slides) was used as a proxy.
+# Written 2026-10-20 (week-6 content session), exam-format tf/mcq only (SPEC §8.2).
+# Officials in exams/06a.yaml already cover: hard-SVM constraint (2021 Q2), tiny hard SVM by hand (2022 Q9), moving/removing a
+# non-support point (2019 Q3, 2020 Q2, 2021 Q1), removing an on-margin SV (2018 P13), number of SVs (2023 Q22), soft-SVM slacks
+# (2024 Q24), no λ makes soft = hard for every dataset (2020 Q25), no probabilities (2025 Q9), L1-SVM (2025 Q10),
+# min-max / weak duality (2023 Q23, 2018 P1, mock 2018 5g), SGD cost O(D) (2019 Q22), SVM trainable by SGD (mock 2018 5h).
+# Already in cards/05a.yaml: margin = distance of the closest point (style-05a-margin-def), hinge is not zero for every
+# correct point (style-05a-hinge-zero).
+# Student confusions (SPEC §8.4 "Week 6") kept: score vs distance (1 vs 1/‖w‖), support vectors ≠ only on-margin points.
+
+# ---------------------------------------------------------------- geometry, hard SVM
+
+- id: style-06a-distance-hyperplane
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, classification]
+  priority: core
+  front: |
+    *(Hyperplane distance)* Let $w = (3, 4)$ and $x_0 = (2, 1)$. What is the Euclidean distance from $x_0$ to the hyperplane $\{x : w^\top x = 0\}$?
+  choices:
+    - "$2$"
+    - "$10$"
+    - "$0.4$"
+    - "$\\sqrt{10}$"
+  answer: [0]
+  explanation: |
+    Distance $= |w^\top x_0| / \|w\| = |6 + 4| / 5 = 2$ (06a p. 4–5 state it as $|w^\top x_0|$ because they impose $\|w\| = 1$).
+    $10$ forgets to normalize ($w$ is not unit-norm here); $0.4 = 10/25$ divides by $\|w\|^2$ instead of $\|w\|$; $\sqrt{10}$ has no meaning here.
+  trap: "|wᵀx₀| is the distance only when ‖w‖ = 1."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 5, label: "06a p. 5"}
+  added: 2026-10-20
+
+- id: style-06a-score-not-distance
+  type: tf
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: |
+    *(Hard SVM)* At the solution of $\min_w \tfrac12\|w\|^2$ s.t. $y_n x_n^\top w \ge 1\ \forall n$, a training point with
+    $y_n x_n^\top w = 1$ lies at Euclidean distance $1$ from the separating hyperplane.
+  answer: false
+  explanation: |
+    $y_n x_n^\top w = 1$ is a **score**, not a distance: the distance is $|x_n^\top w| / \|w\| = 1/\|w\|$, which is exactly the margin
+    $M = 1/\|w\|$ (06a p. 8, p. 10). The scale of $w$ was fixed so that the closest points have score 1; their distance is $1$ only if $\|w\| = 1$.
+  trap: "Score = ‖w‖ × distance: rescaling w changes the score, never the distance."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 8, label: "06a p. 8"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 10, label: "06a p. 10"}
+  added: 2026-10-20
+
+- id: style-06a-margin-width
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: |
+    *(Hard SVM)* The solution $w^\star$ of $\min_w \tfrac12\|w\|^2$ s.t. $y_n x_n^\top w \ge 1$ has $\|w^\star\| = 4$.
+    What is the distance between the two margin hyperplanes $\{x : x^\top w^\star = 1\}$ and $\{x : x^\top w^\star = -1\}$?
+  choices:
+    - "$1/2$"
+    - "$1/4$"
+    - "$8$"
+    - "$1/16$"
+  answer: [0]
+  explanation: |
+    Each margin hyperplane is at distance $1/\|w^\star\| = 1/4$ from $\{x^\top w^\star = 0\}$, one on each side: total width $2/\|w^\star\| = 1/2$ (06a p. 8, p. 18).
+    $1/4$ is only one side (that is the margin $M$); $8 = 2\|w^\star\|$ inverts the relation (larger $\|w\|$ means a **narrower** band);
+    $1/16 = 1/\|w^\star\|^2$ squares the norm.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 18, label: "06a p. 18"}
+  added: 2026-10-20
+
+- id: style-06a-hard-infeasible
+  type: tf
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, constrained-optimization]
+  priority: core
+  front: "*(Hard SVM)* If the training set is not linearly separable, no $w$ satisfies all the hard-SVM constraints $y_n x_n^\\top w \\ge 1$."
+  answer: true
+  explanation: |
+    $y_n x_n^\top w \ge 1 > 0$ for every $n$ means $w$ classifies every point correctly, i.e. the data are separable by $\{x^\top w = 0\}$.
+    Without separability the feasible set is empty: this is why the soft SVM adds slacks $\xi_n$ (06a p. 6, p. 11). The soft SVM, unlike
+    the hard one, always has a solution (Final 2024 Q24).
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 11, label: "06a p. 11"}
+  added: 2026-10-20
+
+# ---------------------------------------------------------------- soft SVM, hinge, λ
+
+- id: style-06a-slack-elimination
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, loss-functions]
+  priority: core
+  front: |
+    *(Soft SVM)* In $\min_{w,\xi} \tfrac{\lambda}{2}\|w\|^2 + \tfrac1N\sum_n \xi_n$ s.t. $y_n x_n^\top w \ge 1 - \xi_n$ and $\xi_n \ge 0$,
+    fix $w$. What is the optimal value of $\xi_n$?
+  choices:
+    - '$\max\{0,\ 1 - y_n x_n^\top w\}$'
+    - '$1 - y_n x_n^\top w$'
+    - '$\max\{0,\ -y_n x_n^\top w\}$'
+    - '$0$'
+  answer: [0]
+  explanation: |
+    $\xi_n$ is penalized, so it takes the smallest value allowed by both constraints $\xi_n \ge 0$ and $\xi_n \ge 1 - y_n x_n^\top w$:
+    $\xi_n = [1 - y_n x_n^\top w]_+$, the hinge loss — this turns the soft SVM into hinge loss + ridge (06a p. 13).
+    $1 - y_n x_n^\top w$ can be negative (violates $\xi_n \ge 0$); $\max\{0, -y_n x_n^\top w\}$ forgets the margin "1" (that is the
+    perceptron loss); $0$ is infeasible whenever a point violates the margin.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 13, label: "06a p. 13"}
+  added: 2026-10-20
+
+- id: style-06a-slack-value
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: "*(Soft SVM)* At the optimum, a training point has $y_n x_n^\\top w = -0.5$. Which statement is correct?"
+  choices:
+    - "$\\xi_n = 1.5$ and the point is misclassified."
+    - "$\\xi_n = 0.5$ and the point is inside the margin but correctly classified."
+    - "$\\xi_n = 0$ since the slack only matters for points on the margin."
+    - "$\\xi_n = 1.5$ and the point is correctly classified but inside the margin."
+  answer: [0]
+  explanation: |
+    $\xi_n = [1 - (-0.5)]_+ = 1.5$. A negative functional margin $y_n x_n^\top w < 0$ means the wrong side: misclassified (any $\xi_n > 1$).
+    $0 < \xi_n \le 1$ would mean inside the margin but still on the correct side; $\xi_n = 0$ means the constraint $y_n x_n^\top w \ge 1$ holds.
+    $0.5$ drops the minus sign of $-0.5$.
+  trap: "ξ > 1 ⇔ wrong side; 0 < ξ ≤ 1 ⇔ inside the margin, right side."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 11, label: "06a p. 11"}
+  added: 2026-10-20
+
+- id: style-06a-lambda-direction
+  type: tf
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, regularization]
+  priority: core
+  front: |
+    *(Soft SVM)* In $\min_w \tfrac{\lambda}{2}\|w\|^2 + \tfrac1N\sum_n [1 - y_n x_n^\top w]_+$, increasing $\lambda$ favours a smaller $\|w\|$,
+    i.e. a wider margin with more margin violations tolerated.
+  answer: true
+  explanation: |
+    $\lambda$ weights the ridge term: larger $\lambda$ ⇒ smaller $\|w\|$ ⇒ larger margin $1/\|w\|$, at the price of more points with
+    $y_n x_n^\top w < 1$ (more slack). Small $\lambda$ ⇒ violations are expensive ⇒ close to the hard SVM on separable data (06a p. 11, p. 18).
+    Same direction as ridge: large $\lambda$ = simpler model (more bias).
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 18, label: "06a p. 18"}
+  added: 2026-10-20
+
+- id: style-06a-c-vs-lambda
+  type: tf
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, regularization]
+  priority: core
+  front: |
+    *(Soft SVM)* The textbook form $\min_w \tfrac12\|w\|^2 + C\sum_n [1 - y_n x_n^\top w]_+$ with a **large** $C$ corresponds to a **large**
+    $\lambda$ in the course's form $\min_w \tfrac{\lambda}{2}\|w\|^2 + \tfrac1N\sum_n [1 - y_n x_n^\top w]_+$.
+  answer: false
+  explanation: |
+    Divide the course objective by $\lambda$: $\tfrac12\|w\|^2 + \tfrac{1}{\lambda N}\sum_n[\cdot]_+$, so $C = 1/(\lambda N)$. $C$ multiplies the
+    **loss**, $\lambda$ the **regularizer**: large $C$ ⇔ small $\lambda$ ⇔ few violations, narrow margin. Final 2025 Q10 uses the $C$ form.
+  trap: "C weights the hinge term, λ weights ‖w‖²: they move in opposite directions."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 13, label: "06a p. 13"}
+  added: 2026-10-20
+  notes: "C = 1/(λN) derived by dividing the slide-13 objective by λ (not written on the slides)."
+
+- id: style-06a-subgradient-step
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, subgradients, sgd]
+  priority: core
+  front: |
+    *(SGD for SVM)* For the per-sample objective $f_n(w) = [1 - y_n x_n^\top w]_+ + \tfrac{\lambda}{2}\|w\|^2$, at a $w$ where
+    $y_n x_n^\top w = 0.3$, which vector is a (sub)gradient of $f_n$?
+  choices:
+    - '$-y_n x_n + \lambda w$'
+    - '$\lambda w$'
+    - '$y_n x_n + \lambda w$'
+    - '$-y_n x_n$'
+  answer: [0]
+  explanation: |
+    $0.3 < 1$: the hinge is active and equals $1 - y_n x_n^\top w$, whose gradient is $-y_n x_n$; the ridge term adds $\lambda w$.
+    $\lambda w$ alone is the subgradient when $y_n x_n^\top w > 1$ (hinge flat); $+y_n x_n$ has the wrong sign (the SGD step $w - \gamma(\cdot)$
+    must move $w$ **towards** $y_n x_n$); $-y_n x_n$ forgets the regularizer. The objective is convex but non-smooth (kink at
+    $y_n x_n^\top w = 1$), hence the (stochastic) subgradient method (06a p. 19, lab 6 Problem 1).
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 19, label: "06a p. 19"}
+    - {kind: lab, pdf: labs/ex06/exercise06.pdf, page: 1, label: "Lab 6, Problem 1"}
+  added: 2026-10-20
+
+# ---------------------------------------------------------------- dual, support vectors
+
+- id: style-06a-dual-kernel-matrix
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, duality]
+  priority: core
+  front: "*(SVM dual)* Through which matrix does the SVM dual objective depend on the training inputs?"
+  choices:
+    - '$XX^\top \in \mathbb{R}^{N \times N}$ (inner products between samples)'
+    - '$X^\top X \in \mathbb{R}^{D \times D}$ (inner products between features)'
+    - '$(X^\top X)^{-1}$'
+    - '$X^\top y \in \mathbb{R}^{D}$'
+  answer: [0]
+  explanation: |
+    The dual is $\max_{\alpha \in [0,1]^N} \tfrac1N \alpha^\top \mathbf 1 - \tfrac{1}{2\lambda N^2}\alpha^\top YXX^\top Y\alpha$: only the
+    kernel (Gram) matrix $K = XX^\top$, $K_{ij} = x_i^\top x_j$, appears — no dependency on $D$, which opens the way to kernels (06a p. 24–25).
+    $X^\top X$ ($D\times D$) is the least-squares Gram matrix; $(X^\top X)^{-1}$ and $X^\top y$ are normal-equation objects.
+  trap: "Dual ↔ N×N matrix XXᵀ; primal / least squares ↔ D×D matrix XᵀX."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 25, label: "06a p. 25"}
+  added: 2026-10-20
+
+- id: style-06a-dual-coordinate-ascent
+  type: tf
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, duality, optimization]
+  priority: core
+  front: |
+    *(SVM dual)* The SVM dual is a differentiable concave quadratic in $\alpha$ with box constraints $0 \le \alpha_n \le 1$, so it can be
+    solved by coordinate ascent (optimize one $\alpha_n$ in closed form, then clip it to $[0, 1]$).
+  answer: true
+  explanation: |
+    $YXX^\top Y$ is PSD ⇒ $-\alpha^\top YXX^\top Y\alpha$ is concave; no hinge kink remains, unlike the primal. 06a p. 25 lists QP solvers
+    and coordinate ascent; lab 6 Problem 2 derives the update $\alpha_n \leftarrow \mathrm{clip}_{[0,1]}\big(\alpha_n + \lambda N(1 - y_n x_n^\top w)/\|x_n\|^2\big)$.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 25, label: "06a p. 25"}
+    - {kind: lab, pdf: labs/ex06/exercise06.pdf, page: 2, label: "Lab 6, Problem 2"}
+  added: 2026-10-20
+
+- id: style-06a-alpha-inside-margin
+  type: mcq
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, duality]
+  priority: core
+  front: |
+    *(SVM dual)* With dual variables $\alpha \in [0,1]^N$, a training point that is correctly classified but strictly **inside** the margin
+    ($0 < y_n x_n^\top w < 1$) has:
+  choices:
+    - '$\alpha_n = 1$'
+    - '$\alpha_n = 0$'
+    - 'any $\alpha_n \in [0, 1]$'
+    - '$\alpha_n$ determined by $\lambda$ only'
+  answer: [0]
+  explanation: |
+    $\alpha_n$ maximizes $\alpha_n(1 - y_n x_n^\top w)$ over $[0,1]$. Inside the margin (or misclassified) $1 - y_n x_n^\top w > 0$ ⇒ $\alpha_n = 1$;
+    outside the margin on the correct side the factor is negative ⇒ $\alpha_n = 0$; exactly on the margin the factor is 0 ⇒ any value in $[0,1]$ (06a p. 26).
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 26, label: "06a p. 26"}
+  added: 2026-10-20
+
+- id: style-06a-sv-not-only-margin
+  type: tf
+  origin: exam_style
+  lecture: "06a"
+  themes: [svm, duality]
+  priority: core
+  front: "*(Soft SVM)* The support vectors are exactly the training points lying on the two margin hyperplanes $x^\\top w = \\pm 1$."
+  answer: false
+  explanation: |
+    Support vectors = points with $\alpha_n > 0$ (06a p. 26). In the soft SVM this includes every point **inside** the margin or
+    **misclassified** ($\alpha_n = 1$), not only the on-margin ones — and an on-margin point may even have $\alpha_n = 0$. Only for the hard SVM
+    (no point inside the margin) are the support vectors all on the margin hyperplanes. $w = \tfrac{1}{\lambda N}\sum_n \alpha_n y_n x_n$
+    depends on these points only (p. 27).
+  trap: "Soft SVM: the penalized points (inside the margin / wrong side) are support vectors too."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 26, label: "06a p. 26"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 27, label: "06a p. 27"}
+  added: 2026-10-20

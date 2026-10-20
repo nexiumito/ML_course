@@ -66,6 +66,15 @@ Extend this file whenever a lecture introduces new notation. Conventions follow 
 | σ(η) | logistic/sigmoid 1/(1 + e^{−η}); 1 − σ(η) = σ(−η); σ' = σ(1 − σ). logit = σ⁻¹ = log(p/(1 − p)) (log-odds). |
 | Logistic regression | p(1\|x) = σ(xᵀw); NLL L(w) = (1/N) Σ [−yₙxₙᵀw + log(1 + e^{xₙᵀw})] (y ∈ {0,1}); ∇L = (1/N)Xᵀ(σ(Xw) − y); ∇²L = (1/N)XᵀSX. |
 | Newton's method | w_{t+1} = w_t − γ_t ∇²L(w_t)⁻¹∇L(w_t) (damped). |
+| Hard / soft SVM | min ½‖w‖² s.t. yₙxₙᵀw ≥ 1 (separable) / min (λ/2)‖w‖² + (1/N)Σ[1 − yₙxₙᵀw]₊ (hinge + ridge); y ∈ {−1, 1}; margin 1/‖w‖ (lecture 06a). |
+| Hinge loss, [z]₊ | [1 − η]₊ with η = yxᵀw; [z]₊ = max{0, z} = max_{α∈[0,1]} αz. |
+| ξₙ (slack) | soft-SVM constraint relaxation yₙxₙᵀw ≥ 1 − ξₙ; optimal ξₙ = [1 − yₙxₙᵀw]₊. |
+| SVM dual, α | max_{α∈[0,1]ᴺ} αᵀ1/N − αᵀYXXᵀYα/(2λN²), Y = diag(y); w(α) = XᵀYα/(λN). αₙ > 0 ⇔ **support vector**. |
+| Weak / strong duality | max_α min_w G ≤ min_w max_α G always; equality if G convex–concave on convex compact domains. |
+| Kernel (Gram) matrix K | XXᵀ ∈ ℝᴺˣᴺ (inner products of samples); ≠ XᵀX ∈ ℝᴰˣᴰ. |
+| k-NN, nbh_{S,k}(x) | k nearest training points to x; predict majority vote (classif.) / average (regression). Non-parametric, no training. |
+| Curse of dimensionality | in high d, neighbourhoods are not local (box capturing 1 % of U[0,1]¹⁰ has side 0.63); N must grow exponentially in d. |
+| 1-NN bound | 𝔼[L(f_S)] ≤ 2L(f*) + 4c√d N^{−1/(d+1)} for c-Lipschitz η(x) = ℙ(Y = 1 \| x). |
 | O(·) | big-O complexity. Matrix–vector O(ND); matrix–matrix (N×D)(D×K) O(NDK). |
 
 ## General ML terms (from the syllabus; details added as lectures happen)

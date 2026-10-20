@@ -1,0 +1,233 @@
+# Lecture 06b — Nearest-Neighbor Classifiers and the Curse of Dimensionality ("06b p. N" = PDF page N, no printed numbers).
+# No annotated 06 published (as of 2026-10-20); the 2025 annotated deck (identical slides) was used as a proxy.
+# Written 2026-10-20 (week-6 content session), exam-format tf/mcq only (SPEC §8.2).
+# Officials in exams/06b.yaml already cover a lot: k-NN regression by averaging (2022 Q34), no training phase (2025 Q38),
+# k direction vs bias (2025 Q33), k = N bias/variance + metric sensitivity (2024 Q25), LOO-CV with 1-NN/3-NN (2024 Q20),
+# ℓ1 1-NN vs max-margin (2024 Q32), 1-NN bound with intrinsic dimension (2023 Q6), slow in high dimension / must store data /
+# any metric (2022 Q21, 2021 Q14), linear vs 1-NN boundary (2020 Q4), train error → 0 when k decreases (2020 Q7),
+# halving the NN distance ⇒ 2^D N (2019 Q4), 1-NN training error 0 (2019 Q13), d → 2d ⇒ N² (2018 P2), n vs D (2017 P3),
+# k-NN statements incl. outliers (2017 P4), k = 1 vs extended data / linear separability (2016 Q10), ≤ 2× Bayes (mock 2018 5e).
+# Already in cards/05a.yaml: k-NN pros/cons, non-parametric, feature scaling.
+# Student confusions (SPEC §8.4 "Week 6") kept: ties (vote vs distance), N/k degrees of freedom, which side of the bound is Bayes.
+
+- id: style-06b-knn-regression-mean
+  type: mcq
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn]
+  priority: core
+  front: |
+    *(k-NN regression)* For a test point $x$, the three nearest training points have targets $y = 2$ (closest), $y = 4$ and $y = 9$.
+    What does 3-NN regression predict?
+  choices:
+    - "$5$"
+    - "$4$"
+    - "$2$"
+    - "$15$"
+  answer: [0]
+  explanation: |
+    $f_{S,k}(x) = \tfrac1k \sum_{n : x_n \in \text{nbh}_k(x)} y_n = (2 + 4 + 9)/3 = 5$ (06b p. 10–13).
+    $4$ is the median (not the rule of the lecture), $2$ is the 1-NN prediction, $15$ forgets the $1/k$.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 13, label: "06b p. 13"}
+  added: 2026-10-20
+
+- id: style-06b-odd-k-binary
+  type: tf
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, classification]
+  priority: core
+  front: "*(k-NN)* In **binary** classification, choosing $k$ odd guarantees that the majority vote among the $k$ nearest neighbors is never tied."
+  answer: true
+  explanation: |
+    With two classes, $k$ odd votes cannot split evenly, which is the lecture's remark (06b p. 20; p. 19 shows a 2–2 tie with $k = 4$).
+    This is about the **vote**; ties in the **distances** (two points at the same distance, p. 8) are a different issue, broken by the implementation.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 20, label: "06b p. 20"}
+  added: 2026-10-20
+
+- id: style-06b-odd-k-multiclass
+  type: tf
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, classification]
+  priority: core
+  front: "*(k-NN)* With **three** classes, an odd $k$ also guarantees that the majority vote is never tied."
+  answer: false
+  explanation: |
+    With $k = 3$ the three neighbors can belong to three different classes (1–1–1), and with $k = 5$ a 2–2–1 split ties the two leading
+    classes. The "odd $k$" remark of 06b p. 20 only works for two classes; otherwise ties are broken randomly or by distance weighting.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 20, label: "06b p. 20"}
+  added: 2026-10-20
+  notes: "Multi-class case derived from the binary remark of p. 20 (not on the slides)."
+
+- id: style-06b-degrees-of-freedom
+  type: mcq
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, bias-variance]
+  priority: core
+  front: |
+    *(k-NN complexity)* The bias–variance plot of the lecture uses $N/k$ as the "degrees of freedom" of k-NN. With $N = 200$ training points
+    and $k = 10$, what is it, and how does complexity move when $k$ decreases?
+  choices:
+    - "$20$; complexity increases as $k$ decreases"
+    - "$20$; complexity decreases as $k$ decreases"
+    - "$2000$; complexity increases as $k$ decreases"
+    - "$10$; it does not depend on $N$"
+  answer: [0]
+  explanation: |
+    $N/k = 200/10 = 20$: roughly $N/k$ groups of $k$ neighbors, each with its own prediction. $k = N$ ⇒ one constant ($N/k = 1$, simplest);
+    $k = 1$ ⇒ $N$ independent regions (most flexible). Hence "complexity increases as $k$ decreases" (06b p. 23). $2000 = N\cdot k$ is a
+    wrong formula; $k$ itself is not the degrees of freedom.
+  trap: "Small k = complex model (low bias, high variance)."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 23, label: "06b p. 23"}
+  added: 2026-10-20
+
+- id: style-06b-curse-box-side
+  type: mcq
+  origin: exam_style
+  lecture: "06b"
+  themes: [curse-of-dimensionality, knn]
+  priority: core
+  front: |
+    *(Curse of dimensionality)* Data are uniform in $[0,1]^{10}$. A cube of side $r$ around a point captures a fraction $r^{10}$ of the data.
+    Which side $r$ is needed to capture $1\%$ of the data?
+  choices:
+    - '$r \approx 0.63$'
+    - '$r = 0.01$'
+    - '$r = 0.1$'
+    - '$r = 0.001$'
+  answer: [0]
+  explanation: |
+    $r^{10} = 0.01 \Rightarrow r = 0.01^{1/10} \approx 0.63$: the "local" neighborhood spans 63 % of every axis (06b p. 26–27; $d = 100$ gives $0.95$).
+    $0.01$ is the 1-D answer, $0.1$ the 2-D answer ($0.1^2 = 0.01$), $0.001$ would capture $10^{-30}$ of the data.
+  trap: "In high dimension a neighborhood with a small fraction of the data is not small."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 27, label: "06b p. 27"}
+  added: 2026-10-20
+
+- id: style-06b-empty-box
+  type: mcq
+  origin: exam_style
+  lecture: "06b"
+  themes: [curse-of-dimensionality, probability]
+  priority: core
+  front: |
+    *(Curse of dimensionality)* $N$ points are drawn i.i.d. uniformly in $[0,1]^d$. A box inside the cube has volume $v$.
+    What is the probability that **no** point falls in the box?
+  choices:
+    - '$(1 - v)^N$'
+    - '$1 - (1 - v)^N$'
+    - '$1 - v^N$'
+    - '$v^N$'
+  answer: [0]
+  explanation: |
+    One point misses the box with probability $1 - v$; the $N$ points are independent, so all miss with probability $(1-v)^N$ (06b p. 29).
+    $1 - (1-v)^N$ is the complementary event (at least one point inside). $1 - v^N$ and $v^N$ treat "all points inside" instead.
+    With $v = r^d$, requiring $1 - (1 - r^d)^N \ge \tfrac12$ gives $r \ge (1 - 2^{-1/N})^{1/d}$: $r \ge 0.52$ for $d = 10$, $N = 500$.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 29, label: "06b p. 29"}
+  added: 2026-10-20
+
+# ---------------------------------------------------------------- 1-NN generalization bound
+
+- id: style-06b-bound-assumption
+  type: mcq
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, generalization]
+  priority: core
+  front: "*(1-NN bound)* Which assumption does the lecture's bound $\\mathbb{E}[L(f_{S})] \\le 2L(f_\\star) + 4c\\sqrt{d}\\,N^{-1/(d+1)}$ rely on?"
+  choices:
+    - '$\eta(x) = \mathbb{P}(Y = 1 \mid X = x)$ is $c$-Lipschitz: $|\eta(x) - \eta(x'')| \le c\|x - x''\|$'
+    - 'The two classes are linearly separable.'
+    - 'The two classes have the same number of training points.'
+    - 'The Bayes error $L(f_\star)$ is zero.'
+  answer: [0]
+  explanation: |
+    The Lipschitz assumption formalizes "nearby points are likely to share the same label" (06b p. 34): the label probability of the
+    nearest neighbor differs by at most $c$ times its distance. No separability, balance or noiseless assumption is needed — $L(f_\star) > 0$ is
+    precisely the noise term of the bound.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 34, label: "06b p. 34"}
+  added: 2026-10-20
+
+- id: style-06b-factor-two
+  type: mcq
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, probability]
+  priority: core
+  front: |
+    *(1-NN bound)* At a point $x$ with $\eta(x) = \mathbb{P}(Y = 1 \mid X = x) = 0.8$, a test label $Y$ and its nearest neighbor's label $Y'$
+    are drawn independently with the same $\eta$ (neighbor at the same location). What is $\mathbb{P}(Y \ne Y')$?
+  choices:
+    - "$0.32$"
+    - "$0.2$"
+    - "$0.4$"
+    - "$0.64$"
+  answer: [0]
+  explanation: |
+    $\mathbb{P}(Y \ne Y') = \eta(1-\eta) + (1-\eta)\eta = 2\cdot 0.8\cdot 0.2 = 0.32$ (06b p. 38). It lies between the Bayes error at $x$,
+    $\min(\eta, 1-\eta) = 0.2$, and its double $0.4$ — the origin of the factor 2 in the bound: two noisy labels instead of one.
+    $0.64 = 0.8^2$ is $\mathbb{P}(Y = Y' = 1)$.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 38, label: "06b p. 38"}
+  added: 2026-10-20
+
+- id: style-06b-not-bayes-limit
+  type: tf
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, generalization]
+  priority: core
+  front: "*(1-NN bound)* With $d$ fixed and $N \\to \\infty$, the lecture's bound shows that the 1-NN error converges to the Bayes error $L(f_\\star)$."
+  answer: false
+  explanation: |
+    The geometric term $4c\sqrt{d}N^{-1/(d+1)}$ vanishes, leaving $\mathbb{E}[L(f_S)] \le 2L(f_\star)$: at most **twice** the Bayes error,
+    not equal to it (06b p. 36). The factor 2 does not disappear with more data: the neighbor's label stays noisy (p. 38).
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20
+
+- id: style-06b-bayes-lower-bound
+  type: tf
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, classification]
+  priority: core
+  front: |
+    *(1-NN bound)* Since $\mathbb{E}[L(f_{S})] \le 2L(f_\star) + 4c\sqrt{d}\,N^{-1/(d+1)}$, with enough data the 1-NN classifier can have a
+    lower error than the Bayes classifier $f_\star$.
+  answer: false
+  explanation: |
+    $f_\star$ minimizes the true risk over **all** classifiers, so $L(f_\star) \le L(f)$ for every $f$, 1-NN included. The bound is a
+    **ceiling**: $L(f_\star) \le \mathbb{E}[L(f_S)] \le 2L(f_\star) + \ldots$ — e.g. with $L(f_\star) = 10\%$ the 1-NN error ends between 10 % and 20 %
+    for large $N$ (06b p. 31, p. 36).
+  trap: "f⋆ (the star) is the Bayes classifier; f_S (depends on the data) is 1-NN."
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 31, label: "06b p. 31"}
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20
+
+- id: style-06b-interpolation-generalizes
+  type: tf
+  origin: exam_style
+  lecture: "06b"
+  themes: [knn, generalization, overfitting]
+  priority: core
+  front: |
+    *(1-NN bound)* The 1-NN classifier has zero training error, yet for fixed $d$ and large $N$ its expected test error is at most about twice
+    the Bayes error: an interpolating method can generalize.
+  answer: true
+  explanation: |
+    Every training point is its own nearest neighbor ⇒ zero training error (Final 2019 Q13). The bound still gives
+    $\mathbb{E}[L(f_S)] \le 2L(f_\star) + 4c\sqrt d N^{-1/(d+1)} \to 2L(f_\star)$ — "despite common belief, interpolation methods can generalize well"
+    (06b p. 36). The price is the curse of dimensionality: $N$ must grow exponentially with $d$.
+  sources:
+    - {kind: lecture, pdf: lectures/06/lecture06b.pdf, page: 36, label: "06b p. 36"}
+  added: 2026-10-20

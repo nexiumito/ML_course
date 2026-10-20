@@ -25,8 +25,8 @@ areas:
   bias-variance: 04b
   classification: 05a (classification, k-NN intro, Bayes classifier, surrogate losses)
   logistic-regression: 05b (exponential family / GLM questions are excluded, not in the 2025–2026 lecture)
-  svm: week 6
-  knn: week 6
+  svm: 06a
+  knn: 06b (k-NN intro questions already filed under 05a stay there)
   kernels: week 8
   neural-nets: weeks 8–9
   cnn: week 9
@@ -114,14 +114,16 @@ questions:
   type: mcq
   topic: which is NOT an advantage of SVMs
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 5
 - exam: final-2025
   q: '10'
   type: mcq
   topic: L1-SVM (squared hinge variant)
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 6
 - exam: final-2025
   q: '11'
@@ -286,7 +288,8 @@ questions:
   type: tf
   topic: 'underfitting k-NN: change of K'
   areas: [bias-variance, knn]
-  status: pending
+  lectures: [04b, 06b]
+  status: added
   page: 16
 - exam: final-2025
   q: '34'
@@ -322,7 +325,8 @@ questions:
   type: tf
   topic: k-NN training cost vs dataset size
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 16
 - exam: final-2025
   q: '39'
@@ -561,7 +565,8 @@ questions:
   type: mcq
   topic: leave-one-out CV with k-NN
   areas: [knn, generalization]
-  status: pending
+  lectures: [04a, 06b]
+  status: added
   figure: true
   page: 11
 - exam: final-2024
@@ -591,14 +596,16 @@ questions:
   type: mcq
   topic: soft-margin SVM
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 12
 - exam: final-2024
   q: '25'
   type: mcq
   topic: k-NN statements
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 13
 - exam: final-2024
   q: '26'
@@ -648,7 +655,8 @@ questions:
   type: tf
   topic: 1-NN decision boundary with two points
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 15
 - exam: final-2024
   q: '33'
@@ -798,7 +806,8 @@ questions:
   type: mcq
   topic: 1-NN generalization bound
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 4
 - exam: final-2023
   q: '7'
@@ -921,14 +930,16 @@ questions:
   type: tf
   topic: support vectors of hard-SVM
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 9
 - exam: final-2023
   q: '23'
   type: tf
   topic: minimax duality
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 9
 - exam: final-2023
   q: '24'
@@ -1134,7 +1145,8 @@ questions:
   type: mcq
   topic: hard-margin SVM in 2-D
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 5
 - exam: final-2022
   q: '10'
@@ -1219,7 +1231,8 @@ questions:
   type: mcq
   topic: nearest-neighbor classifier statements
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 10
 - exam: final-2022
   q: '22'
@@ -1314,7 +1327,8 @@ questions:
   type: tf
   topic: nearest neighbors for regression
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 13
 - exam: final-2022
   q: '35'
@@ -1468,14 +1482,16 @@ questions:
   type: mcq
   topic: 'removing an outlier: which boundary changes'
   areas: [svm, logistic-regression, knn]
-  status: pending
+  lectures: [05b, 06a, 06b]
+  status: added
   page: 2
 - exam: final-2021
   q: '2'
   type: mcq
   topic: hard-margin SVM
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 2
 - exam: final-2021
   q: '3'
@@ -1565,7 +1581,8 @@ questions:
   type: mcq
   topic: distance measures usable by KNN
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 8
 - exam: final-2021
   q: '15'
@@ -1832,7 +1849,8 @@ questions:
   type: mcq
   topic: moving a point outside both margins
   areas: [svm, logistic-regression]
-  status: pending
+  lectures: [05b, 06a]
+  status: added
   page: 2
 - exam: final-2020
   q: '3'
@@ -1847,7 +1865,8 @@ questions:
   type: mcq
   topic: which classifiers produce this boundary
   areas: [classification, knn, svm, logistic-regression]
-  status: pending
+  lectures: [05a, 05b, 06a, 06b]
+  status: added
   figure: true
   page: 3
 - exam: final-2020
@@ -1871,7 +1890,8 @@ questions:
   type: mcq
   topic: train/test errors when changing a hyperparameter
   areas: [knn, logistic-regression]
-  status: pending
+  lectures: [05b, 06b]
+  status: added
   figure: true
   page: 5
 - exam: final-2020
@@ -2001,7 +2021,8 @@ questions:
   type: tf
   topic: hard-margin SVM statement
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 13
 - exam: final-2020
   q: '26'
@@ -2174,14 +2195,16 @@ questions:
   type: mcq
   topic: decision boundary after moving a point
   areas: [svm, logistic-regression]
-  status: pending
+  lectures: [05b, 06a]
+  status: added
   page: 3
 - exam: final-2019
   q: '4'
   type: mcq
   topic: samples needed to halve the NN distance in D dimensions
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 3
 - exam: final-2019
   q: '5'
@@ -2245,7 +2268,8 @@ questions:
   type: tf
   topic: training error of 1-NN is zero
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 8
 - exam: final-2019
   q: '14'
@@ -2315,7 +2339,8 @@ questions:
   type: tf
   topic: cost of one SGD iteration
   areas: [optimization, svm, logistic-regression]
-  status: pending
+  lectures: [02a, 05b, 06a]
+  status: added
   page: 10
 - exam: final-2019
   q: '23'
@@ -2379,7 +2404,8 @@ questions:
   type: mcq
   topic: min-max inequalities
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   multi: true
   page: 2
 - exam: final-2018
@@ -2387,7 +2413,8 @@ questions:
   type: mcq
   topic: k-NN in high dimension
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   page: 3
 - exam: final-2018
   q: '3'
@@ -2477,7 +2504,8 @@ questions:
   type: mcq
   topic: SVM on linearly separable data
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   page: 14
 - exam: final-2018
   q: '14'
@@ -2516,6 +2544,7 @@ questions:
   type: open
   topic: k-NN training / LOO-CV error on a figure
   areas: [knn, generalization]
+  lectures: [04a, 06b]
   status: open-excluded
   page: 21
 - exam: final-2018
@@ -2555,7 +2584,8 @@ questions:
   type: mcq
   topic: when nearest neighbors can work
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   multi: true
   page: 3
 - exam: final-2017
@@ -2563,7 +2593,8 @@ questions:
   type: mcq
   topic: k-NN statements
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   multi: true
   page: 3
 - exam: final-2017
@@ -2817,7 +2848,8 @@ questions:
   type: mcq
   topic: k-NN on the same data
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   figure: true
   multi: true
   page: 3
@@ -3038,7 +3070,9 @@ questions:
   type: mcq
   topic: when nearest neighbors can work (n vs D)
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: duplicate
+  same_as: exam-2017-q3
   multi: true
   page: 5
 - exam: mock-2018
@@ -3055,7 +3089,8 @@ questions:
   type: mcq
   topic: k-NN classifier statements
   areas: [knn]
-  status: pending
+  lectures: [06b]
+  status: added
   multi: true
   page: 5
 - exam: mock-2018
@@ -3072,7 +3107,8 @@ questions:
   type: mcq
   topic: min/max identities
   areas: [svm]
-  status: pending
+  lectures: [06a]
+  status: added
   multi: true
   page: 6
 - exam: mock-2018
@@ -3080,7 +3116,8 @@ questions:
   type: mcq
   topic: training error, SGD for SVM / ridge / logistic
   areas: [optimization, svm, logistic-regression, generalization]
-  status: pending
+  lectures: [02a, 04a, 05b, 06a]
+  status: added
   multi: true
   page: 6
 - exam: mock-2018
@@ -3179,6 +3216,7 @@ questions:
   type: mcq
   topic: k-NN classifier statements
   areas: [knn]
+  lectures: [06b]
   status: duplicate
   same_as: mock-2018-q5e
   multi: true
@@ -3197,6 +3235,7 @@ questions:
   type: mcq
   topic: min/max identities
   areas: [svm]
+  lectures: [06a]
   status: duplicate
   same_as: mock-2018-q5g
   multi: true
@@ -3206,6 +3245,7 @@ questions:
   type: mcq
   topic: training error, SGD for SVM / ridge / logistic
   areas: [optimization, svm, logistic-regression, generalization]
+  lectures: [02a, 04a, 05b, 06a]
   status: duplicate
   same_as: mock-2018-q5h
   multi: true

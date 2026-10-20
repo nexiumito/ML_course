@@ -1,0 +1,410 @@
+# Official past-exam questions whose primary lecture is 06a (SVM) — stems and choices verbatim. Answers read from the ticked
+# boxes (2019+) or from the solution text (2016–2018 and mocks, no ticked boxes). Written 2026-10-20 (week-6 content session).
+
+- id: exam-2025-q9
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: "*(SVM)* Which of the following is NOT an advantage of SVMs?"
+  choices:
+    - "Effective in high-dimensional spaces"
+    - "Naturally outputs probabilities for each class"
+    - "Robust to overfitting (with proper kernel and regularization)"
+    - "Memory efficient when number of support vectors is small"
+  answer: [1]
+  explanation: |
+    Official solution: SVM does not output probabilities for each class naturally — it outputs a score $x^\top w$ whose sign is the class
+    (probabilities need an extra calibration step, e.g. Platt scaling). The other three are genuine advantages: the dual depends on the data
+    only through $XX^\top$ (06a p. 25, no dependency on $d$), regularization controls overfitting, and only the support vectors are needed (p. 27).
+  trap: "Logistic regression outputs probabilities; the SVM does not."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 5, label: "Final 2025 Q9"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 25, label: "06a p. 25"}
+  added: 2026-10-20
+
+- id: exam-2025-q10
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  also_lectures: ["03d"]
+  themes: [svm, lasso, duality]
+  priority: core
+  front: |
+    *(L1-SVM)* Standard soft SVM has the following optimization problem ($C$ is a constant):
+    $$\min_w \frac12\|w\|_2^2 + C\sum_{i=1}^n \max(0, 1 - y_i(X_i^\top w))$$
+    Now if we replace the L2 regularization term with L1 regularization, i.e.,
+    $$\min_w \frac12\|w\|_1 + C\sum_{i=1}^n \max(0, 1 - y_i(X_i^\top w))$$
+    Which of the following statements is NOT true for L1-SVMs?
+  choices:
+    - "L1-SVM is no longer a smooth optimization problem."
+    - "The dual problem of the L1-SVM can be easily expressed in terms of kernel functions."
+    - "L1-SVM remains a convex problem, which is still globally solvable."
+    - "L1-SVM can perform feature selection by driving some weights to zero."
+  answer: [1]
+  explanation: |
+    Official solution: L1-SVM is convex (sum of convex terms) and has sparse solutions (like the lasso, 03d), and it is non-smooth (the L1 norm
+    is not differentiable at 0, besides the hinge kink). Its dual is **not** a quadratic program in $XX^\top$: it depends directly on the
+    entries $x_{ij}$, so it is not directly kernel-compatible. The kernel form of the dual (06a p. 25) comes from the $\|w\|_2^2$ term,
+    which gives $w(\alpha) = \frac{1}{\lambda N}X^\top Y\alpha$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 6, label: "Final 2025 Q10"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 24, label: "06a p. 24"}
+  added: 2026-10-20
+
+- id: exam-2024-q24
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: |
+    Recall that the soft-margin SVM corresponds to the following optimization problem:
+    $$\min_{w,\xi} \frac{\lambda}{2}\|w\|^2 + \frac1N\sum_{i=1}^N \xi_i,$$
+    subject to: $y_i(w^\top x_i) \ge 1 - \xi_i$ for all $1 \le i \le N$, and $\xi_i \ge 0$.
+
+    Which of the following statements is TRUE?
+  choices:
+    - "For the optimal solution, it is always true that $\\xi_i \\le 1$ for all $i$."
+    - "The soft-margin SVM problem is equivalent to the minimization of a regularized logistic loss function."
+    - "There cannot be a solution to the soft-margin SVM where $\\xi_i \\ge 1$ for all $i$."
+    - "The given optimization problem admits a solution if and only if the data is linearly separable."
+  answer: [2]
+  explanation: |
+    Official solution: if $\xi_i \ge 1$ for all $i$, all points are wrongly classified; then $-w$ classifies all of them correctly and has a
+    lower objective value, so that $w$ was not optimal. Wrong options: misclassified points have $\xi_i > 1$ (06a p. 11); the soft SVM is
+    equivalent to **hinge** loss + ridge, not logistic (p. 13); slacks make the problem feasible for any data (that is their purpose).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2024-solutions.pdf, page: 12, label: "Final 2024 Q24"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 13, label: "06a p. 13"}
+  added: 2026-10-20
+
+- id: exam-2023-q22
+  type: tf
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: |
+    *(Support vectors)* Let $\mathcal D$ be a $d$-dimensional linearly separable binary classification dataset. Recall that Hard-SVM finds the
+    maximum-margin hyperplane that is equidistant to two hyperplanes that form the boundaries of the margin. Let $S$ be the number of data points
+    on these two hyperplanes obtained with the Hard-SVM classifier on $\mathcal D$. Then, it is always true that $S \in [2, 2d]$.
+  answer: false
+  explanation: |
+    Official solution: there can be arbitrarily many support vectors if they are collinear — e.g. in 2-D, two clusters lying on the lines
+    $x = -1$ and $x = 1$ with varying $y$: every point is on a margin hyperplane. Nothing bounds the number of points that touch the margin.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 9, label: "Final 2023 Q22"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 27, label: "06a p. 27"}
+  added: 2026-10-20
+
+- id: exam-2023-q23
+  type: tf
+  origin: exam_official
+  lecture: "06a"
+  themes: [duality]
+  priority: core
+  front: |
+    *(Duality)* Let $G(w, \alpha) : \mathcal W \times \mathcal A \to \mathbb R$ be linear in both $\alpha$ and $w$, where $\mathcal A$ and $\mathcal W$ are
+    convex and compact domains. Then, the following holds:
+    $$\max_{\alpha \in \mathcal A}\min_{w \in \mathcal W} G(w, \alpha) = \min_{w \in \mathcal W}\max_{\alpha \in \mathcal A} G(w, \alpha)$$
+  answer: true
+  explanation: |
+    Official solution: a linear function is both convex and concave, so $G$ is convex in $w$ and concave in $\alpha$ on convex compact domains —
+    exactly the condition of 06a p. 22 for swapping min and max (strong duality, saddle point). Without the conditions only $\max\min \le \min\max$ holds.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 9, label: "Final 2023 Q23"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 22, label: "06a p. 22"}
+  added: 2026-10-20
+
+- id: exam-2022-q9
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  shuffle: false
+  front: |
+    Recall that the hard-margin SVM problem corresponds to:
+    $$\min_{w \in \mathbb R^d,\ \forall i:\ y_i w^\top x_i \ge 1} \|w\|_2.$$
+    Now consider the 2-dimensional classification dataset corresponding to the 3 following datapoints: $x_1 = (-1, 2)$, $x_2 = (1, 2)$,
+    $x_3 = (0, -2)$ and $y_1 = y_2 = 1$, $y_3 = -1$. Which of the following statements is true:
+  choices:
+    - "Our dataset is not linearly separable and hence it does not make sense to consider the hard-margin problem."
+    - "The unique vector which solves the hard-margin problem for our dataset is $w^\\star = (0, 1)$."
+    - "None of the other statements are true."
+    - "There exists a unique $w^\\star$ which linearly separates our dataset."
+  answer: [2]
+  explanation: |
+    Official solution: $w^\star = (0, 0.5)$. The constraints read $-w_1 + 2w_2 \ge 1$, $w_1 + 2w_2 \ge 1$, $2w_2 \ge 1$; the smallest norm is
+    $w = (0, 0.5)$, with all three constraints tight (three support vectors). The data are separable (by the horizontal axis); $(0, 1)$ is feasible
+    but not minimal — it is the right **direction** with the wrong scale; and infinitely many $w$ separate the data.
+  trap: "Scale w so that the closest points give exactly yₙwᵀxₙ = 1."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 5, label: "Final 2022 Q9"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 10, label: "06a p. 10"}
+  added: 2026-10-20
+
+- id: exam-2021-q1
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  also_lectures: ["05b", "06b"]
+  themes: [svm, logistic-regression, knn]
+  priority: core
+  shuffle: false
+  front: |
+    *(Robustness to outliers)* We consider a classification problem on linearly separable data. Our dataset had an outlier — a point that is
+    very far from the other datapoints in distance (and also far from margins in SVM but still correctly classified by the SVM classifier).
+    We trained the SVM, logistic regression and 1-nearest-neighbour models on this dataset. We tested trained models on a test set that comes
+    from the same distribution as training set, but doesn't have any outlier points. After that we removed the outlier and retrained our models.
+
+    After retraining, which classifier will change its decision boundary around the test points.
+  choices:
+    - "Logistic regression"
+    - "SVM"
+    - "1-nearest-neighbors classifier"
+    - "All of them"
+  answer: [0]
+  explanation: |
+    Official solution: the SVM solution depends only on the support vectors, and the outlier is not one (it is far outside the margin), so the
+    SVM boundary does not change (06a p. 27). The 1-NN decisions near the test points are made by nearby training points, not by the far-away
+    outlier, so they do not change either. Logistic regression uses all points (the logistic loss is never exactly zero), so removing one
+    changes its boundary.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 2, label: "Final 2021 Q1"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 27, label: "06a p. 27"}
+  added: 2026-10-20
+
+- id: exam-2021-q2
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: |
+    *(SVM)* For any vector $v \in \mathbb R^D$ let $\|v\|_2 := \sqrt{v_1^2 + \cdots + v_D^2}$ denote the Euclidean norm. The hard-margin SVM problem
+    for linearly separable points in $\mathbb R^D$ is to minimize the Euclidean norm $\|w\|_2$ under some constraints.
+    What are the additional constraints for this optimization problem?
+  choices:
+    - '$w^\top x_n \ge 1 \ \forall n \in \{1, \dots, N\}$'
+    - '$\frac{y_n}{w^\top x_n} \ge 1 \ \forall n \in \{1, \dots, N\}$'
+    - '$y_n w^\top x_n \ge 1 \ \forall n \in \{1, \dots, N\}$'
+    - '$y_n + w^\top x_n \ge 1 \ \forall n \in \{1, \dots, N\}$'
+  answer: [2]
+  explanation: |
+    Hard SVM (06a p. 8, p. 10): $\min_w \frac12\|w\|^2$ s.t. $y_n x_n^\top w \ge 1$ for all $n$ — every point on the correct side with
+    functional margin at least 1. Without $y_n$ the constraint ignores the labels; the ratio and the sum have no geometric meaning.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 2, label: "Final 2021 Q2"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 10, label: "06a p. 10"}
+  added: 2026-10-20
+
+- id: exam-2020-q2
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  also_lectures: ["05b"]
+  themes: [svm, logistic-regression]
+  priority: core
+  front: |
+    *(SVMs versus Logistic Regression)* Consider a classification problem on linearly separable data. We train an SVM model and a logistic
+    regression model. For logistic regression (LR) we add a small regularization term (penalty on weights) in order to make the optimum
+    well-defined. Each model gives us a margin. Consider a datapoint $x_0$ that is correctly classified and strictly outside both margins.
+
+    Which one of the following statements is **incorrect**?
+  choices:
+    - "There exists a direction in which we can slightly move $x_0$ without changing the LR decision boundary after retraining."
+    - "$x_0$ isn't a support vector."
+    - "There exists a direction in which we can arbitrarily move $x_0$ without changing the SVM decision boundary after retraining."
+    - "If we remove $x_0$ from the dataset and retrain, this will change the LR decision boundary."
+    - "If we remove $x_0$ from the dataset and retrain, this will not change the SVM decision boundary."
+  answer: [0]
+  explanation: |
+    Official solution: the SVM solution depends only on the support vectors and $x_0$ is not one, so deleting it or moving it (e.g. orthogonally
+    to $w^\star$, staying outside the margin) does not change the SVM — the other four statements are correct. Logistic regression puts some
+    loss weight on every correctly classified point, so moving $x_0$ in any direction changes the LR boundary: the first statement is the incorrect one.
+  trap: "Logistic loss > 0 for every point ⇒ every point influences LR."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 2, label: "Final 2020 Q2"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 27, label: "06a p. 27"}
+  added: 2026-10-20
+
+- id: exam-2020-q25
+  type: tf
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm, regularization]
+  priority: core
+  front: |
+    *(Support Vector Machines)* Reminder: the hard-margin problem for linearly separable points in $\mathbb R^d$ is
+    $\min_{w \in \mathbb R^d \text{ s.t. } \forall i,\ y_i w^\top x_i \ge 1} \|w\|$.
+    Let $m > 1$ be a fixed number. Then there exists $\lambda > 0$ such that for every sample $S$ of $m$ examples which are linearly separable,
+    the hard-SVM and the soft-SVM (with parameter $\lambda$) solutions will return exactly the same weight vector.
+  answer: false
+  explanation: |
+    Official solution: take $d = 1$, $x_1 = a$, $y_1 = 1$, $x_2 = -a$, $y_2 = -1$ ($a > 0$). Hard SVM: $w = 1/a$. Soft SVM
+    $\arg\min_w [1 - aw]_+ + \frac{\lambda}{2}\|w\|^2$ gives $1/a$ if $\lambda \le a^2$ and $a/\lambda$ otherwise. For a given dataset a small
+    enough $\lambda$ recovers the hard SVM, but no **fixed** $\lambda$ works for every $a > 0$ (let $a \to 0$).
+  trap: "Small λ ≈ hard SVM only for a given dataset; the threshold depends on the data scale."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 13, label: "Final 2020 Q25"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 18, label: "06a p. 18"}
+  added: 2026-10-20
+
+- id: exam-2019-q3
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  also_lectures: ["05b"]
+  themes: [svm, logistic-regression]
+  priority: core
+  shuffle: false
+  front: |
+    *(SVMs versus Logistic Regression)* Consider a classification problem using either SVMs or logistic regression and separable data. For
+    logistic regression we use a small regularization term (penality on weights) in order to make the optimum well-defined. Consider a point
+    that is correctly classified and distant from the decision boundary. Assume that we move this point slightly.
+
+    What will happen to the decision boundary?
+  choices:
+    - "Small change for SVMs and small change for logistic regression."
+    - "No change for SVMs and large change for logistic regression."
+    - "No change for SVMs and no change for logistic regression."
+    - "No change for SVMs and a small change for logistic regression."
+    - "Large change for SVMs and large change for logistic regression."
+    - "Large change for SVMs and no change for logistic regression."
+    - "Small change for SVMs and no change for logistic regression."
+    - "Small change for SVMs and large change for logistic regression."
+    - "Large change for SVMs and small change for logistic regression."
+  answer: [3]
+  explanation: |
+    Official solution: the hinge loss gives zero weight to such a point (it is outside the margin, not a support vector), while the log-loss
+    gives it a small but non-zero weight. Therefore no change for SVMs and a small change for logistic regression (06a p. 17, p. 27).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 3, label: "Final 2019 Q3"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 17, label: "06a p. 17"}
+  added: 2026-10-20
+
+- id: exam-2019-q22
+  type: tf
+  origin: exam_official
+  lecture: "06a"
+  also_lectures: ["02a", "03d", "05b"]
+  themes: [sgd, svm]
+  priority: core
+  front: "*(Stochastic Gradient Descent)* One iteration of standard SGD for SVM, logistic regression and ridge regression costs roughly $\\mathcal O(D)$, where $D$ is the dimension of a data point."
+  answer: true
+  explanation: |
+    Official answer: True. Each SGD step uses one sample: the (sub)gradient of the hinge, logistic or squared loss at $x_n$ is a scalar times
+    $x_n$ (one inner product $x_n^\top w$ plus a vector update), plus $\lambda w$ for the regularizer — all $\mathcal O(D)$, independent of $N$.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 10, label: "Final 2019 Q22"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 19, label: "06a p. 19"}
+  added: 2026-10-20
+
+- id: exam-2018-q1
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [duality]
+  priority: core
+  multi: true
+  shuffle: false
+  front: "Let $f(x, y)$ be a general function over $\\mathbb R^2$. Mark any of the following statements that is *always* (independent of the function) correct?"
+  choices:
+    - '$\max_{y''}\min_{x''} f(x'', y'') \le \min_{x''}\max_{y''} f(x'', y'')$'
+    - '$\min_{x''} f(x'', y) \le \min_{y''} f(x, y''),\ \forall x, y$'
+    - '$\max_{x''} f(x'', y) \le \max_{y''} f(x, y''),\ \forall x, y$'
+    - '$\min_{x''} f(x'', y) \le \max_{y''} f(x, y''),\ \forall x, y$'
+    - '$\min_{x''} f(x'', y) \le \max_{x''} f(x'', y),\ \forall y$'
+    - '$\min_{y''}\max_{x''} f(x'', y'') \le \max_{x''}\min_{y''} f(x'', y'')$'
+  answer: [0, 3, 4]
+  explanation: |
+    Official solution: the correct choices are the weak-duality inequality $\max\min \le \min\max$ (06a p. 22–23),
+    $\min_{x'} f(x', y) \le f(x, y) \le \max_{y'} f(x, y')$ for all $x, y$, and $\min_{x'} f(x', y) \le \max_{x'} f(x', y)$.
+    The last option is the reversed inequality (false in general); the 2nd and 3rd compare a min (or max) over $x'$ with a min (or max) over $y'$
+    at different points — no general order.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2018-solutions.pdf, page: 2, label: "Final 2018 P1"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 23, label: "06a p. 23"}
+  added: 2026-10-20
+
+- id: exam-2018-q13
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [svm]
+  priority: core
+  front: |
+    Assume that you have given linearly separable data for a classification task. You are using support vector machines. More precisely, you are optimizing
+    $$\arg\min_w \sum_{n=1}^N [1 - y_n x_n^\top w]_+ + \frac{\lambda}{2}\|w\|^2,$$
+    with a very large value of $\lambda$. Recall: $[z]_+ = \max\{0, z\}$. Assume that $(\tilde x_n, \tilde y_n)$ is an essential support vector,
+    i.e., a data point that lies exactly on the margin. What is the most likely outcome if you remove this support vector from the data and rerun
+    the algorithm with the remaining $N - 1$ data points?
+  choices:
+    - "I will get exactly the same outcome and the same margin."
+    - "The optimal vector $w^*$ will change and the margin will double."
+    - "The optimal vector $w^*$ will change and the margin will decrease."
+    - "The optimal vector $w^*$ will change and the margin will increase."
+    - "The algorithm will not work since the data is missing an essential support vector."
+  answer: [3]
+  explanation: |
+    Official solution: $w^*$ will change and the margin will increase. Support vectors are the points that determine $w$ (06a p. 27): removing
+    an essential one changes the solution, and with one constraint fewer the max-margin hyperplane can only move further from the remaining
+    points. "Double" is an arbitrary factor; the algorithm still runs on $N - 1$ points.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2018-solutions.pdf, page: 14, label: "Final 2018 P13"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 27, label: "06a p. 27"}
+  added: 2026-10-20
+  notes: "The stem says 'a very large value of λ' (in this unnormalized form a large λ does not make it a hard SVM); official answer kept as given."
+
+- id: mock-2018-q5g
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  themes: [duality]
+  priority: core
+  multi: true
+  shuffle: false
+  front: "Which of the following statements is correct, where we assume that all the stated minima and maxima are in fact taken on in the domain of relevance."
+  choices:
+    - '$\max\{0, x\} = \max_{\alpha \in [0,1]} \alpha x$'
+    - '$\min\{0, x\} = \min_{\alpha \in [0,1]} \alpha x$'
+    - 'Let $g(x) := \min_y f(x, y)$. Then $g(x) \le f(x, y)$'
+    - '$\max_x g(x) \le \max_x f(x, y)$'
+    - '$\max_x \min_y f(x, y) \le \min_y \max_x f(x, y)$'
+  answer: [0, 1, 2, 3, 4]
+  explanation: |
+    Official solution: all are correct. $\alpha x$ is linear in $\alpha$, so its max/min over $[0,1]$ is at an endpoint: $\max(0, x)$, $\min(0, x)$
+    — the first is how the hinge is rewritten as $[1 - y_n x_n^\top w]_+ = \max_{\alpha_n \in [0,1]} \alpha_n(1 - y_n x_n^\top w)$ (06a p. 21).
+    $g(x) \le f(x, y)$ by definition of the min, hence $\max_x g(x) \le \max_x f(x, y)$ for every $y$, and taking the min over $y$ gives weak
+    duality $\max\min \le \min\max$ (06a p. 23).
+  sources:
+    - {kind: exam, pdf: exam/mock-midterm-exam/mock-exam-2018-solutions.pdf, page: 6, label: "Mock 2018 Q5g"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 21, label: "06a p. 21"}
+  added: 2026-10-20
+
+- id: mock-2018-q5h
+  type: mcq
+  origin: exam_official
+  lecture: "06a"
+  also_lectures: ["02a", "03d", "04a", "05b"]
+  themes: [sgd, svm, generalization]
+  priority: core
+  multi: true
+  front: "Which of the following statements are correct?"
+  choices:
+    - "The training error is typically smaller than the test error."
+    - "The SVM (support vector machine) formulation we discussed can be optimized using SGD."
+    - "One iteration of SGD for ridge regression costs roughly $\\Theta(ND)$, where $N$ is the number of samples and $D$ is the dimension."
+    - "Logistic regression as formulated in class can be optimized using SGD."
+  answer: [0, 1, 3]
+  explanation: |
+    Official solution: 1, 2 and 4 are correct. The training error is optimistic (04a); the soft SVM (hinge + ridge) is convex and minimized by
+    stochastic **sub**gradient steps (06a p. 19); logistic regression by SGD (05b). One SGD iteration uses one sample: $\Theta(D)$, not $\Theta(ND)$
+    (that is one full-gradient step).
+  sources:
+    - {kind: exam, pdf: exam/mock-midterm-exam/mock-exam-2018-solutions.pdf, page: 6, label: "Mock 2018 Q5h"}
+    - {kind: lecture, pdf: lectures/06/lecture06a.pdf, page: 19, label: "06a p. 19"}
+  added: 2026-10-20

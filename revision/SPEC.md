@@ -423,6 +423,20 @@ Questions already identified during sessions (non-exhaustive — the index in st
 - Separable data (p. 25): loss → 0 but never attained, ‖w‖ → ∞, 100 % accuracy reachable (2021 Q27, 2023 Q5, 2024 Q8); fix = ℓ₂ penalty (λ/2)‖w‖².
 - Scope notes: 05a p. 30–32 bonus (skipped in 2025) → `detail` at most; **exponential family / GLM questions are off-syllabus** (not in lecture 05 in 2025 or 2026) → mark them `excluded` in the index, no cards; 05b uses y ∈ {0, 1} for the NLL, y ∈ {−1, 1} gives log(1 + e^{−y xᵀw}) — never mix them in one card. No annotated PDF (Flammarion); the 2025 annotated decks in git history are only a proxy.
 
+**Week 6 (06a, 06b — caught up 2026-10-13/20; questions he asked):**
+- Distance point–hyperplane = |wᵀx₀| only because ‖w‖ = 1 (general: /‖w‖); the margin takes the **min** over n (the weakest point decides; toy table w_A vs w_B helped).
+- yₙxₙᵀw = functional margin: sign = correctly classified, size = how far (for ‖w‖ = 1); the y ∈ {−1, 1} coding makes "correct ⇔ positive" for both classes.
+- **Score vs distance (main confusion):** after freeing the scale of w, yₙxₙᵀw = 1 is a score; the distance is 1/‖w‖ (rescaling w changes scores, never distances); small ‖w‖ ⇔ large margin.
+- Slide 7 = formulation (II) (variable M), slide 8 adds (III); proofs 9–10 = intuition only.
+- Soft SVM: ξ cases (0 / inside margin / misclassified ξ > 1), elimination ⇒ hinge + ridge; λ direction; hinge 0 for η ≥ 1 vs logistic never 0.
+- Slide 19 only names (stochastic) subgradient methods — the update itself is lab material.
+- Duality: [z]₊ = max_{α∈[0,1]} αz; weak duality always, equality if convex–concave; K = XXᵀ (N×N) vs XᵀX; α sparse.
+- Support vectors = penalized points (inside margin / wrong side, α = 1) + on-margin points with α > 0; they **determine** w (others can be removed), they do not "help".
+- k-NN regression = average of the k neighbours' y; comparison table k-NN vs linear classifiers; vote tie (slide 19) ≠ distance tie (slide 8); odd k only fixes binary ties.
+- Bias/variance recalled from 04b; U-curve reading; **degrees of freedom N/k** (asked twice: groups of k neighbours).
+- Curse claims 1 (r = α^{1/d}) and 2 (complement → independence → complement, r ≥ (1 − 2^{−1/N})^{1/d}).
+- 1-NN bound: he swapped L(f_S) and L(f⋆) and read "≤ 2 L(f⋆)" as "1-NN beats Bayes" → L(f⋆) ≤ 𝔼L(f_S) ≤ 2L(f⋆) + …; "baseline" = reference (here the unattainable optimum). Bayes-risk proof (06b p. 33) explained line by line (exam 2022). Proofs p. 37–46: idea only (factor 2 = two noisy labels).
+
 ### 8.5 Starter theme vocabulary
 `ml-basics`, `linear-regression`, `loss-functions`, `convexity`, `optimization`, `gradient-descent`, `sgd`, `subgradients`, `constrained-optimization`, `least-squares`, `overfitting`, `polynomial-features`, `mle`, `probability`, `regularization`, `ridge`, `lasso`, `generalization`, `model-selection`, `cross-validation`, `bias-variance`. Extend as lectures progress (classification, logistic-regression, svm, knn, kernels, neural-nets, …).
 
@@ -570,7 +584,7 @@ Estimated sessions: **S1** = M0–M2, **S2** = M3, **S3** = M4, **S4** = M5, **S
 
 ### Weekly content (after M7)
 - [x] Week 5 (05a, 05b) + 25 official questions — 2026-10-09 (S7)
-- [ ] Week 6 (SVM, k-NN) — after both lectures are caught up; written with the §8.2 rules of 2026-10-11 (after the rework)
+- [x] Week 6 (06a SVM, 06b k-NN) + 34 official questions — 2026-10-20
 
 ### M8 — Later / optional
 - [ ] Mock exam mode · [ ] exam-date mode · [ ] FSRS parameter optimization from the review log (`fsrs[optimizer]`, run on the Mac, store parameters in settings) once ≥ ~1000 reviews · [ ] open-question cards (self-graded, French answers allowed) if the student asks.
@@ -607,3 +621,15 @@ Estimated sessions: **S1** = M0–M2, **S2** = M3, **S3** = M4, **S4** = M5, **S
 
   Main decisions: selection by exam relevance after listing what the officials of each lecture already ask (heavily examined lectures keep few own cards: 02a has 23 officials → 10 own); **01a has no own card** (intro never asked; its math cards were exactly its 7 officials); own cards that restated an official were deleted (e.g. style-05b-nonlinear-boundary / normal-equations = 2024 Q8 / 2023 Q5, style-05a-bayes-accuracy ≈ 2017 P5 / 2018 P3, style-02a-gd-overshoot ≈ 2022 Q4, style-03d-lambda-small-underfit = 2022 Q25, style-03d-ridge-unique-d-gt-n = 2025 Q7, style-03d-map-laplace-ridge = 2022 Q5, style-03c-noise-for-mae = 2023 Q3, style-04a-halve-deviation = 2019 Q1, style-04a-cv-training-error = 2021 Q7, style-04b-noise-complexity / variance-expression = 2025 Q25 / 2023 Q11, style-01c / 03a "convex ⇒ unique" = 2020 Q28) and cross-lecture duplicates removed (style-05b-sgd-cost kept as style-02a-sgd-step-cost). style-03d-not-regularization dropped because it is Final 2025 Q12 (pending until the neural-net lectures). New mini-computations built from typical mistakes: Bayes error toy table, logistic likelihood set-up and ∇L(0), 1-D lasso vs ridge, momentum variance (from 2025 Q44), uniform MLE (from 2025 Q45), Bernoulli MLE, bias²/variance from 4 predictions, CV training size, least-squares solve cost. §8.4 student points kept as tf/mcq (λ vs degree, 0.5 threshold, k vs distance, non-parametric, max-margin, Bayes toy + L*, convex relaxation, σ sign rule, ‖w‖ vs w₀, label conventions, Hessian PSD, Newton on a quadratic, separable data + ℓ₂, learning curves, "not realizable"). Bonus slides (04a Hoeffding proof, 05a p. 30–32), double descent, constrained optimization / projections, SignSGD / Muon, Fisher information: no card. Officials and `exam-index.yaml` untouched (`content mark-added`: 0 changes); `course.yaml` untouched (all themes kept). Checks: `content check` OK, `check-math` 0 errors, **375 px Sheet `?check=1` clean for all 12 lectures in light + dark** (headless Chromium via Playwright in the cloud, test data dir deleted afterwards) and a sample of sheets looked at, 127 pytest + 19 vitest green, ruff / tsc clean, eslint 0 errors (2 pre-existing warnings in Review.tsx). Lessons for future weekly sessions: `REWORK.md` §6. Next (student, local): merge the branch, process reports, deploy (`REWORK.md` §7); week 6 cards with the new rules.
 - 2026-10-11 — **Rework merged and deployed (local session).** Branch `claude/vigilant-allen-kmk68v` merged into `main` (a9e7790); `content check` 199 cards / 199 items. Open reports on the VPS: none (nothing to resolve). Deployed with `update.sh`: service active, health `cards: 199`, `items: 633`, `orphans: 434` (review items of the deleted cards, kept in the db, out of the queue). Local Sheet `?check=1` at 375 px for 05a and 03d: no layout issue. Next: week 6 cards with the new rules.
+- 2026-10-20 — **Week 6 content (06a SVM, 06b k-NN & curse of dimensionality), local session.** Open report #1 processed first:
+  exam-2017-q8 (01a, "answer memorized but not understood") → explanation rewritten with a worked 2×2 derivative of $WW$ w.r.t. $W_{12}$ and the
+  row/column rule (same id); resolved on the VPS after deploy. Own cards: 06a 13 (tf 3 T / 3 F), 06b 11 (tf 2 T / 3 F), selected after listing
+  what the officials already ask; §8.4 "Week 6" confusions covered (score vs distance, SV definition, N/k, vote ties, which side of the bound is
+  Bayes). **34 official questions** unlocked and added (06a: 2025 Q9/Q10, 2024 Q24, 2023 Q22/Q23, 2022 Q9, 2021 Q1/Q2, 2020 Q2/Q25,
+  2019 Q3/Q22, 2018 P1/P13, mock 2018 5g/5h; 06b: 2025 Q33/Q38, 2024 Q20/Q25/Q32, 2023 Q6, 2022 Q21/Q34, 2021 Q14, 2020 Q4/Q7,
+  2019 Q4/Q13, 2018 P2, 2017 P3/P4, 2016 Q10, mock 2018 5e); mock 2018 5c = duplicate of 2017 P3. Index: `svm` → 06a, `knn` → 06b,
+  `lectures` filled for every svm/knn entry whose areas are all active; still pending because of kernels/adversarial/MF: 2025 Q34, 2022 Q33,
+  2018 P6. Answers from the ticked boxes (2019+) or solution text (older); figures cropped for 2020 Q4, 2020 Q7, 2024 Q20 (2016 Q10 reuses
+  exam-2016-q9.png). Flagged in notes: 2018 P13 stem says "very large λ" (official answer kept); 2024 Q32 geometric reading is ours.
+  New themes `svm`, `duality`, `curse-of-dimensionality`. Checks: `content check` 257 cards / 257 items, `check-math` 0 errors (1264 texts),
+  Sheet `?check=1` at 375 px clean for 06a, 06b, 01a (light + dark); 2024 Q24 stem split (objective display + constraint text) after the visual check.
