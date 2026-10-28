@@ -437,6 +437,17 @@ Questions already identified during sessions (non-exhaustive — the index in st
 - Curse claims 1 (r = α^{1/d}) and 2 (complement → independence → complement, r ≥ (1 − 2^{−1/N})^{1/d}).
 - 1-NN bound: he swapped L(f_S) and L(f⋆) and read "≤ 2 L(f⋆)" as "1-NN beats Bayes" → L(f⋆) ≤ 𝔼L(f_S) ≤ 2L(f⋆) + …; "baseline" = reference (here the unattainable optimum). Bayes-risk proof (06b p. 33) explained line by line (exam 2022). Proofs p. 37–46: idea only (factor 2 = two noisy labels).
 
+**Week 7 (07a caught up 2026-10-28; 07b ⏳; questions he asked):**
+- Needed a refresher first: ridge = least squares + ℓ₂ penalty; least squares = solve ∇L = 0 in closed form (normal equations) vs GD iterations; the λ normalization differs between decks (03d λ′ = 2Nλ, 07a (XᵀX + NλI)) — same family of solutions.
+- Gradient −(1/N)Xᵀ(y − Xw) + λw derived term by term (chain rule gives the minus sign, Σₙ aₙxₙ = Xᵀa, ∇(λ/2)‖w‖² = λw).
+- **Conventions (main confusion):** vectors are columns; X ∈ ℝᴺˣᵈ has rows xₙᵀ (data table); (x₁ … x_N) side by side is Xᵀ; (XXᵀ)ᵢⱼ = xᵢᵀxⱼ (N×N) vs XᵀX (d×d). "span" = all linear combinations.
+- Two ridge forms (d×d vs N×N via push-through) — pick by comparing N and d (O(d³ + Nd²) vs O(N³ + dN²)); w* = Xᵀα* ∈ span{xₙ}. Representer theorem holds for any loss on xₙᵀw + ℓ₂, **not for ℓ₁**; proof p. 6 skipped.
+- Slide 8: K = XXᵀ is *just* the Gram matrix — κ only appears at p. 12 (don't introduce it earlier).
+- Feature map (p. 9): ϕ(x) = (x, x²) makes 1-D data separable; linear in ϕ(x), nonlinear in x (|x| < √c).
+- Kernel trick = "short path" κ(x, x′) vs "long path" ϕ(x)ᵀϕ(x′) (O(d) vs O(d̃)); prediction f(x) = Σₙ α*ₙκ(x, xₙ) needs the whole training set.
+- Polynomial (1 + xᵀx′)² on ℝ³: expand, split each term as f(x)·f(x′) (√2 from the factor 2) ⇒ ℝ¹⁰ = all monomials of degree ≤ 2; (xᵀx′)² ⇒ ℝ⁶. (1 + xᵀy)² valid (2025 Q26). RBF e^{−‖x−x′‖²}: bump around x′, ϕ infinite-dimensional via Taylor (2023 Q21).
+- p. 17 string kernels skipped; p. 18–22 seen quickly before lunch: closure rules (α, β ≥ 0; product), **difference not valid (2025 Q35)**; proofs 19–20 skipped (idea: build ϕ); Mercer = symmetric + K PSD for every point set; quick invalidity check κ(x, x) < 0.
+
 ### 8.5 Starter theme vocabulary
 `ml-basics`, `linear-regression`, `loss-functions`, `convexity`, `optimization`, `gradient-descent`, `sgd`, `subgradients`, `constrained-optimization`, `least-squares`, `overfitting`, `polynomial-features`, `mle`, `probability`, `regularization`, `ridge`, `lasso`, `generalization`, `model-selection`, `cross-validation`, `bias-variance`. Extend as lectures progress (classification, logistic-regression, svm, knn, kernels, neural-nets, …).
 
