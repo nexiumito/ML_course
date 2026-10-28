@@ -33,7 +33,7 @@ labs/exNN/
 | ex04 | 2026-10-01 | 4-fold CV for ridge (degree 7, RMSE vs λ), best-degree selection (2–10), bias–variance visualization (degrees 1/3/6, many seeds) | ⏳ template published early, 2026-09-25; **solution published 2026-10-02**; no theory questions in the sheet | reuses ex03 `ridge_regression`, `least_squares`, `build_poly` |
 | ex05 | 2026-10-08 | Logistic regression: least-squares classification, GD, Newton, penalized | ⏳ template published 2026-10-02 (sheet dated Oct 7); **solution published 2026-10-13**; no theory questions; deferred | **P1 functions** `logistic_regression`, `reg_logistic_regression`. Details below. |
 | ex06 | 2026-10-15 | SVM: SGD on the primal (hinge + ridge), coordinate ascent on the dual; theory: convexity, softmax regression, mixture of linear regressions | ⏳ template pulled 2026-10-13 (sheet identical to 2025); solution not yet (2025 one in history) | Details below. Lecture: `docs/lectures/06-svm-knn.md` §A. |
-| ex07 | 2026-10-29 | Kernels & NN intro | ⏳ | |
+| ex07 | 2026-10-29 | Kernels (theory), softmax cross-entropy, PyTorch intro: ReLU MLP approximating a 2-D function, MNIST classifier | ⏳ template pulled 2026-10-28 (notebook identical to 2025); solution not yet (2025 one in history) | Details below. Lecture: `docs/lectures/07-kernels-neural-networks.md`. Colab recommended (PyTorch). |
 | ex08 | 2026-11-05 | NN training & CNNs (PyTorch) | ⏳ | |
 | ex09 | 2026-11-12 | Adversarial robustness | ⏳ | |
 | ex10 | 2026-11-19 | K-means (+ image compression) | ⏳ | |
@@ -77,6 +77,13 @@ Sheet: `labs/ex06/exercise06.pdf` (Problem Set 6, Oct 15, 2026; identical to 202
 - **Problem 2 (coordinate ascent, dual)** max_{α∈[0,1]ᴺ} αᵀ1/N − αᵀYXXᵀYα/(2λN²), w(α) = XᵀYα/(λN). Derive: f(α + γeₙ) is a concave quadratic in γ ⇒ γ* = λN(1 − yₙwᵀxₙ)/‖xₙ‖², then **clip** αₙ to [0, 1]; update w ← w + (αₙ_new − αₙ_old) yₙxₙ/(λN). Both O(D). Stubs: `calculate_coordinate_update(y, X, lambda_, alpha, w, n)` → (w, alpha), `calculate_dual_objective(y, X, w, alpha, lambda_)` = (1/N)Σα − (λ/2)‖w‖² (uses w(α), no N×N matrix). Then compare primal vs dual objectives: the duality gap should → 0.
 - **Theory (no lecture-06 content):** convexity proofs (affine, sums, g∘f with g increasing, f(wᵀx + b), uniqueness of the minimizer of a strictly convex f), multiclass logistic regression with softmax (log-likelihood, gradient, convexity via Hölder), mixture of linear regressions (likelihood with rₙₖ, marginal, convexity/identifiability). 2025 theory solutions: `git show '48f3822^:labs/ex06/solution/solutions-theory-questions.pdf'`.
 - Pitfalls: copy αₙ before updating (`old_alpha_n`); w is updated in place; doctests compare exact float output.
+
+## ex07 — Kernels & NN introduction (details)
+Sheet: `labs/ex07/exercise07.pdf` (Problem Set 7, Oct 29, 2026). Notebook `labs/ex07/template/ex07.ipynb` (byte-identical to 2025); needs **PyTorch** (sheet recommends Google Colab; `torchvision` for MNIST).
+- **Problem 1 (kernels, theory):** k₁ valid ⇒ f(k₁) valid for f a polynomial with positive coefficients (sums + products + constants); exp(k₁) valid (limit of the Taylor partial sums, using the given closure-under-limits property).
+- **Problem 2 (softmax cross-entropy, theory):** stable softmax (subtract maxⱼ xⱼ); ∂H/∂xⱼ = zⱼ − yⱼ for one-hot y; minimizer pushes x_y − x_other → ∞ (no finite minimizer) → label smoothing ŷ = (1 − ε)y + ε1/d.
+- **Problem 3 (PyTorch):** intro (tensors, autograd, `zero_grad`, `torch.no_grad`). Ex 1: approximate f(x₁, x₂) = cos(10‖x‖)·exp(−4‖x‖²) on [−1, 1]² with a ReLU MLP — stubs `get_model_weights(L, K, device)`, `predict(X, weights, biases)`, `train_network(...)` (full-batch Adam); play with depth/width. Ex 2: MNIST classifier `MNIST_model(torch.nn.Module)` + fill `train_epoch`.
+- 2025 theory solutions: `git show '48f3822^:labs/ex07/solution/solutions-theory-questions.pdf'`; 2025 notebook solution: `…/labs/ex07/solution/ex07.ipynb`.
 
 ## Gotchas / lessons learned (append as the semester goes)
 - `np.std` uses population std (ddof=0) — matches the doctest in Task A.

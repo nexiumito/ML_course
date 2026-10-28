@@ -72,6 +72,13 @@ Extend this file whenever a lecture introduces new notation. Conventions follow 
 | SVM dual, α | max_{α∈[0,1]ᴺ} αᵀ1/N − αᵀYXXᵀYα/(2λN²), Y = diag(y); w(α) = XᵀYα/(λN). αₙ > 0 ⇔ **support vector**. |
 | Weak / strong duality | max_α min_w G ≤ min_w max_α G always; equality if G convex–concave on convex compact domains. |
 | Kernel (Gram) matrix K | XXᵀ ∈ ℝᴺˣᴺ (inner products of samples); ≠ XᵀX ∈ ℝᴰˣᴰ. |
+| Push-through identity | (PQ + Iₘ)⁻¹P = P(QP + Iₙ)⁻¹; gives ridge w\* = (1/N)Xᵀ((1/N)XXᵀ + λI_N)⁻¹y = Xᵀα\* (lecture 07a). |
+| Representer theorem | for any loss + (λ/2)‖w‖², every minimizer w\* = Xᵀα\* ∈ span{xₙ}. |
+| Kernel κ(x, x′), feature map ϕ | κ = ϕ(x)ᵀϕ(x′); K = ΦΦᵀ; prediction Σₙ κ(x, xₙ)αₙ. Linear, polynomial (1 + xᵀx′)ᵈ, RBF exp(−‖x − x′‖²) (infinite-dim ϕ). |
+| Mercer's condition | κ is a valid kernel ⇔ symmetric and every Gram matrix (κ(xᵢ, xⱼ))ᵢⱼ is PSD. Closed under α,β ≥ 0 sums and products (not differences). |
+| MLP / fully connected NN | x⁽ˡ⁾ = ϕ((W⁽ˡ⁾)ᵀx⁽ˡ⁻¹⁾ + b⁽ˡ⁾), L hidden layers of K neurons, ϕ = activation (⚠ same letter as feature map); O(dK + K²L) parameters (lecture 07b). |
+| Activations | sigmoid σ; ReLU (x)₊ = max{0, x}; GELU x·Φ(x) ≈ x·σ(1.702x). |
+| Universal approximation (Barron) | one hidden layer, n neurons: ∫_{‖x‖≤r}(f − fₙ)² ≤ (2Cr)²/n if ∫\|ω\|\|f̂(ω)\|dω ≤ C. ReLU nets = exactly the continuous PWL functions in 1-D (weight = slope change, bias = kink). |
 | k-NN, nbh_{S,k}(x) | k nearest training points to x; predict majority vote (classif.) / average (regression). Non-parametric, no training. |
 | Curse of dimensionality | in high d, neighbourhoods are not local (box capturing 1 % of U[0,1]¹⁰ has side 0.63); N must grow exponentially in d. |
 | 1-NN bound | 𝔼[L(f_S)] ≤ 2L(f*) + 4c√d N^{−1/(d+1)} for c-Lipschitz η(x) = ℙ(Y = 1 \| x). |
