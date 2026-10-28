@@ -4,7 +4,7 @@ Sources (lecturer **Nicolas Flammarion**; pulled 2026-10-28):
 - §A `lectures/07/lecture07a.pdf` (23 p., Tue 2026-10-27) — Kernel ridge regression and the kernel trick
 - §B `lectures/07/lecture07b.pdf` (46 p., Wed 2026-10-28) — Neural networks: basic structure, representation power
 
-⚠ Course **week 8** (10-27/28) = lecture folder **07** (week 7 was the break).
+Semester **week 7** (10-27/28; the 10-20 break week is not counted).
 
 **Slide numbering:** no printed numbers → **"slide N" = PDF page N** (title = p. 1). Render with `pdftoppm -f N -l N`.
 **Annotated version:** Flammarion lecture → **none expected**. **Proxy:** the 2025 decks (taught by R. West, slide credits Flammarion) are the same content but with extra build-up pages: `git show '48f3822^:lectures/07/lecture07a_annotated.pdf'` (25 p.) and `…/lecture07b_annotated.pdf` (54 p.). Notes from them are marked *(2025 ann.)*.

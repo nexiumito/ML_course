@@ -43,7 +43,7 @@ Report grading criteria *(2025)*: correct implementation + explanation (half), t
 
 | Item | Value |
 |---|---|
-| Start | 2026-11-03 (week 9) |
+| Start | 2026-11-03 (week 8) |
 | Deadline | **2026-12-17** (2025: 16:00 sharp) |
 | Team | 3 students (may differ from P1). 2025: if no team by 11-18, contact staff. |
 | Two options *(2025)* | **A — ML4Science**: project with any lab of the (extended) EPFL campus or Swiss academic institution (EPFL, UniL, CERN, CHUV, Idiap…); the **lab's professor must confirm via the registration form by early Nov** (2025: 11-04); the lab co-grades domain merit. **B — predefined AICrowd challenge**: text classification (tweets) https://www.aicrowd.com/challenges/epfl-ml-text-classification or road segmentation (aerial images) https://www.aicrowd.com/challenges/epfl-ml-road-segmentation; leaderboard rank mapped linearly to 4–6 for the competitive part; 5 submissions/person/day. |

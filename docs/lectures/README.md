@@ -24,7 +24,7 @@ Formulas in the PDFs are embedded images: the formulas below were reconstructed 
 
 Slide numbering: lectures 01–03 (Jaggi) print "slide N" = PDF page N+1; **lectures 04+ slide N = PDF page N** (title = p. 1; 04b, 05a/b, 06a/b, 07a/b have no printed numbers).
 
-⚠ Lecture folder numbers ≠ course weeks from week 8 on (week 7 was the break): week 8 = `lectures/07/`.
+The break week (2026-10-20) is not counted in the semester weeks: `lectures/NN/` = week NN (week 7 = 2026-10-27).
 
 **Flammarion does not publish annotated slides** (04, 05): don't wait for them. Lecture 06 is taught by **Jaggi** (Flammarion's slides) → annotated PDFs may come. For 05 and 06, the 2025 annotated decks (same slides) are in git history — see the sheets.
 

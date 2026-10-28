@@ -19,7 +19,7 @@ Formulas below were checked against the rendered slides (2026-10-08); most formu
   A. predictions are not probabilities (not in [0, 1]);
   B. **unbalanced classes** move the line (balanced 1:1 vs 1:15);
   C. **extreme values**: far-away, *correctly classified* points still pull the line (square loss penalizes "too correct" predictions).
-- **How to classify (p. 15):** fundamental task = divide the space into decision regions. Quick tour today, details later (k-NN and SVM = week 6, kernels = week 8).
+- **How to classify (p. 15):** fundamental task = divide the space into decision regions. Quick tour today, details later (k-NN and SVM = week 6, kernels = week 7).
 - **k-NN (p. 16–17):** nearby points have similar labels; classify x by **majority vote of its k nearest neighbours**. Pros: no optimization/training, easy, works well in **low dimension**, very complex boundaries. Cons: **slow at query time**, bad in high dimension, the choice of the distance is crucial.
 - **Linear decision boundaries (p. 18):** f(x) = sign(xᵀw); boundary = hyperplane {x : xᵀw = 0}, w is normal to it.
 - **Separating hyperplane, margin (p. 19–21):** data **linearly separable** ⇔ some hyperplane separates the classes perfectly; then infinitely many exist. **Margin** = distance from the hyperplane to the **closest** point. Pick the **max-margin** hyperplane: small changes of the training set keep misclassifications low → leads to SVM and logistic regression.
