@@ -1,0 +1,281 @@
+# Official past-exam questions whose primary lecture is 07b (NN structure, activations, representation power with ReLUs) — stems and
+# choices verbatim. Answers read from the ticked boxes (2019+) or from the solution text (2017). Written 2026-10-30 (week-7 content session).
+# Backpropagation / initialization / batch-norm / CNN questions are left pending for week 8.
+
+- id: exam-2025-q27
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(ReLU Networks)* You are designing a neural network with a single hidden layer using ReLU activations, denoted as $(z)_+ = \max\{0, z\}$.
+    The network must exactly represent a piecewise linear function $f(x)$ defined by the following slopes:
+
+    - For $x < 2$: the slope is 0 (and $f(x) = 0$).
+    - For $2 \le x < 5$: the slope is 3.
+    - For $x \ge 5$: the slope is $-1$.
+
+    Which of the following expressions correctly implements this function?
+  choices:
+    - "$3(x - 2)_+ + 4(x - 5)_+$"
+    - "$3(x + 2)_+ - 4(x + 5)_+$"
+    - "$3(x - 2)_+ - 4(x - 5)_+$"
+    - "$3(x - 2)_+ - 1(x - 5)_+$"
+  answer: [2]
+  explanation: |
+    Official solution: the weight of each ReLU unit is the **change in slope** at its kink (07b p. 42). At $x = 2$: $3 - 0 = 3$ ⇒ $3(x - 2)_+$.
+    At $x = 5$: $-1 - 3 = -4$ ⇒ $-4(x - 5)_+$. $-1(x - 5)_+$ uses the new slope instead of the change (slope after 5 would be $2$);
+    $+4$ gets the sign wrong (slope $7$); $(x + 2)_+$ and $(x + 5)_+$ put the kinks at $-2$ and $-5$.
+  trap: "Weight = new slope − old slope."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 14, label: "Final 2025 Q27"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 42, label: "07b p. 42"}
+  added: 2026-10-30
+
+- id: exam-2025-q13
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(Forward Pass Complexity)* Consider the following layer operation: $Y = [\sigma(XW_1) \odot \sigma(XW_2)]W_3$, where:
+
+    - $X \in \mathbb R^{n\times K}$
+    - $W_1, W_2 \in \mathbb R^{K\times H_1}$
+    - $W_3 \in \mathbb R^{H_1\times H_2}$
+    - $\sigma(\cdot)$ is an element-wise activation function
+    - $\odot$ denotes point-wise multiplication (think `*` in numpy)
+
+    How many scalar multiplications are needed to implement the forward pass of this layer?
+  choices:
+    - "$2nKH_1 + nH_1 + H_1H_2$"
+    - "$2nKH_1 + nH_1 + nH_1H_2$"
+    - "$2nKH_1 + nH_1H_2$"
+    - "$nKH_1 + nH_1 + nH_1H_2$"
+    - "$2nKH_1 + nK + nH_1H_2$"
+  answer: [1]
+  explanation: |
+    Answer from the ticked box (no solution text). An $(a\times b)$ times $(b\times c)$ product costs $abc$ multiplications:
+    $XW_1$ and $XW_2$ cost $nKH_1$ each ($2nKH_1$); the point-wise product of two $n\times H_1$ matrices costs $nH_1$; multiplying the
+    $n\times H_1$ result by $W_3$ costs $nH_1H_2$. Distractors: forgetting the batch size $n$ in the last product, forgetting the $\odot$, counting one
+    product instead of two, or the wrong shape ($nK$) for $\odot$. Same counting as the parameter count of a fully connected layer (07b p. 15).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 7, label: "Final 2025 Q13"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 15, label: "07b p. 15"}
+  added: 2026-10-30
+
+- id: exam-2022-q14
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  shuffle: false
+  front: |
+    A neural network with a single hidden layer and a scalar input/output is parameterized as:
+    $$f(x) = a^\top\,\mathrm{ReLU}(x\mathbf 1 + b)$$
+    where $a, b, \mathbf 1 \in \mathbb R^n$ and $x \in \mathbb R$. What values of $a, b$ result in the graph shown in the figure below?
+  images:
+    - {src: img/exam-2022-q14.png, alt: "Piecewise-linear graph of f(x): 0 for x ≤ −2, rises to 3 at x = −1, to 4 at x = 0, falls to 1 at x = 1, to 0 at x = 2, then stays 0."}
+  choices:
+    - "$a = [1, 2, -4, -2, 3]^\\top$, $b = [-2, -1, 0, 1, 2]^\\top$"
+    - "$a = [1, 2, -4, -2, 3]^\\top$, $b = [2, 1, 0, -1, -2]^\\top$"
+    - "$a = [3, 1, -3, -1, 0]^\\top$, $b = [2, 1, 0, -1, -2]^\\top$"
+    - "$a = [3, 1, -3, -1, 0]^\\top$, $b = [-2, -1, 0, 1, 2]^\\top$"
+  answer: [0]
+  explanation: |
+    Slopes read on the graph: $0$, then $3$ on $[-2, -1]$, $1$ on $[-1, 0]$, $-3$ on $[0, 1]$, $-1$ on $[1, 2]$, $0$ after. Changes of slope at the kinks
+    $-2, -1, 0, 1, 2$: $+3, -2, -4, +2, +1$ (07b p. 42). Official solution: $f = 3\,\mathrm{ReLU}(x + 2) - 2\,\mathrm{ReLU}(x + 1) - 4\,\mathrm{ReLU}(x) + 2\,\mathrm{ReLU}(x - 1) + \mathrm{ReLU}(x - 2)$.
+    $\mathrm{ReLU}(x + b_i)$ kinks at $x = -b_i$, so pairing $b = [-2, -1, 0, 1, 2]$ (kinks $2, 1, 0, -1, -2$) with $a = [1, 2, -4, -2, 3]$ gives exactly these terms,
+    just listed in the other order. Option 2 puts each weight on the opposite kink. $a = [3, 1, -3, -1, 0]$ lists the **slopes**, not the changes of slope.
+  trap: "Weights = changes of slope; ReLU(x + bᵢ) kinks at −bᵢ."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 7, label: "Final 2022 Q14"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 42, label: "07b p. 42"}
+  added: 2026-10-30
+
+- id: exam-2022-q16
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  themes: [neural-nets, classification]
+  priority: core
+  shuffle: false
+  front: |
+    A neural network has been trained for multi-class classification using cross-entropy but has not necessarily achieved a global or local minimum
+    on the training set. The output of the neural network is $z = [z_1, \dots, z_d]^\top$ obtained from the penultimate values $x = [x_1, \dots, x_d]^\top$
+    via softmax $z_k = \frac{\exp(x_k)}{\sum_i \exp(x_i)}$ that can be interpreted as a probability distribution over the $d$ possible classes.
+    The cross-entropy is given by $H(y, z) = -\sum_{i=1}^d y_i\ln z_i$ where $y$ is one-hot encoded meaning the entity corresponding to the true class
+    is 1 and other entities are 0.
+
+    We now modify the neural network, either by scaling $x \mapsto \alpha x$ where $\alpha \in \mathbb R_{>0}$ or through a shift $x \mapsto x + b\mathbf 1$
+    where $b \in \mathbb R$. The modified $x$ values are fed into the softmax to obtain the final output and the network / parameters are otherwise
+    unchanged. How do these transformations affect the training accuracy of the network?
+  choices:
+    - "Both transformations sometimes increase and sometimes decrease the accuracy."
+    - "Both transformations decrease the accuracy in some cases (but never increase it)."
+    - "Neither transformation affects the accuracy."
+    - "One transformation has no effect, the other sometimes increases and sometimes decreases the accuracy."
+    - "One transformation has no effect, the other one decreases the accuracy in some cases (but never increases it)."
+  answer: [2]
+  explanation: |
+    Official solution: the prediction, hence the accuracy, only depends on which element of $z$ is largest ($\arg\max$, 07b p. 16).
+    Softmax is increasing in each $x_k$, so the largest $z_k$ is the largest $x_k$; scaling by $\alpha > 0$ and adding the same $b$ to every entry
+    keep the order of the $x_k$. (The **loss** does change under scaling — only the shift leaves it unchanged.)
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 8, label: "Final 2022 Q16"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 16, label: "07b p. 16"}
+  added: 2026-10-30
+
+- id: exam-2021-q9
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  also_lectures: ["05b"]
+  themes: [neural-nets, classification]
+  priority: core
+  front: |
+    Let $f : \mathbb R^D \to \mathbb R$ be an $L$-hidden layer multi-layer perceptron (MLP) such that
+    $$f(x) = \sigma_{L+1}\big(w^\top\sigma_L(W_L\sigma_{L-1}(W_{L-1}\dots\sigma_1(W_1x)))\big),$$
+    with $w \in \mathbb R^M$, $W_1 \in \mathbb R^{M\times D}$ and $W_\ell \in \mathbb R^{M\times M}$ for $\ell = 2, \dots, L$, and $\sigma_i$ for $i = 1, \dots, L+1$ is an
+    entry-wise activation function. For any MLP $f$ and a classification threshold $\tau$ let $C_{f,\tau}$ be a binary classifier that outputs YES for
+    a given input $x$ if $f(x) \le \tau$ and NO otherwise.
+
+    Assume $\sigma_{L+1}$ is the element-wise **sigmoid** function and $C_{f,\frac12}$ is able to obtain a high accuracy on a given binary classification
+    task $T$. Let $g$ be the MLP obtained by multiplying the parameters **in the last layer** of $f$, i.e. $w$, by 2. Moreover, let $h$ be the MLP obtained by
+    replacing $\sigma_{L+1}$ with element-wise **ReLU**. Finally, let $q$ be the MLP obtained by doing both of these actions. Which of the following is true?
+    ($\mathrm{ReLU}(x) = \max\{x, 0\}$, $\mathrm{Sigmoid}(x) = \frac{1}{1 + e^{-x}}$.)
+  choices:
+    - "$C_{h,0}$ may have an accuracy significantly lower than $C_{f,\\frac12}$ on $T$"
+    - "$C_{g,\\frac12}$, $C_{h,0}$, and $C_{q,0}$ have the same accuracy as $C_{f,\\frac12}$ on $T$"
+    - "$C_{g,\\frac12}$ may have an accuracy significantly lower than $C_{f,\\frac12}$ on $T$"
+    - "$C_{q,0}$ may have an accuracy significantly lower than $C_{f,\\frac12}$ on $T$"
+  answer: [1]
+  explanation: |
+    Official solution: with $s = w^\top(\dots)$ the input of the last activation, $\sigma(s) \le \tfrac12 \iff s \le 0$ and $\mathrm{ReLU}(s) \le 0 \iff s \le 0$:
+    $C_{f,\frac12}$ and $C_{h,0}$ make the same decisions. Multiplying $w$ by 2 multiplies $s$ by 2 and does not change its sign, so $C_{g,\frac12}$ and
+    $C_{q,0}$ make the same decisions too. Only the **sign** of the last pre-activation matters (07b p. 16: $\mathrm{sign}(h(x))$; 05b: $\sigma \ge \tfrac12 \iff$ score $\ge 0$).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 6, label: "Final 2021 Q9"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 16, label: "07b p. 16"}
+  added: 2026-10-30
+
+- id: exam-2021-q34
+  type: tf
+  origin: exam_official
+  lecture: "07b"
+  also_lectures: ["02a"]
+  themes: [neural-nets, convexity]
+  priority: core
+  front: "*(MSE and Neural Networks)* The mean squared error (MSE) is convex w.r.t the parameters of a multi layer perceptron with more than one hidden layer and linear activation function."
+  answer: false
+  explanation: |
+    Official solution: take one neuron per layer, output $w_1w_2x$. The MSE $(y - w_1w_2x)^2$ is not convex in $(w_1, w_2)$: with $x = y = 1$ it is $0$
+    at $(1, 1)$ and at $(-1, -1)$ but $1$ at their midpoint $(0, 0)$. With linear activations the network is a **linear function of $x$** (07b p. 9),
+    but the parameters multiply each other, so the loss is non-convex **in the parameters**.
+  trap: "Linear in x ≠ convex in the weights."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 16, label: "Final 2021 Q34"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 9, label: "07b p. 9"}
+  added: 2026-10-30
+
+- id: exam-2020-q11
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    Let $f_{\mathrm{MLP}} : \mathbb R^d \to \mathbb R$ be an $L$-hidden layer multi-layer perceptron (MLP) such that
+    $f_{\mathrm{MLP}}(x) = w^\top\sigma\big(W_L\sigma(W_{L-1}\dots\sigma(W_1x))\big)$, with $w \in \mathbb R^M$, $W_1 \in \mathbb R^{M\times d}$ and $W_\ell \in \mathbb R^{M\times M}$
+    for $\ell = 2, \dots, L$, and $\sigma$ is an entry-wise activation function.
+
+    Let's assume $\sigma$ is a tanh activation function. Thus, by flipping the signs of all of the weights leading in and out of a hidden neuron, the
+    input–output mapping function represented by the network is unchanged. Besides, interchanging the values of all of the weights (i.e., by permuting
+    the ordering of the hidden neurons within the layer) also leaves the network input–output mapping function unchanged.
+    Suppose that, given the training data, SGD can find a solution with zero training loss, and the (absolute value) weights of such solution are
+    non-zero and all unique. Choose the largest lower bound on the number of solutions (with zero training loss) achievable by $f_{\mathrm{MLP}}$ with
+    $L = 1$ and $M$ hidden units on this dataset.
+  choices:
+    - "$M!\\,2^M$"
+    - "$1$"
+    - "$2^M$"
+    - "$M!$"
+  answer: [0]
+  explanation: |
+    Official solution: each of the $M$ hidden neurons can independently have its in/out weights sign-flipped ($\tanh$ is odd): $2^M$ equivalent weight
+    vectors. The $M$ neurons can be permuted: $M!$ orderings. Together $M!\,2^M$ distinct weight vectors with the same function (all distinct because the
+    weights are non-zero and unique). Hidden neurons are interchangeable units of one layer (07b p. 7–8). $2^M$ and $M!$ count only one of the symmetries.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 7, label: "Final 2020 Q11"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 7, label: "07b p. 7"}
+  added: 2026-10-30
+
+- id: exam-2020-q29
+  type: tf
+  origin: exam_official
+  lecture: "07b"
+  also_lectures: ["05b"]
+  themes: [neural-nets, logistic-regression, convexity]
+  priority: core
+  front: "*(Neural networks)* Training only the first layer of a deep neural network using the logistic loss is equivalent to training a logistic regression over a transformed feature space."
+  answer: false
+  explanation: |
+    Official solution: training only the first layer is a non-convex problem (its weights pass through all the following nonlinear layers), while
+    logistic regression is convex. It is training only the **last** layer, with the feature extractor fixed, that is logistic regression on the
+    features $f(x)$ (07b p. 15–17).
+  trap: "Last layer only = logistic regression on learned features; first layer only = non-convex."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 14, label: "Final 2020 Q29"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 15, label: "07b p. 15"}
+  added: 2026-10-30
+
+- id: exam-2017-q11
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  also_lectures: ["03a"]
+  themes: [neural-nets, least-squares]
+  priority: core
+  front: |
+    You are doing your ML project. It is a regression task under a square loss. Your neighbor uses linear regression and least squares. You are smarter.
+    You are using a neural net with 10 layers and activations functions $f(x) = 3x$. You have a powerful laptop but not a supercomputer. You are betting
+    your neighbor a beer at Satellite who will have a substantially better scores. What will happen? Who will pay?
+  choices:
+    - "I will pay."
+    - "It will essentially be a tie, so we decide to have two beers and both pay."
+    - "My neighbor will pay."
+  answer: [1]
+  explanation: |
+    Official solution: with the linear activation $f(x) = 3x$ the 10-layer network is just a linear function of the input (07b p. 9: the activation
+    must be non-linear, otherwise the network is linear), so it can do no better than least squares: essentially a tie.
+    (The official text adds that the problem is convex, so SGD reaches the least-squares result; strictly, the loss is non-convex in the stacked weights —
+    Final 2021 Q34 — but the reachable functions are the same linear models.)
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 7, label: "Final 2017 P11"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 9, label: "07b p. 9"}
+  added: 2026-10-30
+
+- id: exam-2017-q12
+  type: mcq
+  origin: exam_official
+  lecture: "07b"
+  also_lectures: ["03a"]
+  themes: [neural-nets, least-squares]
+  priority: core
+  front: "*(Follow-up of the bet: 10-layer network with activation $f(x) = 3x$ vs least squares, square loss.)* What is the reason for the outcome of the previous bet?"
+  choices:
+    - "Because we use exactly the same scheme."
+    - "Because it is almost impossible to train a network with 10 layers without a supercomputer."
+    - "Because I should have used more layers."
+    - "Because I should have used only one layer."
+  answer: [0]
+  explanation: |
+    Official solution: a composition of linear maps is linear, so the network is "in fact just a linear scheme" — the same model class as least squares
+    (07b p. 9). More or fewer layers change nothing as long as the activation is linear; compute power is not the issue.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2017-solutions.pdf, page: 7, label: "Final 2017 P12"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 9, label: "07b p. 9"}
+  added: 2026-10-30

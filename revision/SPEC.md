@@ -437,7 +437,7 @@ Questions already identified during sessions (non-exhaustive — the index in st
 - Curse claims 1 (r = α^{1/d}) and 2 (complement → independence → complement, r ≥ (1 − 2^{−1/N})^{1/d}).
 - 1-NN bound: he swapped L(f_S) and L(f⋆) and read "≤ 2 L(f⋆)" as "1-NN beats Bayes" → L(f⋆) ≤ 𝔼L(f_S) ≤ 2L(f⋆) + …; "baseline" = reference (here the unattainable optimum). Bayes-risk proof (06b p. 33) explained line by line (exam 2022). Proofs p. 37–46: idea only (factor 2 = two noisy labels).
 
-**Week 7 (07a caught up 2026-10-28; 07b ⏳; questions he asked):**
+**Week 7 (07a caught up 2026-10-28, 07b 2026-10-28/29; questions he asked):**
 - Needed a refresher first: ridge = least squares + ℓ₂ penalty; least squares = solve ∇L = 0 in closed form (normal equations) vs GD iterations; the λ normalization differs between decks (03d λ′ = 2Nλ, 07a (XᵀX + NλI)) — same family of solutions.
 - Gradient −(1/N)Xᵀ(y − Xw) + λw derived term by term (chain rule gives the minus sign, Σₙ aₙxₙ = Xᵀa, ∇(λ/2)‖w‖² = λw).
 - **Conventions (main confusion):** vectors are columns; X ∈ ℝᴺˣᵈ has rows xₙᵀ (data table); (x₁ … x_N) side by side is Xᵀ; (XXᵀ)ᵢⱼ = xᵢᵀxⱼ (N×N) vs XᵀX (d×d). "span" = all linear combinations.
@@ -447,6 +447,14 @@ Questions already identified during sessions (non-exhaustive — the index in st
 - Kernel trick = "short path" κ(x, x′) vs "long path" ϕ(x)ᵀϕ(x′) (O(d) vs O(d̃)); prediction f(x) = Σₙ α*ₙκ(x, xₙ) needs the whole training set.
 - Polynomial (1 + xᵀx′)² on ℝ³: expand, split each term as f(x)·f(x′) (√2 from the factor 2) ⇒ ℝ¹⁰ = all monomials of degree ≤ 2; (xᵀx′)² ⇒ ℝ⁶. (1 + xᵀy)² valid (2025 Q26). RBF e^{−‖x−x′‖²}: bump around x′, ϕ infinite-dimensional via Taylor (2023 Q21).
 - p. 17 string kernels skipped; p. 18–22 seen quickly before lunch: closure rules (α, β ≥ 0; product), **difference not valid (2025 Q35)**; proofs 19–20 skipped (idea: build ϕ); Mercer = symmetric + K PSD for every point set; quick invalidity check κ(x, x) < 0.
+- 07b p. 6 template view: he did not get "positive/negative weight, 1/0, ink" — re-explained with binary pixels (one weight per pixel, sign = which pixels push towards the class, 3×3 toy). Template = pattern matching, not exam material by itself.
+- p. 8: **K (neurons per layer) and L are hyperparameters** chosen by the designer (d is fixed by the input) — notation clash with K = kernel matrix (07a) and K = number of classes (p. 16).
+- Transposes/dimensions: columns of W⁽ˡ⁾ = neurons, x⁽ˡ⁾ = ϕ((W⁽ˡ⁾)ᵀx⁽ˡ⁻¹⁾ + b⁽ˡ⁾); #params O(dK + K²L).
+- Non-linearity needed, yet a deep linear net's MSE is non-convex in the parameters (2021 Q34).
+- Barron: (2Cr)²/n, one hidden layer, **ℓ₂ = average** (not pointwise); proof by picture (p. 24–38) seen at intuition level only: rectangle = 2 steps, step ≈ σ(w(x − b)) with large w (σ′(0) = 1/4 ⇒ width 4/w), 1-D: 2k nodes in one hidden layer; 2-D: band → cross (centre 2, arms 1) → **threshold keeps the centre and removes the arms** (he first thought the centre peak was to be removed) → 2 hidden layers. Low exam priority.
+- ℓ₂ vs ℓ∞: ℓ∞ small ⇒ ℓ₂ small on a bounded domain, not the converse (thin-spike example).
+- **ReLU ↔ PWL (exam):** (x − b̃)₊ kinks at x = b̃ (sign of the bias!), weight = slope; **output weight = change of slope** at the kink (2025 Q27: 3(x − 2)₊ − 4(x − 5)₊; trap −1(x − 5)₊ = new slope instead of change). Induction proof p. 44–45 skimmed.
+- Slide numbering: 07b has no printed numbers, slide N = PDF page N — the tutor once used the Jaggi "+1" rule by mistake; always use the PDF page for Flammarion decks.
 
 ### 8.5 Starter theme vocabulary
 `ml-basics`, `linear-regression`, `loss-functions`, `convexity`, `optimization`, `gradient-descent`, `sgd`, `subgradients`, `constrained-optimization`, `least-squares`, `overfitting`, `polynomial-features`, `mle`, `probability`, `regularization`, `ridge`, `lasso`, `generalization`, `model-selection`, `cross-validation`, `bias-variance`. Extend as lectures progress (classification, logistic-regression, svm, knn, kernels, neural-nets, …).
@@ -596,6 +604,7 @@ Estimated sessions: **S1** = M0–M2, **S2** = M3, **S3** = M4, **S4** = M5, **S
 ### Weekly content (after M7)
 - [x] Week 5 (05a, 05b) + 25 official questions — 2026-10-09 (S7)
 - [x] Week 6 (06a SVM, 06b k-NN) + 34 official questions — 2026-10-20
+- [x] Week 7 (07a kernels, 07b NN structure / representation power) + 19 official questions — 2026-10-30
 
 ### M8 — Later / optional
 - [ ] Mock exam mode · [ ] exam-date mode · [ ] FSRS parameter optimization from the review log (`fsrs[optimizer]`, run on the Mac, store parameters in settings) once ≥ ~1000 reviews · [ ] open-question cards (self-graded, French answers allowed) if the student asks.
@@ -644,3 +653,13 @@ Estimated sessions: **S1** = M0–M2, **S2** = M3, **S3** = M4, **S4** = M5, **S
   exam-2016-q9.png). Flagged in notes: 2018 P13 stem says "very large λ" (official answer kept); 2024 Q32 geometric reading is ours.
   New themes `svm`, `duality`, `curse-of-dimensionality`. Checks: `content check` 257 cards / 257 items, `check-math` 0 errors (1264 texts),
   Sheet `?check=1` at 375 px clean for 06a, 06b, 01a (light + dark); 2024 Q24 stem split (objective display + constraint text) after the visual check.
+- 2026-10-30 — **Week 7 content (07a kernel ridge & kernel trick, 07b NN structure & representation power), local session.** No open report.
+  Own cards: 07a 12 (tf 4 T / 4 F), 07b 16 (tf 4 T / 5 F; the two proof-by-picture cards are `detail`), selected after listing what the officials
+  already ask; §8.4 "Week 7" confusions covered (XXᵀ vs XᵀX, representer not for ℓ1, prediction needs the training set, ℝ¹⁰ vs ℝ⁶, Mercer for every
+  point set, K/L hyperparameters, W⁽ˡ⁾ shape, Barron = ℓ2 average, kink sign, weight = change of slope, 2-D threshold keeps the centre).
+  **19 official questions** unlocked and added (07a: 2025 Q26/Q34/Q35, 2023 Q21, 2022 Q28, 2021 Q25, 2020 Q9, 2019 Q5, 2018 P11; 07b: 2025 Q13/Q27,
+  2022 Q14/Q16, 2021 Q9/Q34, 2020 Q11/Q29, 2017 P11/P12). Index: `kernels` → 07a, `neural-nets` → 07b for structure/representation questions only;
+  backprop / initialization / batch-norm / CNN / regularization questions stay pending for week 8. Excluded: 2020 Q23 (GLM, off-syllabus), 2016 Q20
+  (official answer "in average but not pointwise" contradicts 07b p. 40–43). Flagged in notes: 2025 Q26 official |xᵀy| argument is not a
+  counterexample (replaced by a 4-point one); 2017 P11 "problem is convex" remark. Figure cropped for 2022 Q14. Checks: `content check` 304 cards,
+  `check-math` 0 errors (1476 texts), Sheet `?check=1` at 375 px clean for 07a and 07b after splitting the polynomial-kernel expansion into display math.

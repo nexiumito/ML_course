@@ -1,0 +1,242 @@
+# Lecture 07a — Kernel Ridge Regression and the Kernel Trick ("07a p. N" = PDF page N, no printed numbers; Flammarion, no annotated deck).
+# Written 2026-10-30 (week-7 content session), exam-format tf/mcq only (SPEC §8.2).
+# Officials in exams/07a.yaml already cover: pick the valid kernel (2025 Q26), difference of kernels (2025 Q35), kernel SVM cost vs
+# input dimension (2025 Q34), RBF / infinite-dimensional features (2023 Q21), cos(x + x') with K(x, x) < 0 (2022 Q28),
+# 1/(1 − xᵀx') on the unit ball (2021 Q25), "all valid" list (2020 Q9), feature map → f(z) = z² (2019 Q5), dual form of ridge (2018 P11).
+# Student confusions (SPEC §8.4 "Week 7") kept: XXᵀ (N × N) vs XᵀX (d × d), span of the data, representer theorem not for ℓ1,
+# prediction needs the training set, short vs long path, ℝ¹⁰ vs ℝ⁶, Mercer for every point set.
+
+- id: style-07a-two-forms-cost
+  type: mcq
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels, ridge]
+  priority: core
+  front: |
+    *(Ridge, two forms)* The ridge solution can be computed by inverting a $d \times d$ matrix, $\big(\tfrac1N X^\top X + \lambda I_d\big)^{-1}$,
+    or an $N \times N$ matrix, $\big(\tfrac1N XX^\top + \lambda I_N\big)^{-1}$. With $N = 10^6$ samples and $d = 100$ features, which is cheaper?
+  choices:
+    - "The $d \\times d$ form: $\\mathcal O(d^3 + Nd^2)$"
+    - "The $N \\times N$ form: $\\mathcal O(N^3 + dN^2)$"
+    - "Both cost the same, since they give the same $w^\\star$"
+    - "Neither: ridge has no closed form when $N > d$"
+  answer: [0]
+  explanation: |
+    07a p. 4: the original form costs $\mathcal O(d^3 + Nd^2) \approx 10^{10}$ here, the alternative form $\mathcal O(N^3 + dN^2) \approx 10^{18}$.
+    Pick the form whose inverted matrix is smaller. The two forms give the **same** $w^\star$ (push-through identity, p. 3) but not the same cost.
+    Ridge always has a closed form for $\lambda > 0$, whatever $N$ and $d$.
+  trap: "Same solution ≠ same cost: compare N and d."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 4, label: "07a p. 4"}
+  added: 2026-10-30
+
+- id: style-07a-representer-any-loss
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels, regularization]
+  priority: core
+  front: |
+    *(Representer theorem)* For **any** loss $\ell$, every minimizer of $\tfrac1N\sum_n \ell(x_n^\top w, y_n) + \tfrac\lambda2\|w\|^2$ ($\lambda > 0$)
+    can be written $w^\star = X^\top\alpha^\star = \sum_n \alpha^\star_n x_n$ for some $\alpha^\star \in \mathbb R^N$.
+  answer: true
+  explanation: |
+    07a p. 5: the loss can be square, absolute, hinge, logistic… as long as it depends on $w$ only through the predictions $x_n^\top w$ and the
+    regularizer is $\tfrac\lambda2\|w\|^2$. Proof idea (p. 6): a component $u$ orthogonal to all $x_n$ does not change the predictions but
+    increases $\|w\|^2$, so it must be $0$. Hence $w^\star \in \text{span}\{x_1, \dots, x_N\}$.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 5, label: "07a p. 5"}
+  added: 2026-10-30
+
+- id: style-07a-representer-not-l1
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels, lasso]
+  priority: core
+  front: "*(Representer theorem)* The representer theorem of the lecture also holds for the lasso, i.e. with the penalty $\\lambda\\|w\\|_1$ instead of $\\tfrac\\lambda2\\|w\\|_2^2$."
+  answer: false
+  explanation: |
+    The theorem (07a p. 5) is stated for the $\ell_2$ penalty $\tfrac\lambda2\|w\|^2$, and its proof (p. 6) uses Pythagoras:
+    removing the component orthogonal to the data strictly decreases $\|w\|_2$. That argument fails for $\|w\|_1$, so there is no
+    guarantee that the lasso solution is a combination of the $x_n$ — and no kernel trick for the lasso this way.
+  trap: "The kernel trick relies on the ℓ2 penalty."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 6, label: "07a p. 6"}
+  added: 2026-10-30
+
+- id: style-07a-kernel-matrix-shape
+  type: mcq
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: |
+    *(Kernel matrix)* $X \in \mathbb R^{N\times d}$ has rows $x_n^\top$. What is the kernel matrix $K = XX^\top$?
+  choices:
+    - "$N \\times N$, with entries $K_{ij} = x_i^\\top x_j$"
+    - "$d \\times d$, with entries $K_{ij} = x_i^\\top x_j$"
+    - "$d \\times d$, the matrix $X^\\top X$ of the normal equations"
+    - "$N \\times d$, with entries $K_{ij} = x_i x_j^\\top$"
+  answer: [0]
+  explanation: |
+    07a p. 8: $K = XX^\top = (x_i^\top x_j)_{i,j}$ is $N \times N$ (one row and one column per **sample**), symmetric, and contains all
+    pairwise inner products = similarities. $X^\top X$ is the $d \times d$ matrix of the normal equations (one entry per pair of
+    **features**). $x_i x_j^\top$ is a $d \times d$ outer product, not a number.
+  trap: "XXᵀ is N × N (samples), XᵀX is d × d (features)."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 8, label: "07a p. 8"}
+  added: 2026-10-30
+
+- id: style-07a-feature-map-separable
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels, classification]
+  priority: core
+  front: |
+    *(Feature maps)* 1-D data: label $+1$ if $|x| < 1$, label $-1$ otherwise. No threshold on $x$ separates the classes, but after the map
+    $\phi(x) = (x, x^2)$ a linear classifier (half-space) in $\mathbb R^2$ separates them perfectly.
+  answer: true
+  explanation: |
+    In feature space the rule "$x^2 < 1$" is the half-space $\{(z_1, z_2) : z_2 < 1\}$ — linear in $\phi(x)$, nonlinear in $x$ (07a p. 9).
+    This is the point of feature maps: a **linear** method in feature space gives a **nonlinear** boundary in input space.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 9, label: "07a p. 9"}
+  added: 2026-10-30
+
+- id: style-07a-short-path-cost
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: |
+    *(Kernel trick)* For $x, x' \in \mathbb R^d$, evaluating $\kappa(x, x') = (1 + x^\top x')^2$ directly costs $\mathcal O(d)$, whereas computing
+    $\phi(x)^\top\phi(x')$ with the explicit feature map costs $\mathcal O(d^2)$.
+  answer: true
+  explanation: |
+    Directly: one inner product ($\mathcal O(d)$), add 1, square. Explicitly: $\phi(x)$ contains all monomials of degree $\le 2$, i.e.
+    $\tilde d = \mathcal O(d^2)$ coordinates, and the inner product in $\mathbb R^{\tilde d}$ costs $\mathcal O(d^2)$ (07a p. 11–12).
+    The kernel trick = take the short path $\kappa(x, x')$ and never build $\phi$.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 12, label: "07a p. 12"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 11, label: "07a p. 11"}
+  added: 2026-10-30
+
+- id: style-07a-prediction-needs-training-set
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: "*(Kernel ridge)* Once $\\alpha^\\star$ has been computed, predicting at a new input $x$ no longer requires the training inputs $x_1, \\dots, x_N$."
+  answer: false
+  explanation: |
+    The prediction is $\hat y = \phi(x)^\top w^\star = \sum_{n=1}^N \alpha^\star_n\, \kappa(x, x_n)$ (07a p. 13): one kernel evaluation **per training
+    point**, so all $x_n$ must be stored and the cost per prediction grows with $N$. We never have $w^\star$ explicitly (it lives in feature
+    space, possibly infinite-dimensional).
+  trap: "Kernel prediction = a sum over the whole training set."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 13, label: "07a p. 13"}
+  added: 2026-10-30
+
+- id: style-07a-poly-feature-dim
+  type: mcq
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels, polynomial-features]
+  priority: core
+  front: "*(Polynomial kernel)* For $x, x' \\in \\mathbb R^3$, the kernel $\\kappa(x, x') = (1 + x^\\top x')^2$ equals $\\phi(x)^\\top\\phi(x')$ for a feature map $\\phi$ with how many coordinates?"
+  choices:
+    - "$10$"
+    - "$6$"
+    - "$9$"
+    - "$3$"
+  answer: [0]
+  explanation: |
+    Expanding:
+    $$(1 + x^\top x')^2 = 1 + 2\sum_i x_ix'_i + \sum_i x_i^2x_i'^2 + 2\sum_{i<j} x_ix_jx'_ix'_j$$
+    so $\phi(x)$ contains $1$, the three $\sqrt2x_i$, the three $x_i^2$ and the three $\sqrt2x_ix_j$ ($i < j$): $1 + 3 + 3 + 3 = 10$ (07a p. 15).
+    $6$ is the homogeneous kernel $(x^\top x')^2$ (no constant, no linear terms). $9$ counts all ordered products $x_ix_j$. $3$ is the input dimension.
+  trap: "The '1 +' adds the constant and the linear terms: ℝ¹⁰, not ℝ⁶."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 15, label: "07a p. 15"}
+  added: 2026-10-30
+
+- id: style-07a-rbf-matrix-size
+  type: mcq
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels, ridge]
+  priority: core
+  front: |
+    *(RBF kernel ridge)* You run kernel ridge regression with $\kappa(x, x') = e^{-\|x - x'\|^2}$ on $N = 1000$ points in $\mathbb R^5$.
+    What is the size of the matrix that must be inverted?
+  choices:
+    - "$1000 \\times 1000$"
+    - "$5 \\times 5$"
+    - "Infinite: the RBF feature space is infinite-dimensional"
+    - "$1000 \\times 5$"
+  answer: [0]
+  explanation: |
+    The kernel form only needs $K = (\kappa(x_i, x_j))_{ij}$, which is $N \times N$: $\alpha^\star = \tfrac1N\big(\tfrac1N K + \lambda I_N\big)^{-1}y$ (07a p. 7, p. 11).
+    The feature space of the RBF kernel is infinite-dimensional (p. 16), which is exactly why we never work in it: the $d\times d$ form
+    would need the (infinite) feature dimension, not $5$. A $1000\times5$ matrix is not square.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 7, label: "07a p. 7"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 16, label: "07a p. 16"}
+  added: 2026-10-30
+
+- id: style-07a-product-kernel
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: "*(Building kernels)* If $\\kappa_1$ and $\\kappa_2$ are valid kernels, then their product $\\kappa(x, x') = \\kappa_1(x, x')\\,\\kappa_2(x, x')$ is a valid kernel."
+  answer: true
+  explanation: |
+    07a p. 18 and p. 20: take $\phi(x) = \big(\phi_1(x)_i\,\phi_2(x)_j\big)_{i,j} \in \mathbb R^{d_1d_2}$ (all pairwise products); then
+    $\phi(x)^\top\phi(x') = \sum_{i,j}\phi_1(x)_i\phi_1(x')_i\,\phi_2(x)_j\phi_2(x')_j = \kappa_1(x, x')\,\kappa_2(x, x')$.
+    Also valid: $\alpha\kappa_1 + \beta\kappa_2$ with $\alpha, \beta \ge 0$. Not guaranteed: a difference $\kappa_1 - \kappa_2$.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 20, label: "07a p. 20"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 18, label: "07a p. 18"}
+  added: 2026-10-30
+
+- id: style-07a-mercer-every-set
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: "*(Mercer)* A symmetric function $\\kappa$ is a valid kernel as soon as its kernel matrix on **your training set** is positive semidefinite."
+  answer: false
+  explanation: |
+    Mercer's condition (07a p. 21): $\kappa$ is valid $\iff$ it is symmetric **and** for **every** $N$ and **every** set of points
+    $x_1, \dots, x_N$ the matrix $(\kappa(x_i, x_j))_{ij}$ is PSD. One PSD Gram matrix proves nothing; one non-PSD Gram matrix
+    (e.g. a negative diagonal entry $\kappa(x, x) < 0$, or a $2\times2$ matrix with negative determinant) proves invalidity.
+  trap: "PSD for every finite point set, not just one."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 21, label: "07a p. 21"}
+  added: 2026-10-30
+
+- id: style-07a-shifted-square-invalid
+  type: tf
+  origin: exam_style
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: "*(Kernel validity)* On $\\mathbb R$, the function $\\kappa(x, x') = (xx' - 1)^2$ is a valid kernel."
+  answer: false
+  explanation: |
+    Take $x_1 = 1$, $x_2 = -1$: $\kappa(1, 1) = \kappa(-1, -1) = 0$ and $\kappa(1, -1) = (-1 - 1)^2 = 4$, so the Gram matrix
+    $\begin{bmatrix}0 & 4\\ 4 & 0\end{bmatrix}$ has eigenvalues $\pm4$: not PSD, so Mercer's condition fails (07a p. 21).
+    Compare $(1 + xx')^2$, which **is** valid (expand: non-negative combination of kernels, 07a p. 15). Same family as Final 2024 Q43–44:
+    $(x^\top x' + c)^d$ with $c < 0$ is not valid.
+  trap: "(1 + xᵀx')² is valid, (xᵀx' − 1)² is not."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 21, label: "07a p. 21"}
+  added: 2026-10-30
+  notes: "Counterexample built for the card (same idea as the 2024 Q43–44 open question, c < 0); checked by hand 2026-10-30."

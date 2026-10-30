@@ -1,0 +1,330 @@
+# Lecture 07b — Neural Networks: Basic Structure, Representation Power ("07b p. N" = PDF page N, no printed numbers; Flammarion, no annotated deck).
+# Written 2026-10-30 (week-7 content session), exam-format tf/mcq only (SPEC §8.2).
+# Officials in exams/07b.yaml already cover: ReLU sum for given slopes (2025 Q27, 2022 Q14), gated-layer multiplications (2025 Q13),
+# softmax scaling/shift vs accuracy (2022 Q16), sigmoid threshold ½ vs ReLU threshold 0 (2021 Q9), MSE non-convex for a deep linear
+# MLP (2021 Q34), tanh weight-space symmetries M!·2^M (2020 Q11), training only the first layer non-convex (2020 Q29),
+# linear activations = linear model (2017 P11–P12).
+# Backprop, initialization, batch norm, CNN questions wait for week 8. 2016 Q20 excluded (official answer contradicts 07b p. 40–43).
+# Student confusions (SPEC §8.4 "Week 7") kept: K and L are hyperparameters, shape of W⁽ˡ⁾, Barron = average (ℓ2), sign of the kink,
+# output weight = change of slope, 2-D threshold keeps the centre. The proof by picture (p. 24–38) is intuition only → `detail`.
+
+- id: style-07b-param-count
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(Fully connected NN)* Input dimension $d = 10$, $L = 2$ hidden layers of $K = 100$ neurons each, one scalar output, biases everywhere.
+    How many parameters does the network have?
+  choices:
+    - "$11\\,301$"
+    - "$11\\,100$"
+    - "$21\\,301$"
+    - "$11\\,200$"
+  answer: [0]
+  explanation: |
+    Layer by layer (07b p. 8): $W^{(1)} \in \mathbb R^{10\times100}$ + $b^{(1)}$: $1000 + 100$; $W^{(2)} \in \mathbb R^{100\times100}$ + $b^{(2)}$: $10\,000 + 100$;
+    output $W^{(3)} \in \mathbb R^{100}$ + $b^{(3)}$: $100 + 1$. Total $11\,301$, consistent with $\mathcal O(dK + K^2L)$ (p. 15).
+    $11\,100$ forgets the biases; $11\,200$ forgets the output layer; $21\,301$ counts two $K\times K$ matrices, but with $L$ hidden layers there are
+    only $L - 1$ of them (the first one is $d\times K$).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 8, label: "07b p. 8"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 15, label: "07b p. 15"}
+  added: 2026-10-30
+
+- id: style-07b-weight-matrix-shape
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(Layer equation)* Layer $l-1$ has $K_{l-1}$ nodes and layer $l$ has $K_l$ nodes, with $x^{(l)} = \phi\big((W^{(l)})^\top x^{(l-1)} + b^{(l)}\big)$
+    as in the lecture. What is the shape of $W^{(l)}$, and what does one of its **columns** contain?
+  choices:
+    - "$K_{l-1}\\times K_l$; column $j$ = the incoming weights of neuron $j$ of layer $l$"
+    - "$K_l\\times K_{l-1}$; column $j$ = the incoming weights of neuron $j$ of layer $l$"
+    - "$K_{l-1}\\times K_l$; column $j$ = the outgoing weights of node $j$ of layer $l-1$"
+    - "$K_l\\times K_l$; the matrix is square in every layer"
+  answer: [0]
+  explanation: |
+    $w^{(l)}_{i,j}$ is the weight of the edge from node $i$ of layer $l-1$ to node $j$ of layer $l$ (07b p. 13), so $W^{(l)}$ has $K_{l-1}$ rows and
+    $K_l$ columns; the transpose in $(W^{(l)})^\top x^{(l-1)}$ makes the product valid and gives $x^{(l)}_j = \phi\big(\sum_i x^{(l-1)}_i w^{(l)}_{i,j} + b^{(l)}_j\big)$ (p. 14).
+    Column $j$ = everything entering neuron $j$. Only the hidden-to-hidden matrices are square ($K\times K$); $W^{(1)}$ is $d\times K$ (p. 8).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 13, label: "07b p. 13"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 14, label: "07b p. 14"}
+  added: 2026-10-30
+
+- id: style-07b-k-l-hyperparameters
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets, model-selection]
+  priority: core
+  front: "*(Architecture)* In a fully connected network, the width $K$ and the depth $L$ are learned by gradient descent together with the weights and biases."
+  answer: false
+  explanation: |
+    Only the weights $W^{(l)}$ and biases $b^{(l)}$ are learned (07b p. 13, p. 15). $K$ and $L$ (and the activation $\phi$) are chosen by the designer:
+    they are **hyperparameters**, tuned e.g. by validation. The input dimension $d$ is fixed by the data. In practice both $K$ and $L$
+    are large: overparametrized networks (p. 15).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 15, label: "07b p. 15"}
+  added: 2026-10-30
+
+- id: style-07b-last-layer-convex
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  also_lectures: ["05b"]
+  themes: [neural-nets, logistic-regression, convexity]
+  priority: core
+  front: |
+    *(Feature-extractor view)* If the feature extractor $f$ (input + hidden layers) is kept fixed and only the output layer $(w^{(L+1)}, b^{(L+1)})$ is trained
+    with the logistic loss, the training problem is convex.
+  answer: true
+  explanation: |
+    With $f$ fixed, $h(x) = f(x)^\top w^{(L+1)} + b^{(L+1)}$ is linear in the trained parameters, so this is exactly logistic regression on the features
+    $f(x)$ (07b p. 15–17), which is convex (05b). Training the **first** layer instead puts the weights inside the nonlinearities ⇒ non-convex
+    (Final 2020 Q29).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 16, label: "07b p. 16"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 17, label: "07b p. 17"}
+  added: 2026-10-30
+
+- id: style-07b-softmax-shift-loss
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets, loss-functions]
+  priority: core
+  front: |
+    *(Cross-entropy)* For multi-class outputs $h(x) \in \mathbb R^K$ and the loss $\ell(y, h(x)) = -\log\dfrac{e^{h(x)_y}}{\sum_{i=1}^K e^{h(x)_i}}$,
+    adding the same constant $c$ to every $h(x)_i$ changes the loss.
+  answer: false
+  explanation: |
+    $\dfrac{e^{h_y + c}}{\sum_i e^{h_i + c}} = \dfrac{e^c e^{h_y}}{e^c\sum_i e^{h_i}}$: the factor $e^c$ cancels, so the softmax and the loss are unchanged
+    (07b p. 17; lab 7 uses this to compute a stable softmax with $c = -\max_j h_j$). The prediction $\arg\max_c h(x)_c$ (p. 16) is unchanged too.
+    Multiplying all $h_i$ by $\alpha > 0$, however, **does** change the loss (but not the argmax — Final 2022 Q16).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 17, label: "07b p. 17"}
+  added: 2026-10-30
+
+- id: style-07b-barron-scaling
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(Barron)* A one-hidden-layer network with $n$ neurons achieves $\displaystyle\int_{\|x\|\le r}(f(x) - f_n(x))^2\,dx \le \frac{(2Cr)^2}{n}$.
+    You double the radius $r$ of the domain. How many neurons guarantee the same bound as before?
+  choices:
+    - "$4n$"
+    - "$2n$"
+    - "$n$: the bound does not depend on $r$"
+    - "$n/4$"
+  answer: [0]
+  explanation: |
+    The bound grows like $r^2$: $(2C\cdot2r)^2/n' = 4(2Cr)^2/n'$, equal to $(2Cr)^2/n$ when $n' = 4n$ (07b p. 21–22).
+    Reading of the bound: more neurons ⇒ smaller error (rate $1/n$); smoother $f$ (smaller $C$) ⇒ smaller error; larger domain ⇒ larger error.
+    $2n$ forgets the square.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 21, label: "07b p. 21"}
+  added: 2026-10-30
+
+- id: style-07b-barron-average-not-pointwise
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: "*(Barron)* Barron's theorem guarantees that the network $f_n$ is uniformly close to $f$, i.e. $|f(x) - f_n(x)|$ is small at **every** point of the ball $\\|x\\| \\le r$."
+  answer: false
+  explanation: |
+    Barron bounds $\int_{\|x\|\le r}(f - f_n)^2\,dx$: an **$\ell_2$ (average)** error (07b p. 21, p. 39). A large error on a tiny region can be
+    compensated elsewhere. A pointwise ($\ell_\infty$) guarantee comes later in the lecture, through piecewise-linear functions and ReLU networks (p. 40–43).
+  trap: "Barron = in average (ℓ2), not pointwise."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 39, label: "07b p. 39"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 21, label: "07b p. 21"}
+  added: 2026-10-30
+
+- id: style-07b-barron-one-hidden-layer
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: "*(Barron)* The approximating function $f_n$ in Barron's theorem is a neural network with a single hidden layer of $n$ neurons."
+  answer: true
+  explanation: |
+    $f_n(x) = \sum_{j=1}^n c_j\phi(x^\top w_j + b_j) + c_0 = c^\top\phi(W^\top x + b) + c_0$ is a network with **one** hidden layer of $n$ nodes
+    and a sigmoid-like activation (07b p. 23). Two hidden layers only appear in the intuitive 2-D "proof by picture" (p. 37), which is easier to draw
+    but not needed by the theorem.
+  trap: "Barron: one hidden layer; the 2-D picture proof uses two."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 23, label: "07b p. 23"}
+  added: 2026-10-30
+
+- id: style-07b-l2-vs-linf
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: "*($\\ell_2$ vs $\\ell_\\infty$)* On a bounded domain, a small $\\ell_2$ approximation error $\\int (f - f_n)^2$ implies a small maximum error $\\sup_x |f(x) - f_n(x)|$."
+  answer: false
+  explanation: |
+    Counterexample: $f_n = f$ except on a very thin spike of height $10$; the integral of the squared error is tiny, the maximum error is $10$
+    (07b p. 39: in $\ell_2$, large deviations at a few points are compensated). The converse is true: on a bounded domain,
+    $\int (f - f_n)^2 \le \text{vol}\cdot\sup|f - f_n|^2$, so $\ell_\infty$ small ⇒ $\ell_2$ small.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 39, label: "07b p. 39"}
+  added: 2026-10-30
+
+- id: style-07b-sigmoid-step
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: detail
+  front: "*(Proof by picture)* Which unit $\\sigma(w(x - b))$ is closest to the step function $\\mathbb 1_{x \\ge 3}$?"
+  choices:
+    - "$w = 100$, $b = 3$"
+    - "$w = 1$, $b = 3$"
+    - "$w = 100$, $b = -3$"
+    - "$w = 3$, $b = 100$"
+  answer: [0]
+  explanation: |
+    07b p. 29: $b$ sets **where** the transition happens ($\sigma = \tfrac12$ at $x = b$), $w$ how **steep** it is: the slope at $b$ is $w\,\sigma'(0) = w/4$,
+    so the transition has width $\mathcal O(4/w)$. Large $w$ and $b = 3$ ⇒ almost a step at $3$. $w = 1$ is far too smooth; $b = -3$
+    puts the step at $-3$. As a neuron: $\sigma(wx - wb)$, so the **bias** is $-wb$, not $b$.
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 29, label: "07b p. 29"}
+  added: 2026-10-30
+
+- id: style-07b-2d-threshold-centre
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: detail
+  front: |
+    *(Proof by picture, $d = 2$)* Summing a band in $x_1$ and a band in $x_2$ (four sigmoids) gives a cross $y$ that is $\approx 2$ in the centre,
+    $\approx 1$ on the two infinite arms and $\approx 0$ elsewhere. Which output unit turns it into a single 2-D rectangle?
+  choices:
+    - "$\\sigma(w(y - 1.5))$ with large $w$"
+    - "$\\sigma(w(y - 0.5))$ with large $w$"
+    - "$\\sigma(w(y - 2.5))$ with large $w$"
+    - "$\\sigma(-w(y - 1.5))$ with large $w$"
+  answer: [0]
+  explanation: |
+    07b p. 35–36: the centre (inside both bands) is the rectangle we **keep**; the arms are what we remove. Thresholding at $c \in (1, 2]$ — here
+    $1.5$, i.e. bias $-3w/2$ — gives $\approx 1$ in the centre and $\approx 0$ on the arms. Threshold $0.5$ keeps the arms too; $2.5$ removes
+    everything; the minus sign gives the complement. This second layer is why the 2-D construction uses **2 hidden layers** (p. 37).
+  trap: "Keep the centre (value 2), remove the arms (value 1)."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 36, label: "07b p. 36"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 35, label: "07b p. 35"}
+  added: 2026-10-30
+
+- id: style-07b-relu-kink-sign
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: "*(ReLU)* The function $x \\mapsto (x + 2)_+ = \\max\\{0, x + 2\\}$ has its kink at $x = 2$."
+  answer: false
+  explanation: |
+    The kink is where the argument is $0$: $x + 2 = 0 \iff x = -2$. In $(ax + b)_+$ the bias sets the **position** of the kink ($x = -b/a$) and the
+    weight $a$ the **slope** (07b p. 41). This is why the lecture writes $(x - \tilde b_i)_+$: the kink is then directly at $x = \tilde b_i$.
+  trap: "(x + 2)₊ kinks at −2, (x − 2)₊ at +2."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 41, label: "07b p. 41"}
+  added: 2026-10-30
+
+- id: style-07b-pwl-clamp
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(ReLU ↔ PWL)* $q$ is continuous and piecewise linear: $q(x) = 0$ for $x < -1$, slope $2$ on $[-1, 1)$, slope $0$ for $x \ge 1$.
+    Which sum of ReLUs equals $q$?
+  choices:
+    - "$2(x + 1)_+ - 2(x - 1)_+$"
+    - "$2(x + 1)_+ + 0\\cdot(x - 1)_+$"
+    - "$2(x - 1)_+ - 2(x + 1)_+$"
+    - "$2(x - 1)_+ - 2(x + 1)_+ + 4$"
+  answer: [0]
+  explanation: |
+    Each ReLU sits on a kink and its weight is the **change of slope** there (07b p. 42: $\tilde a_i = a_i - a_{i-1}$, $\tilde b_i = r_{i-1}$):
+    at $x = -1$ the slope goes $0 \to 2$ ⇒ $2(x + 1)_+$; at $x = 1$ it goes $2 \to 0$ ⇒ $-2(x - 1)_+$.
+    The second option uses the **new** slope ($0$) instead of the change, so the line keeps rising after $x = 1$. The last two put the kinks on the
+    wrong side (sign of the bias) and give a function that is not $0$ for $x < -1$.
+  trap: "Weight = change of slope, not the new slope (Final 2025 Q27)."
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 42, label: "07b p. 42"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 41, label: "07b p. 41"}
+  added: 2026-10-30
+
+- id: style-07b-pwl-m-nodes
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: |
+    *(ReLU ↔ PWL)* On $x \in [0, 1]$, every continuous piecewise-linear function with $m$ linear pieces can be represented **exactly** by a network with
+    **one** hidden layer of $m$ ReLU units (plus an output bias).
+  answer: true
+  explanation: |
+    07b p. 42–43: $q(x) = \tilde a_1x + \tilde b_1 + \sum_{i=2}^m \tilde a_i(x - \tilde b_i)_+$. Each term $\tilde a_i(x - \tilde b_i)_+$ is one ReLU node
+    (input weight $1$, bias $-\tilde b_i$, output weight $\tilde a_i$); $\tilde a_1x = \tilde a_1(x)_+$ because $x \ge 0$; $\tilde b_1$ is the output bias.
+    Hence $m$ nodes, and with Shektman's theorem (p. 40) ReLU networks approximate any continuous function on $[0, 1]$ **uniformly** ($\ell_\infty$).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 43, label: "07b p. 43"}
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 40, label: "07b p. 40"}
+  added: 2026-10-30
+
+- id: style-07b-relu-identity
+  type: mcq
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: "*(ReLU constructions)* Without skip connections, which one-hidden-layer ReLU network outputs exactly $x$ for **every** $x \\in \\mathbb R$?"
+  choices:
+    - "$(x)_+ - (-x)_+$"
+    - "$(x)_+$"
+    - "$(x)_+ + (-x)_+$"
+    - "$2(x)_+ - x$"
+  answer: [0]
+  explanation: |
+    For $x \ge 0$: $(x)_+ - (-x)_+ = x - 0 = x$; for $x < 0$: $0 - (-x) = x$. Two ReLU units, output weights $+1$ and $-1$.
+    $(x)_+$ is wrong for $x < 0$; $(x)_+ + (-x)_+ = |x|$; $2(x)_+ - x$ uses $x$ directly, i.e. a skip connection. This is the building block of
+    Final 2024 Q45–46 (open: identity, then $\max\{x_1, x_2\} = (x_1 - x_2)_+ + (x_2)_+ - (-x_2)_+$ with 3 units).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 41, label: "07b p. 41"}
+  added: 2026-10-30
+  notes: "From the 2024 open questions Q45–46 (identity and max with ReLUs), checked by hand 2026-10-30."
+
+- id: style-07b-relu-max
+  type: tf
+  origin: exam_style
+  lecture: "07b"
+  themes: [neural-nets]
+  priority: core
+  front: "*(ReLU constructions)* For all $x_1, x_2 \\in \\mathbb R$: $\\max\\{x_1, x_2\\} = (x_1 - x_2)_+ + x_2$."
+  answer: true
+  explanation: |
+    If $x_1 \ge x_2$: $(x_1 - x_2) + x_2 = x_1$; otherwise $0 + x_2 = x_2$. Without skip connections, write $x_2 = (x_2)_+ - (-x_2)_+$:
+    $\max\{x_1, x_2\} = (x_1 - x_2)_+ + (x_2)_+ - (-x_2)_+$, a one-hidden-layer ReLU network with 3 units (Final 2024 Q46, open question).
+  sources:
+    - {kind: lecture, pdf: lectures/07/lecture07b.pdf, page: 41, label: "07b p. 41"}
+  added: 2026-10-30
+  notes: "From the 2024 open question Q46; identity checked by hand 2026-10-30."

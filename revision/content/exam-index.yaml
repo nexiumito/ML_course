@@ -27,8 +27,8 @@ areas:
   logistic-regression: 05b (exponential family / GLM questions are excluded, not in the 2025–2026 lecture)
   svm: 06a
   knn: 06b (k-NN intro questions already filed under 05a stay there)
-  kernels: week 8
-  neural-nets: weeks 8–9
+  kernels: 07a (week 7)
+  neural-nets: 07b (week 7 — structure, activations, universal approximation, ReLU/PWL) + week 8 (backprop, init, regularization)
   cnn: week 9
   transformers: week 10
   adversarial: week 10
@@ -144,7 +144,8 @@ questions:
   type: mcq
   topic: forward-pass complexity of a gated layer
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 7
 - exam: final-2025
   q: '14'
@@ -237,14 +238,16 @@ questions:
   type: mcq
   topic: valid PSD kernel
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 13
 - exam: final-2025
   q: '27'
   type: mcq
   topic: ReLU network design
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 14
 - exam: final-2025
   q: '28'
@@ -296,14 +299,16 @@ questions:
   type: tf
   topic: kernel SVM training cost vs input dimension
   areas: [svm, kernels]
-  status: pending
+  lectures: [06a, 07a]
+  status: added
   page: 16
 - exam: final-2025
   q: '35'
   type: tf
   topic: difference of two kernels
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 16
 - exam: final-2025
   q: '36'
@@ -923,7 +928,8 @@ questions:
   type: tf
   topic: kernel trick and infinite-dimensional features
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 9
 - exam: final-2023
   q: '22'
@@ -1181,7 +1187,8 @@ questions:
   type: mcq
   topic: one-hidden-layer ReLU network
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 7
 - exam: final-2022
   q: '15'
@@ -1195,7 +1202,8 @@ questions:
   type: mcq
   topic: cross-entropy network not at optimum
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 8
 - exam: final-2022
   q: '17'
@@ -1285,7 +1293,8 @@ questions:
   type: tf
   topic: valid kernel definition
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 12
 - exam: final-2022
   q: '29'
@@ -1546,7 +1555,8 @@ questions:
   type: mcq
   topic: sigmoid output network classifier
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 6
 - exam: final-2021
   q: '10'
@@ -1663,7 +1673,8 @@ questions:
   type: tf
   topic: validity of k(x, x') = 1/(1 - x^T x')
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 14
 - exam: final-2021
   q: '26'
@@ -1729,7 +1740,8 @@ questions:
   type: tf
   topic: MSE convex in MLP parameters?
   areas: [neural-nets, optimization]
-  status: pending
+  lectures: [02a, 07b]
+  status: added
   page: 16
 - exam: final-2021
   q: '35'
@@ -1907,7 +1919,8 @@ questions:
   type: mcq
   topic: which kernel is not valid
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 6
 - exam: final-2020
   q: '10'
@@ -1921,7 +1934,8 @@ questions:
   type: mcq
   topic: tanh network sign symmetry
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 7
 - exam: final-2020
   q: '12'
@@ -2007,8 +2021,9 @@ questions:
   type: tf
   topic: deep networks with logistic loss are GLMs?
   areas: [logistic-regression, neural-nets]
-  status: pending
+  status: excluded
   page: 13
+  note: 'GLMs are off-syllabus in 2026 (as the exponential-family questions); excluded 2026-10-30.'
 - exam: final-2020
   q: '24'
   type: tf
@@ -2053,7 +2068,8 @@ questions:
   type: tf
   topic: training only the first layer
   areas: [neural-nets, logistic-regression]
-  status: pending
+  lectures: [05b, 07b]
+  status: added
   page: 14
 - exam: final-2020
   q: '30'
@@ -2211,7 +2227,8 @@ questions:
   type: mcq
   topic: kernel matrix transformation
   areas: [kernels]
-  status: pending
+  lectures: [07a]
+  status: added
   page: 4
 - exam: final-2019
   q: '6'
@@ -2488,7 +2505,8 @@ questions:
   type: mcq
   topic: ridge least-squares statements (one option is the dual / kernel form → waits for kernels, S4)
   areas: [regularization, least-squares, kernels]
-  status: pending
+  lectures: [03a, 03d, 07a]
+  status: added
   multi: true
   page: 12
 - exam: final-2018
@@ -2647,14 +2665,16 @@ questions:
   type: mcq
   topic: neural net vs least squares bet
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 7
 - exam: final-2017
   q: '12'
   type: mcq
   topic: reason for the outcome of the bet
   areas: [neural-nets]
-  status: pending
+  lectures: [07b]
+  status: added
   page: 7
 - exam: final-2017
   q: '13'
@@ -2931,9 +2951,10 @@ questions:
   type: mcq
   topic: one-hidden-layer sigmoid network
   areas: [neural-nets]
-  status: pending
+  status: excluded
   multi: true
   page: 6
+  note: 'Official answer (c, "in average but not pointwise") contradicts 07b p. 40–43 (uniform approximation with ReLU/PWL) and its own solution text; excluded 2026-10-30, covered by own cards style-07b-barron-*.'
 - exam: final-2016
   q: '21'
   type: mcq

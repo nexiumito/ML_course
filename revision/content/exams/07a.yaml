@@ -1,0 +1,215 @@
+# Official past-exam questions whose primary lecture is 07a (kernel ridge regression, kernel trick, kernel validity) — stems and choices
+# verbatim. Answers read from the ticked boxes (2019+) or from the solution text (2018). Written 2026-10-30 (week-7 content session).
+
+- id: exam-2025-q26
+  type: mcq
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: "*(Kernel Methods)* Which of the following functions is a valid positive-semidefinite kernel on $\\mathbb R^n$?"
+  choices:
+    - "$k(x, y) = -\\|x - y\\|^2$"
+    - "$k(x, y) = |x^\\top y|$"
+    - "$k(x, y) = -x^\\top y$"
+    - "$k(x, y) = 1 - x^\\top y$"
+    - "$k(x, y) = (1 + x^\\top y)^2$"
+  answer: [4]
+  explanation: |
+    $(1 + x^\top y)^2 = 1 + 2x^\top y + (x^\top y)^2$: constant kernel + linear kernel + homogeneous quadratic kernel, a non-negative combination
+    of valid kernels, hence valid (07a p. 15, p. 18). The others fail Mercer's condition (p. 21):
+    $-x^\top y$ gives $k(v, v) = -\|v\|^2 < 0$; $-\|x - y\|^2$ with $x_1 = 0$, $x_2 = v$ gives $\begin{bmatrix}0 & -\|v\|^2\\ -\|v\|^2 & 0\end{bmatrix}$, eigenvalues $\pm\|v\|^2$;
+    $1 - x^\top y$ with $x_1 = v$, $x_2 = -v$ gives eigenvalues $(1 - \|v\|^2) \pm (1 + \|v\|^2)$, one is $-2\|v\|^2 < 0$.
+    $|x^\top y|$: the official solution's argument with $v, -v$ (and $2v$) is not a counterexample (that Gram matrix is PSD; in 1-D $|xy| = |x||y|$ is even valid),
+    but for $n \ge 2$ the points $(1,0), (0,1), (1,1), (1,-1)$ give a Gram matrix with $c^\top Kc = -2$ for $c = (1, 1, -1, -1)$: not PSD.
+  trap: "Check κ(x, x) ≥ 0 first, then a 2×2 Gram matrix."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 13, label: "Final 2025 Q26"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 21, label: "07a p. 21"}
+  added: 2026-10-30
+  notes: "Official |xᵀy| justification is flawed (v, −v, 2v give a rank-1 PSD matrix); replaced by a 4-point counterexample checked numerically 2026-10-30 (min eigenvalue ≈ −0.56)."
+
+- id: exam-2025-q34
+  type: tf
+  origin: exam_official
+  lecture: "07a"
+  also_lectures: ["06a"]
+  themes: [kernels, svm]
+  priority: core
+  front: "*(SVM)* The cost of training a kernel SVM scales up linearly with the dimensionality of the input features."
+  answer: false
+  explanation: |
+    Official solution: the cost of a kernel SVM scales with the number of (support) vectors, not with the input dimension. With kernels, the data
+    enter only through the $N \times N$ kernel matrix $K = (\kappa(x_i, x_j))_{ij}$ (07a p. 7–8, p. 22), and predictions need $\kappa(x, x_n)$
+    for the training/support points (p. 13); the input dimension only enters the cost of one kernel evaluation.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 16, label: "Final 2025 Q34"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 22, label: "07a p. 22"}
+  added: 2026-10-30
+
+- id: exam-2025-q35
+  type: tf
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: |
+    *(Kernel Methods)* Let $\kappa_1(x, x')$ and $\kappa_2(x, x')$ be two valid kernel functions. The function defined by their difference,
+    $\kappa(x, x') = \kappa_1(x, x') - \kappa_2(x, x')$, is guaranteed to be a valid kernel function.
+  answer: false
+  explanation: |
+    Official solution: positive linear combinations of kernels are valid ($\alpha\kappa_1 + \beta\kappa_2$, $\alpha, \beta \ge 0$, 07a p. 18), but
+    subtracting does not guarantee a PSD Gram matrix, required by Mercer's condition (p. 21). Example: $\kappa_1 = 0\cdot\kappa$, $\kappa_2 = \kappa$
+    gives $-\kappa$, with $-\kappa(x, x) < 0$.
+  trap: "Sums with non-negative coefficients and products: yes. Differences: not guaranteed."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2025-solutions.pdf, page: 16, label: "Final 2025 Q35"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 18, label: "07a p. 18"}
+  added: 2026-10-30
+
+- id: exam-2023-q21
+  type: tf
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: "*(Kernels)* The kernel trick allows computing inner products in infinite-dimensional feature spaces for specific choices of the kernel function."
+  answer: true
+  explanation: |
+    Official solution: an example is the RBF kernel $\kappa(x, x') = e^{-\|x - x'\|^2}$, whose feature map is infinite-dimensional (07a p. 16:
+    Taylor series of $e^{2xx'}$). We compute $\kappa(x, x')$ directly and never the features (p. 12).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2023-solutions.pdf, page: 9, label: "Final 2023 Q21"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 16, label: "07a p. 16"}
+  added: 2026-10-30
+
+- id: exam-2022-q28
+  type: tf
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: |
+    *(Kernels)* Recall that we say that a kernel $K : \mathbb R \times \mathbb R \to \mathbb R$ is valid if there exists $k \in \mathbb N$ and
+    $\Phi : \mathbb R \to \mathbb R^k$ such that for all $(x, x') \in \mathbb R \times \mathbb R$, $K(x, x') = \Phi(x)^\top\Phi(x')$.
+    The kernel $K(x, x') = \cos(x + x')$ is a valid kernel.
+  answer: false
+  explanation: |
+    Official solution: $K(x, x) = \cos(2x)$ can be strictly negative (e.g. $x = \pi/2$), which is impossible for a valid kernel since
+    $K(x, x) = \|\Phi(x)\|^2 \ge 0$. Compare $\cos(x - x') = \cos x\cos x' + \sin x\sin x'$, which is valid (Final 2020 Q9).
+  trap: "κ(x, x) = ‖ϕ(x)‖² must be ≥ 0."
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2022-solutions.pdf, page: 12, label: "Final 2022 Q28"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 12, label: "07a p. 12"}
+  added: 2026-10-30
+
+- id: exam-2021-q25
+  type: tf
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  front: |
+    *(Kernels)* For any vector $v \in \mathbb R^D$ let $\|v\|_2 := \sqrt{v_1^2 + \dots + v_D^2}$ denote the Euclidean norm. Define the function
+    $k(x, x') = \dfrac{1}{1 - x^\top x'}$, on the set $x, x' \in \mathbb R^D$ such that $\|x\|_2 < 1$ and $\|x'\|_2 < 1$. The function $k(x, x')$ is a valid kernel.
+  answer: true
+  explanation: |
+    Official solution: $k(x, x') = \dfrac{1}{1 - x^\top x'} = \sum_{i=0}^\infty (x^\top x')^i$ (geometric series, $|x^\top x'| < 1$). Each $(x^\top x')^i$ is a
+    valid kernel (products of the linear kernel, 07a p. 18), and a sum of valid kernels with non-negative coefficients — here an infinite one, as a limit
+    of valid kernels (lab 7 Problem 1) — is valid.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2021-solutions.pdf, page: 14, label: "Final 2021 Q25"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 18, label: "07a p. 18"}
+  added: 2026-10-30
+
+- id: exam-2020-q9
+  type: mcq
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels]
+  priority: core
+  shuffle: false
+  front: "Which one of the following kernels is not valid ?"
+  choices:
+    - "$\\mathcal X = \\mathbb N$, $K(x, x') = 2$."
+    - "$\\mathcal X = \\mathbb R^d$, $K(x, x') = (x^\\top x')^2$."
+    - "$\\mathcal X = \\mathbb R$, $K(x, x') = \\cos(x - x')$."
+    - "All of the proposed kernels are in fact valid."
+    - "$\\mathcal X = \\mathbb Q$, $K(x, x') = 2^{x + x'}$."
+    - "$\\mathcal X = \\mathbb R^d$, $K(x, x') = x^\\top Ax'$, where $A$ is a $d \\times d$ symmetric positive semi-definite matrix."
+  answer: [3]
+  explanation: |
+    Official solution — each one has an explicit feature map (07a p. 12):
+    $2 = \sqrt2\cdot\sqrt2$; $(x^\top x')^2$ is the square (product) of the linear kernel (p. 18);
+    $\cos(x - x') = \langle(\cos x, \sin x), (\cos x', \sin x')\rangle$; $2^{x + x'} = 2^x\cdot2^{x'}$;
+    $x^\top Ax' = (Bx)^\top(Bx')$ with $B^2 = A$ ($B$ exists because $A$ is PSD).
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2020-solutions.pdf, page: 6, label: "Final 2020 Q9"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 18, label: "07a p. 18"}
+  added: 2026-10-30
+
+- id: exam-2019-q5
+  type: mcq
+  origin: exam_official
+  lecture: "07a"
+  themes: [kernels, polynomial-features]
+  priority: core
+  front: |
+    *(Tricky Question)* You are given samples $\mathcal S = \{x_n\}_{n=1}^N$, where each sample has two components, i.e., $x = (x_1, x_2)$. You compute
+    from this the corresponding kernel matrix $K$ with entries $K_{i,j} = x_i^\top x_j$.
+    Assume now that you transform the feature vector to $\tilde x = (x_1^2, x_2^2, \sqrt2x_1x_2)$ and compute from this new feature vector the corresponding
+    kernel matrix $\tilde K$ with entries $\tilde K_{i,j} = \tilde x_i^\top\tilde x_j$.
+
+    What function does this transform correspond to? I.e., what function $f(\cdot)$ can you pick so that $\tilde K = f(K)$, where the function $f(\cdot)$
+    is applied component-wise?
+  choices:
+    - "$f(z) = e^z$"
+    - "$f(z) = z^2$"
+    - "$f(z) = 1$"
+    - "$f(z) = z^3$"
+    - "$f(z) = \\log(z)$"
+    - "$f(z) = z$"
+    - "$f(z) = \\sqrt2z$"
+  answer: [1]
+  explanation: |
+    $\tilde x_i^\top\tilde x_j = x_{i1}^2x_{j1}^2 + x_{i2}^2x_{j2}^2 + 2x_{i1}x_{i2}x_{j1}x_{j2} = (x_{i1}x_{j1} + x_{i2}x_{j2})^2 = (x_i^\top x_j)^2$:
+    the homogeneous quadratic kernel (07a p. 15, without the constant and linear terms of $(1 + x^\top x')^2$). The $\sqrt2$ in the feature map
+    produces the factor $2$ of the cross term.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2019-solutions.pdf, page: 4, label: "Final 2019 Q5"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 15, label: "07a p. 15"}
+  added: 2026-10-30
+
+- id: exam-2018-q11
+  type: mcq
+  origin: exam_official
+  lecture: "07a"
+  also_lectures: ["03c", "03d"]
+  themes: [kernels, ridge, mle]
+  priority: core
+  multi: true
+  shuffle: false
+  front: |
+    Consider our standard least-squares problem
+    $$\arg\min_w \mathcal L(w) = \arg\min_w \frac12\sum_{n=1}^N (y_n - x_n^\top w)^2 + \frac\lambda2\sum_{d=1}^D w_d^2.$$
+    Here, $\{(x_n, y_n)\}_{n=1}^N$ is the data. The $N$-length vector of outputs is denoted by $y$. The $N \times D$ data matrix is called $X$.
+    It's rows contain the tuples $x_n$. Finally, the parameter vector of length $D$ is called $w$. (All just like we defined in the course).
+    Mark any of the following formulas that represent an equivalent way of solving this problem.
+  choices:
+    - "$\\arg\\min_\\alpha \\frac12\\alpha^\\top(XX^\\top + \\lambda I_N)\\alpha - \\alpha^\\top y$"
+    - "$\\arg\\min_w \\sum_{n=1}^N [1 - y_nx_n^\\top w]_+ + \\frac\\lambda2\\|w\\|^2$. Recall: $[z]_+ = \\max\\{0, z\\}$"
+    - "$\\arg\\min_w -\\log p(y \\mid X, w)p(w)$, where $p(w)$ correspond to the density of a $D$-length vector of iid zero-mean Gaussians with variance $1/\\lambda$ and $p(y \\mid X, w)$ corresponds to the density of a vector of length $N$ of independent Gaussians of mean $x_n^\\top w$, variance 1 and observation $y_n$ for component $n$."
+    - "$\\arg\\min_w \\frac12\\sum_{n=1}^N \\ln(1 + e^{x_n^\\top w}) - y_nx_n^\\top w$"
+    - "$\\arg\\min_w \\frac12\\|y - Xw\\|^2 + \\frac\\lambda2\\|w\\|^2$"
+  answer: [0, 2, 4]
+  explanation: |
+    Official solution: the MAP form, the vector form and the $\alpha$ form are correct.
+    **α form**: it is the kernelized ridge of 07a p. 7 (here without the $1/N$ factors): setting its gradient to zero gives $\alpha = (XX^\top + \lambda I_N)^{-1}y$
+    and $w = X^\top\alpha = X^\top(XX^\top + \lambda I_N)^{-1}y = (X^\top X + \lambda I_D)^{-1}X^\top y$ (push-through, p. 3).
+    **MAP**: $-\log$ of the Gaussian likelihood (variance 1) gives $\tfrac12\|y - Xw\|^2$, $-\log$ of the Gaussian prior (variance $1/\lambda$) gives
+    $\tfrac\lambda2\|w\|^2$ (03c/03d). **Vector form**: the same objective written with norms. The hinge loss is the soft-margin SVM (06a) and the
+    log-loss is logistic regression (05b): different problems.
+  sources:
+    - {kind: exam, pdf: exam/final-exam-2018-solutions.pdf, page: 12, label: "Final 2018 P11"}
+    - {kind: lecture, pdf: lectures/07/lecture07a.pdf, page: 7, label: "07a p. 7"}
+  added: 2026-10-30
